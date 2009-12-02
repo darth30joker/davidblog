@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2009 年 12 月 02 日 12:59
+-- 生成日期: 2009 年 12 月 02 日 17:20
 -- 服务器版本: 5.0.84
 -- PHP 版本: 5.2.11-pl1-gentoo
 
@@ -49,12 +49,15 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `slug` varchar(75) NOT NULL,
   `entryNum` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `categories`
 --
 
+INSERT INTO `categories` (`id`, `name`, `slug`, `entryNum`) VALUES
+(1, 'Python', 'python', 0),
+(2, 'PHP', 'php', 0);
 
 -- --------------------------------------------------------
 
@@ -94,12 +97,15 @@ CREATE TABLE IF NOT EXISTS `entries` (
   `commentNum` int(11) NOT NULL,
   `slug` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `entries`
 --
 
+INSERT INTO `entries` (`id`, `title`, `content`, `categoryId`, `createdTime`, `modifiedTime`, `viewNum`, `commentNum`, `slug`) VALUES
+(1, 'test entry', 'asdgsadgasdg', 1, '2009-12-02 13:31:27', '2009-12-02 13:31:32', 0, 0, 'test-entry'),
+(2, 'second test entry', 'sdgasdgsadgsdgasdgas sdgasdg\r\nsdghasdhasdh\r\nsdhasdhsadh', 2, '2009-12-01 13:31:57', '2009-12-01 13:32:00', 0, 0, 'second-test-entry');
 
 -- --------------------------------------------------------
 
@@ -117,6 +123,10 @@ CREATE TABLE IF NOT EXISTS `entry_tag` (
 -- 转存表中的数据 `entry_tag`
 --
 
+INSERT INTO `entry_tag` (`entryId`, `tagId`) VALUES
+(1, 1),
+(1, 2),
+(2, 2);
 
 -- --------------------------------------------------------
 
@@ -130,12 +140,15 @@ CREATE TABLE IF NOT EXISTS `links` (
   `url` varchar(255) NOT NULL,
   `createdTime` datetime NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `links`
 --
 
+INSERT INTO `links` (`id`, `name`, `url`, `createdTime`) VALUES
+(1, 'web.py官网', 'http://webpy.org/', '2009-12-02 16:26:36'),
+(2, 'Python官网', 'http://python.org/', '2009-12-02 16:27:00');
 
 -- --------------------------------------------------------
 
@@ -148,9 +161,12 @@ CREATE TABLE IF NOT EXISTS `tags` (
   `name` varchar(255) NOT NULL,
   `entryNum` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
 -- 转存表中的数据 `tags`
 --
 
+INSERT INTO `tags` (`id`, `name`, `entryNum`) VALUES
+(1, 'python', 1),
+(2, 'test', 2);
