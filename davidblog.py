@@ -7,6 +7,7 @@ import views
 
 urls = (
         '/', 'views.index',    
+        '/entry/(.*)/', 'views.entry',    
     )
 
 app = web.application(urls, globals(), autoreload = True)

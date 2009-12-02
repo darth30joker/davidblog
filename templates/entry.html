@@ -1,0 +1,49 @@
+<%inherit file="base.html" />
+
+<%def name="title()">${ entry.title }</%def>
+
+<div id="blog_list">
+    <div class="blog_each">
+        <h1><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a></h1>
+        <h3>
+            分类:<a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
+            % if entry.tags:
+                   | 标签:
+                % for tag in entry.tags:
+                    <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
+                % endfor
+            % endif
+                | @${ entry.createdTime }
+        </h3>
+        <div>${ entry.content }</div>
+    </div>
+</div>
+
+<div id="side_bar">
+    <div class="side_bar_component">
+        <h2>标签</h2>
+        % for tag in tags:
+            <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
+        % endfor
+    </div>
+
+    <div class="side_bar_component">
+        <h2>目录</h2>
+        <ul>
+            % for one in categories:
+                <li><a href="/category/${ one.slug }/">${ one.name } (${ one.entryNum })</a></li>
+            % endfor
+        </ul>
+    </div>
+
+    <div class="side_bar_component">
+        <h2>链接</h2>
+        <ul>
+            % for one in links:
+            <li><a href="${ one.url }" target="_blank">${ one.name }</a></li>
+            % endfor
+        </ul>
+    </div>
+</div>
+
+<br class="clearfloat" />
