@@ -2,7 +2,60 @@
 
 <%def name="title()">首页</%def>
 
-站点开发中
-环境:web.py+mako
+<div id="blog_list">
+    % if entries:
+        % for entry in entries:
+            <div class="blog_each">
+                <h1><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a></h1>
+                <h2>${ entry.createdTime }</h2>
+                <h3>标签:
+                % for tag in entry.tags:
+                    <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
+                % endfor
+                分类: <a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
+                </h3>
+                <p>${ entry.content }</p>
+            </div>
+        % endfor
+    % else:
+        <p>here</p>
+    % endif
+    <div id="page_link">
+        % if page > 1:
+            <span id="pre_page"><a href="/?page=${ page - 1 }">上一页</a></span>
+        % endif
+        <span id="cur_page">${ page } / ${ pages }</span>
+        % if page < pages:
+            <span id="next_page"><a href="/?page=${ page + 1 }">下一页</a></span>
+        % endif
+    </div>
+</div>
 
-详情请访问 <a href="http://davidshieh.cn/" target="_blank">泥泞的沼泽</a>
+<div id="side_bar">
+    <div class="side_bar_component">
+        <h2>标签</h2>
+        % for tag in tags:
+            <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
+        % endfor
+    </div>
+
+    <div class="side_bar_component">
+        <h2>目录</h2>
+        <ul>
+            % for one in categories:
+                <li><a href="/category/${ one.slug }/">${ one.name } (${ one.entryNum })</a></li>
+            % endfor
+        </ul>
+    </div>
+
+    <div class="side_bar_component">
+        <h2>链接</h2>
+        <ul>
+            % for one in links:
+            <li><a href="${ one.url }" target="_blank">${ one.name }</a></li>
+            % endfor
+        </ul>
+    </div>
+</div>
+
+<br class="clearfloat" />

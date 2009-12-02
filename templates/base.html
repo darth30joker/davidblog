@@ -7,5 +7,22 @@
         <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
         <link rel="SHORTCUT ICON" href="/static/favicon.ico" />
     </head>
-    <body>${self.body()}</body>
+    <body>
+        <div id="page">
+            <div id="head">
+                <div id="logo">
+                    <h1><a href="/">泥泞的沼泽</a></h1>
+                    <p>技术改变生活</p>
+                </div>
+                <div id="menu">
+                    <ul>
+                        <li><a href="/">博客</a></li>
+                        <li><a href="/about/">关于</a></li>
+                        <li><a href="/projects/">项目管理</a></li>
+                        <li><a href="http://david-paste.cn/" target="_blank">大卫粘贴</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="main">${ self.body() }</div>
+        </body>
 </html>
