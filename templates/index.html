@@ -7,14 +7,17 @@
         % for entry in entries:
             <div class="blog_each">
                 <h1><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a></h1>
-                <h2>${ entry.createdTime }</h2>
-                <h3>标签:
-                % for tag in entry.tags:
-                    <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
-                % endfor
-                分类: <a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
+                <h3>
+                    分类:<a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
+                    % if entry.tags:
+                           | 标签:
+                        % for tag in entry.tags:
+                            <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
+                        % endfor
+                    % endif
+                        | @${ entry.createdTime }
                 </h3>
-                <p>${ entry.content }</p>
+                <div>${ entry.content }</div>
             </div>
         % endfor
     % else:
