@@ -26,6 +26,13 @@ a:hover {
     font-size:30px;
     margin:5px 0 5px 30px;
     letter-spacing:10px;
+    width:280px;
+}
+#logo h1 span {
+    color:red;
+    float:right;
+    font-size:12px;
+    letter-spacing:0;
 }
 #logo p {
     font-size:14px;

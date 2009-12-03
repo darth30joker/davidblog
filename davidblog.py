@@ -13,6 +13,7 @@ urls = (
     )
 
 app = web.application(urls, globals(), autoreload = True)
+session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'captcha': 0})
 
 render = render_mako(
         directories = ['/home/icefox/flyingeagle/davidblog/templates'],
