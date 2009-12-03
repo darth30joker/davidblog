@@ -15,7 +15,7 @@ urls = (
 app = web.application(urls, globals(), autoreload = True)
 
 render = render_mako(
-        directories = ['templates'],
+        directories = ['/home/icefox/flyingeagle/davidblog/templates'],
         input_encoding = 'utf-8',
         output_encoding = 'utf-8',
     )
