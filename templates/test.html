@@ -1,0 +1,10 @@
+<%inherit file="base.html" />
+
+<%def name="title()">分类 - 首页</%def>
+
+<div id="blog_list">
+    % for i in datas:
+        <p>${ datas[i] }</p>
+    % endfor
+</div>
+<br class="clearfloat" />

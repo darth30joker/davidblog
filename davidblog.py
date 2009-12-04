@@ -10,6 +10,7 @@ urls = (
         '/entry/(.*)/', 'views.entry',    
         '/category/(.*)/', 'views.category',    
         '/tag/(.*)/', 'views.tag',    
+        '/add_comment/', 'views.addComment',    
     )
 
 app = web.application(urls, globals(), autoreload = True)

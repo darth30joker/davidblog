@@ -2,6 +2,8 @@
 
 import web
 from davidblog import render
+from forms import commentForm
+from datetime import datetime
 
 db = web.database(dbn = 'mysql', db = 'davidblog', user='root', pw = 'root')
 
@@ -37,7 +39,7 @@ class entry(object):
         entry = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id WHERE en.slug = $slug', vars={'slug':slug}))
         for one in entry:
             one.tags = db.query('SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id', vars = {'id': one.entryId})
-            one.comments = db.query('SELECT * FROM comments WHERE entryId = $id', vars = {'id': one.entryId})
+            one.comments = db.query('SELECT * FROM comments WHERE entryId = $id ORDER BY createdTime DESC', vars = {'id': one.entryId})
 
         #读取文章分类列表
         categories = db.query('SELECT * FROM categories ORDER BY name ASC')
@@ -46,7 +48,18 @@ class entry(object):
         #读取link列表
         links = db.query('SELECT * FROM links ORDER BY name ASC')
 
-        return render.entry(entry = entry[0], categories = categories, tags = tags, links = links)
+        f = commentForm()
+
+        return render.entry(entry = entry[0], categories = categories, tags = tags, links = links, f = f)
+
+class addComment(object):
+    def POST(self):
+        datas = web.input()
+        createdTime = datetime.now().strftime("%Y-%m-%d %H:%M")
+        if datas.url =="":
+            datas.url = "#"
+        db.insert('comments', entryId = datas.id, username = datas.username, email = datas.email, url = datas.url, createdTime = createdTime, comment = datas.comment)
+        return render.comment(datas = datas, createdTime = createdTime)
 
 class category(object):
     def GET(self, slug):

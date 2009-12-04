@@ -2,6 +2,40 @@
 
 <%def name="title()">${ entry.title }</%def>
 
+<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#comment_form').find('form').validate({    
+        errorClass:"error",
+        submitHandler: function(form) {
+            var form = $('#comment_form').find('form');
+            $.ajax({
+                data:'id=' + form.find('input[name=id]').attr('value') + '&username=' + form.find('input[name=username]').attr('value') + '&email=' + form.find('input[name=email]').attr('value') + '&url=' + form.find('input[name=url]').attr('value') + '&comment=' + form.find('textarea[name=comment]').attr('value'),
+                type:'post',
+                dataType:'text',
+                success: function(data) {
+                    $('#comments').prepend(data);
+                },
+                url: '/add_comment/',
+            });
+            form.submit(function(){ return false; });
+            return false;
+        },
+        rules: {
+            username: { required: true, minlength: 1, maxlength: 12 },
+            email: { required: true, email: true },
+            url: { url: true },
+            comment: { required: true},
+        },
+        messages: {
+            email: { required: "必须填入邮件地址", email: '必须填入正确的邮件地址' },
+            username: { required: "必须输入用户名", minlength: "用户名不能少于3个字母", maxlength: "用户名不能多于12个字符" },
+            url: { url: "必须输入正确的url地址" },
+            comment: { required: "留言内容不能为空" }
+        }
+    });
+});
+</script>
 <div id="blog_list">
     <div class="blog_each">
         <h1><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a></h1>
@@ -16,6 +50,46 @@
                 | @${ entry.createdTime }
         </h3>
         <div>${ entry.content }</div>
+    </div>
+    <div id="comments">
+        <h2><% num = len(entry.comments) %>${ num } 条评论</h2>
+        % if entry.comments:
+            % for comment in entry.comments:
+                <div class="comment">
+                    <h2><a href="${ comment.url }">${ comment.username }</a></h2>
+                    <h3>@${ comment.createdTime.strftime("%Y-%m-%d %H:%M") }</h3>
+                    <p>${ comment.comment }</p>
+                </div>
+            % endfor
+        % endif
+        <div id="comment_form">
+            <h2>我想留言</h2>
+            <form action="/add_comment/" method="POST">
+                <input type="hidden" name="id" value="${ entry.entryId }" />
+                <table>
+                    <tr>
+                        <td>昵称 *</td>
+                        <td><input type="text" name="username" /></td>
+                    </tr>
+                    <tr>
+                        <td>Email地址 *</td>
+                        <td><input type="text" name="email" /></td>
+                    </tr>
+                    <tr>
+                        <td>个人网站</td>
+                        <td><input type="text" name="url" /></td>
+                    </tr>
+                    <tr>
+                        <td>留言内容</td>
+                        <td><textarea name="comment"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td><input type="submit" value="发表留言" style="width:auto;" /></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
     </div>
 </div>
 
