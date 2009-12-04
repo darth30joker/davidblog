@@ -14,7 +14,7 @@ $(document).ready(function(){
                 type:'post',
                 dataType:'text',
                 success: function(data) {
-                    $('#comments').prepend(data);
+                    $('#comments').find('h2').eq(0).after(data);
                 },
                 url: '/add_comment/',
             });
