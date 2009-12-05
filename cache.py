@@ -4,11 +4,13 @@ import pickle
 class MCache(object):
 
     def set(self, name, value):
-        mc.set(name, pickle.dumps(value))
-        return True
+        return mc.set(name, pickle.dumps(value))
 
     def get(self, name):
-        return pickle.loads(mc.get(name))
+        value = mc.get(name)
+        if value is not None:
+            return pickle.loads(value)
+        return None
 
     def delete(self, name):
         return mc.delete(name)

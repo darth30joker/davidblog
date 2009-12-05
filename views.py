@@ -10,21 +10,21 @@ from cache import mcache
 def getCategories():
     categories = mcache.get('categories')
     if categories is None:
-        categories = db.query('SELECT * FROM categories ORDER BY name ASC')
+        categories = list(db.query('SELECT * FROM categories ORDER BY name ASC'))
         mcache.set('categories', categories)
     return categories
 
 def getTags():
     tags = mcache.get('tags')
     if tags is None:
-        tags = db.query('SELECT * FROM tags ORDER BY name ASC')
+        tags = list(db.query('SELECT * FROM tags ORDER BY name ASC'))
         mcache.set('tags', tags)
     return tags
 
 def getLinks():
     links = mcache.get('links')
     if links is None:
-        links = db.query('SELECT * FROM links ORDER BY name ASC')
+        links = list(db.query('SELECT * FROM links ORDER BY name ASC'))
         mcache.set('links', links)
     return links
 

@@ -3,7 +3,7 @@
 
 import web
 import memcache
-from web.render import render_mako
+from web.contrib.template import render_mako
 
 #数据库配置
 db = web.database(dbn = 'mysql', db = 'davidblog', user='root', pw = 'root')
