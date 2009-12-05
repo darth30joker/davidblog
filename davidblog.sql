@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2009 年 12 月 02 日 18:01
+-- 生成日期: 2009 年 12 月 06 日 02:00
 -- 服务器版本: 5.0.84
 -- PHP 版本: 5.2.11-pl1-gentoo
 
@@ -68,8 +68,10 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `entryNum`) VALUES
 CREATE TABLE IF NOT EXISTS `comments` (
   `id` int(11) NOT NULL auto_increment,
   `entryId` int(11) NOT NULL,
-  `author` varchar(50) NOT NULL,
+  `username` varchar(50) NOT NULL,
   `email` varchar(75) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `comment` text NOT NULL,
   `createdTime` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `entryId` (`entryId`)
