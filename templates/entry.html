@@ -9,12 +9,14 @@ $(document).ready(function(){
         errorClass:"error",
         submitHandler: function(form) {
             var form = $('#comment_form').find('form');
+            var commentNum = $('#comments_num').html();
             $.ajax({
                 data:'id=' + form.find('input[name=id]').attr('value') + '&username=' + form.find('input[name=username]').attr('value') + '&email=' + form.find('input[name=email]').attr('value') + '&url=' + form.find('input[name=url]').attr('value') + '&comment=' + form.find('textarea[name=comment]').attr('value'),
                 type:'post',
                 dataType:'text',
                 success: function(data) {
                     $('#comments').find('h2').eq(0).after(data);
+                    $('#comments_num').html(parseInt(commentNum) + 1);
                 },
                 url: '/add_comment/',
             });
@@ -47,12 +49,12 @@ $(document).ready(function(){
                     <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
                 % endfor
             % endif
-                | @${ entry.createdTime }
+                | @${ entry.createdTime } | ${ entry.commentNum } 条回复
         </h3>
         <div>${ entry.content }</div>
     </div>
     <div id="comments">
-        <h2><% num = len(entry.comments) %>${ num } 条评论</h2>
+        <h2><% num = len(entry.comments) %><span id="comments_num">${ num }</span> 条评论</h2>
         % if entry.comments:
             % for comment in entry.comments:
                 <div class="comment">

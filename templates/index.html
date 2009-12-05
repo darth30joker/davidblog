@@ -15,7 +15,7 @@
                             <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
                         % endfor
                     % endif
-                        | @${ entry.createdTime }
+                        | @${ entry.createdTime } | ${ entry.commentNum } 条回复
                 </h3>
                 <div>${ entry.content }</div>
             </div>

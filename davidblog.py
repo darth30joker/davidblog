@@ -2,7 +2,7 @@
 #coding:utf-8
 
 import web
-from web.contrib.template import render_mako
+from settings import render_mako
 import views
 
 urls = (
