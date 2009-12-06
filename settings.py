@@ -13,7 +13,7 @@ mc = memcache.Client(['127.0.0.1:11211'], debug=0)
 
 #render_mako配置
 render = render_mako(
-        directories = ['/home/icefox/flyingeagle/davidblog/templates'],
+        directories = ['/home/icefox/davidblog/templates'],
         input_encoding = 'utf-8',
         output_encoding = 'utf-8',
     )
