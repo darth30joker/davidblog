@@ -82,9 +82,12 @@ a:hover {
     color:#ccc;
     font-style:italic;
 }
+.blog_each h3 a {
+    text-decoration:underline;
+}
 .blog_each h3 a:link,
 .blog_each h3 a:visited {
-    color:#ccc;
+    color:#444;
 }
 .blog_each h3 a:hover {
     color:red;
