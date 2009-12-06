@@ -114,3 +114,29 @@ class tag(object):
         entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime FROM entries en WHERE en.id in ($ids)', vars = {'ids':','.join(entry_list)}))
 
         return render.tag(entries = entries, categories = getCategories(), tags = getTags(), links = getLinks(), page = page, pages = pages)
+
+class rss(object):
+    def GET(self):
+        entries = list(db.query('SELECT * FROM entries ORDER BY createdTime DESC LIMIT 10'))
+        rss = '<?xml version="1.0" encoding="utf-8" ?>\n'
+        rss = rss + '<rss version="2.0">\n'
+        rss = rss + '<channel>\n'
+        rss = rss + '<title>' + u'泥泞的沼泽' + '</title>\n'
+        rss = rss + '<link>http://davidshieh.cn/</link>\n'
+        rss = rss + '<description>' + u'泥泞的沼泽' + '</description>\n'
+        rss = rss + '<lastBuildDate>' + datetime.now().strftime('%a, %d %b  %Y %H:%M:%S GMT') + '</lastBuildDate>\n'
+        rss = rss + '<language>zh-cn</language>\n'
+        for one in entries:
+            rss = rss + '<item>\n'
+            rss = rss + '<title>' + one.title + '</title>\n'
+            rss = rss + '<link>http://davidshieh.cn/entry/' + one.slug + '</link>\n'
+            rss = rss + '<guid>http://davidshieh.cn/entry/' + one.slug + '</link>\n'
+            rss = rss + '<pubDate>' + one.createdTime.strftime('%a, %d %b  %Y %H:%M:%S GMT') + '</pubDate>\n'
+            rss = rss + '<description>' + one.content[:100] + '</description>\n'
+            rss = rss + '</item>\n'
+
+        rss = rss + '</channel>\n'
+        rss = rss + '</rss>\n'
+        web.header('Content-Type', 'text/xml')
+        rss = rss.encode('utf-8')
+        return rss
