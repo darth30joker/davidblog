@@ -13,3 +13,9 @@ commentForm = form.Form(
         form.Textarea('comment', form.notnull),
         form.Button('submit', type="submit", description=u"留言"),
     )
+
+categoryForm = form.Form(
+        form.Textbox('name', form.notnull),
+        form.Textbox('slug', form.notnull),
+        form.Button('submit', type="submit", description = u"添加")
+    )

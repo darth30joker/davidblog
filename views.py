@@ -1,7 +1,6 @@
 #coding:utf-8
 
 import web
-from davidblog import render
 from forms import commentForm
 from datetime import datetime
 from settings import db, render

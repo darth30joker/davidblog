@@ -1,0 +1,6 @@
+<%inherit file="base.html" />
+<%def name="title()">修改分类 - 分类管理</%def>
+
+<form action="/admin/category/edit/${ id }/" method="POST">
+    ${ f.render() }
+</form>

@@ -1,0 +1,119 @@
+* {padding:0; margin:0;}
+a {text-decoration:none;}
+img {border:none;}
+a:link,
+a:visited {
+    color:black;
+}
+a:hover {
+    color:red;
+}
+.clearfloat {
+    clear:both;
+}
+
+#page {
+    width:960px;
+    margin:0 auto;
+}
+#head {
+    margin:20px 0;
+}
+#logo {
+    padding:20px 0;
+}
+#logo h1 {
+    font-size:30px;
+    margin:5px 0 5px 30px;
+    letter-spacing:10px;
+    width:280px;
+}
+#logo h1 span {
+    color:red;
+    float:right;
+    font-size:12px;
+    letter-spacing:0;
+}
+#logo p {
+    font-size:14px;
+    margin-left:30px;
+    color:#bbb;
+    font-style:italic;
+}
+#menu {
+    font-size:14px;
+    padding-left:20px;
+    width:180px;
+    float:left;
+    border-right:1px solid #ccc;
+}
+#menu ul li {
+    padding:5px 10px;
+    list-style:none;
+}
+#main {
+    border-top:1px solid #ccc;
+    padding-top:20px;
+}
+#foot {
+    border-top:1px solid #ccc;
+    text-align:center;
+    margin:20px 0;
+}
+#foot p {
+    margin-top:10px;
+    font-size:12px;
+    color:#333;
+}
+/** index page **/
+#content {
+    width:700px;
+    float:left;
+    padding-left:50px;
+}
+/** Entry page **/
+#comments > h2 {
+    font-size:16px;
+    margin:10px 0;
+}
+.comment {
+    border:1px solid #ccc;
+    padding:20px;
+    margin-bottom:20px;
+}
+.comment h2 {
+    font-size:14px;
+}
+.comment h2 a:link,
+.comment h2 a:visited {
+    color:#004B91;
+}
+.comment h3 {
+    font-size:11px;
+    color:#666;
+}
+.comment p {
+    margin:10px 0;
+}
+#comment_form > h2 {
+    font-size:16px;
+}
+#comment_form tr {
+    padding:10px 0;
+}
+#comment_form td {
+    width:180px;
+    padding:5px 0;
+    vertical-align:top;
+    font-size:12px;
+}
+#comment_form input {
+    width:510px;
+    font-size:12px;
+}
+#comment_form textarea {
+    width:510px;
+    height:150px;
+    font-size:12px;
+}
+label.error {color:red;}

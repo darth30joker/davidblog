@@ -1,0 +1,6 @@
+<%inherit file="base.html" />
+<%def name="title()">标签管理</%def>
+
+<form action="/admin/tag/add/" method="POST">
+    ${ f.render() }
+</form>
