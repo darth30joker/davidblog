@@ -69,7 +69,7 @@ class entry(object):
 
         f = commentForm()
 
-        return render.entry(entry = entry[0], categories = getCategories(), tags = getTags(), links = getLinks(), f = f)
+        return render.entry(entry = entry[0], categories = getCategories(), tags = getTags(), links = getLinks(), f = f, page = page, pages = pages)
 
 class addComment(object):
     def POST(self):
