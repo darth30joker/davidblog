@@ -6,12 +6,12 @@ a:visited {
     color:black;
 }
 a:hover {
-    color:red;
+    color:#D90000;
 }
 .clearfloat {
     clear:both;
 }
-
+body { font-family:"Dajavu Sans MONO, Arial"}
 #page {
     width:960px;
     margin:0 auto;
@@ -23,10 +23,12 @@ a:hover {
     padding:20px 0;
 }
 #logo h1 {
-    font-size:30px;
+    font-size:34px;
     margin:5px 0 5px 30px;
     letter-spacing:10px;
-    width:280px;
+    width:340px;
+    text-shadow: 1px 1px #bbb;
+    font-family:"Microsoft YaHei" !important;
 }
 #logo h1 span {
     color:red;
@@ -37,8 +39,9 @@ a:hover {
 #logo p {
     font-size:14px;
     margin-left:30px;
-    color:#bbb;
     font-style:italic;
+    text-shadow: 0px -1px #bbb,0 1px #fff; 
+    color:#e3e1e1; 
 }
 #menu {
     border-bottom:1px solid #CCC;
@@ -78,7 +81,12 @@ a:hover {
 }
 .blog_each h1 a:link,
 .blog_each h1 a:visited {
-    color:red;
+    color:#D90000;
+    font-family:"Microsoft YaHei" !important;
+    text-shadow:0 1px 0 #FFFFFF;
+}
+.blog_each h1 a:hover {
+	text-decoration: underline;
 }
 .blog_each h2,
 .blog_each h3 {
@@ -88,6 +96,7 @@ a:hover {
 }
 .blog_each h3 a {
     text-decoration:underline;
+    color:#444;
 }
 .blog_each h3 a:link,
 .blog_each h3 a:visited {
@@ -132,6 +141,12 @@ a:hover {
 #page_link { font-size:12px; }
 #page_link a { text-decoration:underline; }
 #pre_page { float:left; }
+#pre_page a:link,
+#pre_page a:visited,
+#next_page a:link,
+#next_page a:visited {
+    color:#004B91;
+}
 #next_page { float:right; }
 #cur_page { margin:0 auto;display:block;width:100px;text-align:center; }
 

@@ -53,8 +53,8 @@ class entry(object):
         entry = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id WHERE en.slug = $slug', vars={'slug':slug}))
         page = web.input(page=1)
         page = int(page.page)
-        comment_count = db.query("SELECT COUNT(id) AS num FROM comments WHERE entryId = %s" % entry[0].id)
-        pages = float(entry_count[0]['num'] / pageCount)
+        comment_count = db.query("SELECT COUNT(id) AS num FROM comments WHERE entryId = $id", vars = {'id':int(entry[0].entryId)})
+        pages = float(comment_count[0]['num'] / pageCount)
         if pages > int(pages):
             pages = int(pages + 1)
         elif pages == 0:
