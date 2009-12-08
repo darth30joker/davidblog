@@ -3,7 +3,7 @@
 import web
 from forms import commentForm
 from datetime import datetime
-from settings import db, render
+from settings import db, render, pageCount
 from cache import mcache
 
 def getCategories():
@@ -33,7 +33,7 @@ class index(object):
         page = web.input(page=1)
         page = int(page.page)
         entry_count = db.query("SELECT COUNT(id) AS num FROM entries")
-        pages = float(entry_count[0]['num'] / 10)
+        pages = float(entry_count[0]['num'] / pageCount)
         if pages > int(pages):
             pages = int(pages + 1)
         elif pages == 0:
@@ -42,7 +42,7 @@ class index(object):
             pages = int(pages)
         if page > pages:
             page = pages
-        entries = list(db.query("SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id ORDER BY createdTime DESC LIMIT $start, 10", vars = {'start':(page - 1) * 10}))
+        entries = list(db.query("SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id ORDER BY createdTime DESC LIMIT $start, $limit", vars = {'start':(page - 1) * pageCount, 'limit':pageCount}))
         for entry in entries:
             entry.tags = db.query("SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id", vars = {'id':entry.entryId})
 
@@ -51,9 +51,21 @@ class index(object):
 class entry(object):
     def GET(self, slug):
         entry = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id WHERE en.slug = $slug', vars={'slug':slug}))
+        page = web.input(page=1)
+        page = int(page.page)
+        comment_count = db.query("SELECT COUNT(id) AS num FROM comments WHERE entryId = %s" % entry[0].id)
+        pages = float(entry_count[0]['num'] / pageCount)
+        if pages > int(pages):
+            pages = int(pages + 1)
+        elif pages == 0:
+            pages = 1
+        else:
+            pages = int(pages)
+        if page > pages:
+            page = pages
         for one in entry:
             one.tags = db.query('SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id', vars = {'id': one.entryId})
-            one.comments = db.query('SELECT * FROM comments WHERE entryId = $id ORDER BY createdTime DESC', vars = {'id': one.entryId})
+            one.comments = db.query('SELECT * FROM comments WHERE entryId = $id ORDER BY createdTime DESC LIMIT $start, $limit', vars = {'id': one.entryId, 'start':(page - 1) * pageCount, 'limit':pageCount})
 
         f = commentForm()
 
@@ -86,7 +98,7 @@ class category(object):
         if page > pages:
             page = pages
 
-        entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON ca.id = en.categoryId WHERE ca.slug = $slug ORDER BY en.createdTime DESC LIMIT $start, 10', vars = {'slug':slug, 'start':(page - 1) * 10}))
+        entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON ca.id = en.categoryId WHERE ca.slug = $slug ORDER BY en.createdTime DESC LIMIT $start, $limit', vars = {'slug':slug, 'start':(page - 1) * pageCount, 'limit':pageCount}))
 
         return render.category(entries = entries, categories = getCategories(), tags = getTags(), links = getLinks(), page = page, pages = pages)
 

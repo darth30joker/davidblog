@@ -70,11 +70,15 @@ a:hover {
     padding:0 30px 0 30px;
 }
 .blog_each {
-    margin-bottom:20px;
+    margin-bottom:100px;
 }
 .blog_each h1 {
     font-size:26px;
     padding:5px 0;
+}
+.blog_each h1 a:link,
+.blog_each h1 a:visited {
+    color:red;
 }
 .blog_each h2,
 .blog_each h3 {
@@ -94,6 +98,7 @@ a:hover {
 }
 .blog_each > div {
     font-size:14px;
+    margin:50px 0;
 }
 .blog_each > div p {
     margin:15px 0;
@@ -107,8 +112,11 @@ a:hover {
 .side_bar_component {
     margin:22px;
 }
+.side_bar_component span a:link,
+.side_bar_component span a:visited {
+    color:red;
+}
 .side_bar_component a {
-    text-decoration:underline;
     font-size:14px;
 }
 .side_bar_component h2 {
@@ -118,6 +126,14 @@ a:hover {
 .side_bar_component ul {
     margin:5px 0 0 20px;
 }
+.side_bar_component ul li span {
+    color:red;
+}
+#page_link { font-size:12px; }
+#page_link a { text-decoration:underline; }
+#pre_page { float:left; }
+#next_page { float:right; }
+#cur_page { margin:0 auto;display:block;width:100px;text-align:center; }
 
 /** Entry page **/
 #comments > h2 {

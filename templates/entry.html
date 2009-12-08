@@ -63,6 +63,15 @@ $(document).ready(function(){
                     <p>${ comment.comment }</p>
                 </div>
             % endfor
+            <div id="page_link">
+                % if page > 1:
+                    <span id="pre_page"><a href="/entry/${ entry.slug }/?page=${ page - 1 }">上一页</a></span>
+                % endif
+                % if page < pages:
+                    <span id="next_page"><a href="/entry/${ entry.slug }/?page=${ page + 1 }">下一页</a></span>
+                % endif
+                <span id="cur_page">${ page }/${ pages }</span>
+            </div>
         % endif
         <div id="comment_form">
             <h2>我想留言</h2>

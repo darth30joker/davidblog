@@ -6,6 +6,8 @@ import memcache
 from web.contrib.template import render_mako
 import os
 
+pageCount = 2
+
 #数据库配置
 db = web.database(dbn = 'mysql', db = 'davidblog', user='root', pw = 'root')
 

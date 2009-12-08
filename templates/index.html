@@ -8,9 +8,9 @@
             <div class="blog_each">
                 <h1><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a></h1>
                 <h3>
-                    分类:<a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
+                    分类 : <a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
                     % if entry.tags:
-                           | 标签:
+                           | 标签 : 
                         % for tag in entry.tags:
                             <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
                         % endfor
@@ -27,10 +27,10 @@
         % if page > 1:
             <span id="pre_page"><a href="/?page=${ page - 1 }">上一页</a></span>
         % endif
-        <span id="cur_page">${ page } / ${ pages }</span>
         % if page < pages:
             <span id="next_page"><a href="/?page=${ page + 1 }">下一页</a></span>
         % endif
+        <span id="cur_page">${ page }/${ pages }</span>
     </div>
 </div>
 
@@ -46,7 +46,7 @@
         <h2>目录</h2>
         <ul>
             % for one in categories:
-                <li><a href="/category/${ one.slug }/">${ one.name } (${ one.entryNum })</a></li>
+            <li><a href="/category/${ one.slug }/">${ one.name } <span>(${ one.entryNum })<span></a></li>
             % endfor
         </ul>
     </div>
