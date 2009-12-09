@@ -43,19 +43,10 @@ class index(object):
         if page > pages:
             page = pages
         entries = list(db.query("SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id ORDER BY createdTime DESC LIMIT $start, $limit", vars = {'start':(page - 1) * pageCount, 'limit':pageCount}))
-        syntax = []
         for entry in entries:
             entry.tags = db.query("SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id", vars = {'id':entry.entryId})
-            lines = entry.content.rstrip(" ").lstrip(" ").split("\n")
-            lines = ["<p>" + line for line in lines]
-            for i in lines:
-                start = i.find('<pre lang="')
-                if start > 0:
-                    end = i.find('">')
-                    syntax.append(i[start + 11:end])
-            entry.content = "".join(lines)
 
-        return render.index(entries = entries, page = page, pages = pages, categories = getCategories(), tags = getTags(), links = getLinks(), syntax = syntax)
+        return render.index(entries = entries, page = page, pages = pages, categories = getCategories(), tags = getTags(), links = getLinks())
 
 class entry(object):
     def GET(self, slug):
