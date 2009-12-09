@@ -1,7 +1,16 @@
 <%inherit file="base.html" />
 
 <%def name="title()">首页</%def>
-
+% if len(syntax) > 0:
+    <script type="text/javascript" src="/static/js/shCore.js"></script>
+    <script type="text/javascript">
+        SyntaxHighlighter.config.clipboardSwf = '/static/js/clipboard.swf';
+        SyntaxHighlighter.all();
+    </script>
+    % for i in syntax:
+        <script type="text/javascript" src="/static/js/shBrush${ i }.js"></script>
+    % endfor
+% endif
 <div id="blog_list">
     % if entries:
         % for entry in entries:
