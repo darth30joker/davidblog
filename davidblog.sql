@@ -2,10 +2,10 @@
 -- version 3.2.3
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Dec 09, 2009 at 05:56 PM
--- Server version: 5.0.84
--- PHP Version: 5.2.11-pl1-gentoo
+-- 主机: localhost
+-- 生成日期: 2009 年 12 月 10 日 01:07
+-- 服务器版本: 5.0.84
+-- PHP 版本: 5.2.11-pl1-gentoo
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -16,13 +16,13 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `davidblog`
+-- 数据库: `davidblog`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `archives`
+-- 表的结构 `archives`
 --
 
 CREATE TABLE IF NOT EXISTS `archives` (
@@ -33,14 +33,14 @@ CREATE TABLE IF NOT EXISTS `archives` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Dumping data for table `archives`
+-- 转存表中的数据 `archives`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `categories`
+-- 表的结构 `categories`
 --
 
 CREATE TABLE IF NOT EXISTS `categories` (
@@ -49,25 +49,26 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `slug` varchar(75) NOT NULL,
   `entryNum` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
--- Dumping data for table `categories`
+-- 转存表中的数据 `categories`
 --
 
 INSERT INTO `categories` (`id`, `name`, `slug`, `entryNum`) VALUES
 (1, 'Python', 'python', 1),
 (2, 'PHP', 'php', 1),
-(3, 'Linux', 'linux', 0),
-(6, 'JavaScript', 'javascript', 0),
-(7, 'VIM', 'vim', 0),
-(8, '服务器配置', 'database-server', 0),
-(9, '服务器配置', 'server-config', 0);
+(3, 'PHP', 'php', 0),
+(4, 'JavaScript', 'javascript', 0),
+(5, 'Linux', 'linux', 0),
+(6, 'VIM', 'vim', 0),
+(7, '数据库配置', 'database-config', 0),
+(8, '服务器配置', 'server-config', 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comments`
+-- 表的结构 `comments`
 --
 
 CREATE TABLE IF NOT EXISTS `comments` (
@@ -75,26 +76,24 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `entryId` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `email` varchar(75) NOT NULL,
-  `url` varchar(255) default NULL,
+  `url` varchar(255) NOT NULL,
   `comment` text NOT NULL,
   `createdTime` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `entryId` (`entryId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
--- Dumping data for table `comments`
+-- 转存表中的数据 `comments`
 --
 
 INSERT INTO `comments` (`id`, `entryId`, `username`, `email`, `url`, `comment`, `createdTime`) VALUES
-(1, 4, 'abc', 'sdgas@gsdg.cn', '#', 'agbadgsg', '2009-12-04 14:30:00'),
-(2, 4, 'abc', 'sdgas@gsdg.cn', '#', 'agbadgsg', '2009-12-04 14:31:00'),
-(3, 4, 'dddbbbccc', 'sdgas@gsdg.cn', '#', 'asdgasdgasdg', '2009-12-04 14:31:00');
+(1, 3, 'abcabc', 'mykingheaven@gmail.com', '#', '测试留言', '2009-12-09 01:37:00');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `entries`
+-- 表的结构 `entries`
 --
 
 CREATE TABLE IF NOT EXISTS `entries` (
@@ -111,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `entries` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=78 ;
 
 --
--- Dumping data for table `entries`
+-- 转存表中的数据 `entries`
 --
 
 INSERT INTO `entries` (`id`, `title`, `content`, `categoryId`, `createdTime`, `modifiedTime`, `viewNum`, `commentNum`, `slug`) VALUES
@@ -143,7 +142,7 @@ INSERT INTO `entries` (`id`, `title`, `content`, `categoryId`, `createdTime`, `m
 (31, 'PyGTK学习笔记(二)', '今天看了PyGTK的部件布局~发现使用起来很是简单~不过部件多了的话~写起来还是非常麻烦的.\n\n大体的布局有2种, 水平布局(HBox)和垂直布局(VBox).往容器(Box)添加部件的时候, 有2种方式, pack_start()和pack_end(), 2个方式的区别是, start是从前往后填, 而end是从后往前填.\n<!--more-->\nHBox和VBox接受2个参数, homogeneous和spacing, 定义如下:hbox = gtk.HBox(homogeneours = False, spacing = 0).homogeneous给True, 表示里面所有的部件都使用相同的大小, 给False则正好相反.spacing表示的是2个部件的距离.\n\npack_start()和pack_end()接受4个参数, 分别为child, expand, fill, padding.child为需要放入容器的部件. expand为True的时候, 表示该部件会填满容器, False则反之. fill用来表示是否使用空白空间, 只有当expand为True的时候, 该选项才起作用. padding表示部件周围留出的空间.完整的定义如下:box.pack_start(child, expand = True, fill = True, padding = 0)\n\n下面举一个例子说明使用上面的2个布局:\n<pre lang="python">\n#!/usr/bin/python\n\nimport pygtk\npygtk.require(''2.0'')\nimport gtk\nimport sys, string\n\ndef make_box(homogeneous, spacing, expand, fill, padding):\n    box = gtk.HBox(homogeneous, spacing)\n\n    button = gtk.Button(''box.pack'')\n    box.pack_start(button, expand, fill, padding)\n    button.show()\n\n    button = gtk.Button(''(button,'')\n    box.pack_start(button, expand, fill, padding)\n    button.show()\n\n    if expand == True:\n        button = gtk.Button(''True,'')\n    else:\n        button = gtk.Button(''False,'')\n\n    box.pack_start(button, expand, fill, padding)\n    button.show()\n\n    button = gtk.Button((''False,'', ''True,'')[fill==True])\n    box.pack_start(button, expand, fill, padding)\n    button.show()\n\n    padstr = "%d)" % padding\n\n    button = gtk.Button(padstr)\n    box.pack_start(button, expand, fill, padding)\n    button.show()\n\n    return box\n\nclass PackBox1:\n    def delete_event(self, widget, event, data = None):\n        gtk.main_quit()\n        return False\n\n    def __init__(self, which):\n        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)\n\n        self.window.connect(''delete_event'', self.delete_event)\n        self.window.set_border_width(10)\n\n        box1 = gtk.VBox(False, 0)\n\n        if which == 1:\n            label = gtk.Label(''HBox(False, 0)'')\n\n            label.set_alignment(0, 0)\n\n            box1.pack_start(label, False, False, 0)\n\n            label.show()\n\n            box2 = make_box(False, 0, False, False, 0)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            box2 = make_box(False, 0, True, False, 0)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            box2 = make_box(False, 0, True, True, 0)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            separator = gtk.HSeparator()\n\n            box1.pack_start(separator, False, True, 5)\n            separator.show()\n\n            label = gtk.Label(''HBox(True, 0)'')\n            label.set_alignment(0, 0)\n            box1.pack_start(label, False, False, 0)\n            label.show()\n\n            box2 = make_box(True, 0, True, False, 0)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            box2 = make_box(True, 0, True, True, 0)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            separator = gtk.HSeparator()\n            box1.pack_start(separator, False, True, 5)\n            separator.show()\n        elif which == 2:\n            label = gtk.Label(''HBox(False, 10)'')\n            label.set_alignment(0, 0)\n            box1.pack_start(label, False, False, 0)\n            label.show()\n\n            box2 = make_box(False, 10, True, False, 0)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            separator = gtk.HSeparator()\n            box1.pack_start(separator, False, True, 5)\n            separator.show()\n\n            label = gtk.Label(''HBox(False, 0)'')\n            label.set_alignment(0, 0)\n            box1.pack_start(label, False, False, 0)\n            label.show()\n\n            box2 = make_box(False, 0, True, False, 10)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            box2 = make_box(False, 0, True, True, 10)\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            separator = gtk.HSeparator()\n            box1.pack_start(separator, False, True, 5)\n            separator.show()\n        elif which == 3:\n            box2 = make_box(False, 0, False, False, 0)\n\n            label = gtk.Label(''end'')\n            box2.pack_end(label, False, False, 0)\n            label.show()\n\n            box1.pack_start(box2, False, False, 0)\n            box2.show()\n\n            separator = gtk.HSeparator()\n\n            box1.pack_start(separator, False, True, 5)\n            separator.show()\n\n        quitbox = gtk.HBox(False, 0)\n\n        button = gtk.Button(''Quit'')\n\n        button.connect(''clicked'', lambda w: gtk.main_quit())\n\n        quitbox.pack_start(button, True, False, 0)\n        box1.pack_start(quitbox, False, False, 0)\n\n        self.window.add(box1)\n\n        button.show()\n        quitbox.show()\n\n        box1.show()\n\n        self.window.show()\n\ndef main():\n    gtk.main()\n    return 0\n\nif __name__ == "__main__":\n    if len(sys.argv) != 2:\n        sys.stderr.write(''usage:packbox.py num, where num is 1, 2, or 3.\n'')\n        sys.exit(1)\n    PackBox1(string.atoi(sys.argv[1]))\n    main()\n</pre>\n\n程序有点长~但是很好理解~运行时~使用python study2.py 1可以看到所有的部件了.', 1, '2009-05-19 01:10:14', '2009-05-19 01:10:14', 0, 0, 'pygtk-study-blog-2'),
 (32, '测试PyGTK学习成果的例子', '这个例子没有什么难点~只是为了测试自己目前对PyGTK的理解程度~同时也是测试下如何使用回调函数~下面贴出代码.\n\n<!--more-->\n\n<pre lang="python">\n#!/usr/bin/python\n\nimport pygtk\npygtk.require(''2.0'')\nimport gtk\n\nclass Test():\n    def one(self, widget, data = None):\n        self.label.set_label(''one'')\n\n    def two(self, widget, data = None):\n        self.label.set_label(''two'')\n\n    def delete_event(self, widget, data = None):\n        gtk.main_quit()\n        return False\n\n    def __init__(self):\n        self.vbox = gtk.VBox(False, 0)\n\n        hbox = gtk.HBox(False, 0)\n        self.label = gtk.Label(''No Text Now'')\n        self.label.show()\n        self.vbox.pack_start(self.label, False, True, 5)\n\n        button = gtk.Button(''Hello1'')\n        button.connect(''clicked'', self.one)\n        button.show()\n        hbox.pack_start(button, False, True, 5)\n\n        button = gtk.Button(''Hello2'')\n        button.connect(''clicked'', self.two)\n        button.show()\n        hbox.pack_start(button, False, True, 5)\n\n        hbox.show()\n        self.vbox.pack_start(hbox, False, True, 0)\n\n        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)\n        self.window.set_title(''My First Test'')\n        self.window.set_border_width(10)\n        self.window.add(self.vbox)\n        self.window.connect(''delete_event'', self.delete_event)\n\n        self.vbox.show()\n        self.window.show()\n\ndef main():\n    gtk.main()\n\nif __name__ == ''__main__'':\n    test = Test()\n    main()\n</pre>', 1, '2009-05-19 01:29:28', '2009-05-19 01:29:28', 0, 0, 'pygtk-study-sample-1'),
 (33, 'PyGTK学习笔记(三)', '在二里我看的布局方式有2种,分别是水平布局和垂直布局, 这2种方式简单易用, 而且可以混合使用, 但是想设计出更精细的界面, 还需要另外一种布局方式, 那就是表格布局.\n\n顾名思义, 表格布局就是把一个窗口分成若干个小的表格, 将部件放入这些小的格子里, 一个部件可以占一个格子, 也可以占多个.\n<!--more-->\n使用表格布局, 首先要创建表格部件, 表格部件的定义如下:\n<pre lang="python">\ntable = gtk.Table(rows = 1, columns = 1, homogeneous = False)\n</pre>\nrows表示行, columns表示列, homogeneous跟HBox和VBox里的参数一个意思, 表示这个表格是否随着窗口的缩放而缩放.\n\n定义好表格部件后, 下面就是往里面放入其它的部件了. 这时需要了解表格部件的布局, 比如我们使用\ntable = gtk.Table(2, 2, True)\n创建了一个2x2的表格, 实际上这个模型如下:\n  0        1        2\n0 +--------+--------+\n  |        |        |\n1 +--------+--------+\n  |        |        |\n2 +--------+--------+\n横着的边有三条, 编号分别为0,1,2, 竖着的边也有三条, 分别为0,1,2.\n\n往表格里添加输入的方法定义如下:\n<pre lang="python">\ntable.attach(child, left_attach, right_attach, top_attach, bottom_attach, xoptions = EXPAND|FILL, yoptions = EXPAND|FILL, xpadding = 0, ypadding = 0)\n</pre>\n这里的left_attach, right_attach等参数, 实际上是上面那个模型中的边的编号, 比如说, 要把一个按钮放在这个表格的左上角的位置, 代码就要这么写:\ntable.attach(button, 0, 1, 0, 1)\n表示它左边的边是0, 右边的边是1, 上面的边是0, 下面的边是1, 这点需要特别注意.\n\n我们还可以使用table.set_row_spacing(row, spacing)和table.set_col_spacing(col, spacing)来指定任意行和列之间的空隙, 或者使用table.set_row_spacings(spacing)和table.set_col_spacings来指定所有行和列的空隙.\n\n用table布局把上一个例子重写后, 代码如下:\n<pre lang="python">\n#!/usr/bin/python\n\nimport pygtk\npygtk.require(''2.0'')\nimport gtk\n\nclass TableTest:\n    def delete_event(self, widget, data = None):\n        gtk.main_quit()\n        return False\n\n    def click(self, widget, data = None):\n        self.label.set_label(''the %s button clicked!'' % data)\n\n    def __init__(self):\n        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)\n        self.window.set_title(''Table Layout Test'')\n        self.window.set_border_width(10)\n        self.window.connect(''delete_event'', self.delete_event)\n\n        self.table = gtk.Table(2, 2, True)\n\n        self.label = gtk.Label()\n        self.label.set_label(''Hello Pygtk'')\n        self.table.attach(self.label, 0, 2, 0, 1)\n        self.label.show()\n\n        button = gtk.Button(''Left'')\n        button.connect(''clicked'', self.click, ''Left'')\n        button.show()\n        self.table.attach(button, 0, 1, 1, 2)\n\n        button = gtk.Button(''Right'')\n        button.connect(''clicked'', self.click, ''Right'')\n        button.show()\n        self.table.attach(button, 1, 2, 1, 2)\n\n        self.window.add(self.table)\n        self.table.show()\n        self.window.show()\n\ndef main():\n    gtk.main()\n\n\nif __name__ == ''__main__'':\n    TableTest = TableTest()\n    main()\n</pre>', 1, '2009-05-20 13:23:27', '2009-05-20 13:23:27', 0, 0, 'pygtk-study-blog-3'),
-(34, '在Yii中使用Captcha(修改)', 'Web开发的过程中, 经常会用到验证码, 以防止机器人不断的提交数据, 造成网站的瘫痪. Yii里提供了一个验证码的插件, 就是Captcha. 在项目中使用Captcha需要以下一些设置:\n首先在model里加入一个属性verifyCode\n<pre lang="PHP">public $verifyCode;</pre>\n<span style="color:red;">然后将verifyCode加入到safeAttributes里面.\n很多人都没有认真看, 或者不知道怎么将captcha加到safeAttributes里, 这里给出方法:</span>\n<pre lang="PHP">public funtion safeAttributes() {\n    return array(\n        ''verifyCode'', ''xx'', ''yy'', ....\n    }\n}</pre>\n接着在rules里加入verifyCode的验证规则:\n<pre lang="PHP">array(''verifyCode'', ''captcha'');</pre>\nController里也要做必要的设置, 添加actions方法:\n<pre lang="PHP">	public function actions() {\n		return array(\n			''captcha'' =&gt; array(\n				''class'' =&gt; ''CCaptchaAction'',\n				''backColor'' =&gt; 0xF5F5F5,\n			),\n		);\n	}</pre>\n同时, 需要将captacha添加到accessRules里, 以允许所有用户访问该方法.\n最后, 就是在view里显示captcha了, 方法如下:\n<pre lang="PHP">\n<div class="simple">\n<label> </label>\nwidget(''CCaptcha''); ?&gt;</div>\n<div class="simple"></div></pre>\n这里用了2行来处理captcha, 效果会比较美观.', 1, '2009-06-04 12:22:54', '2009-06-04 12:22:54', 0, 0, 'yii-captcha'),
+(34, '在Yii中使用Captcha(修改)', 'Web开发的过程中, 经常会用到验证码, 以防止机器人不断的提交数据, 造成网站的瘫痪. Yii里提供了一个验证码的插件, 就是Captcha. 在项目中使用Captcha需要以下一些设置:\n首先在model里加入一个属性verifyCode\n<pre lang="PHP">public $verifyCode;</pre>\n<span style="color:red;">然后将verifyCode加入到safeAttributes里面.\n很多人都没有认真看, 或者不知道怎么将captcha加到safeAttributes里, 这里给出方法:</span>\n<pre lang="PHP">public funtion safeAttributes() {\n    return array(\n        ''verifyCode'', ''xx'', ''yy'', ....\n    }\n}</pre>\n接着在rules里加入verifyCode的验证规则:\n<pre lang="PHP">array(''verifyCode'', ''captcha'');</pre>\nController里也要做必要的设置, 添加actions方法:\n<pre lang="PHP">	public function actions() {\n		return array(\n			''captcha'' =&gt; array(\n				''class'' =&gt; ''CCaptchaAction'',\n				''backColor'' =&gt; 0xF5F5F5,\n			),\n		);\n	}</pre>\n同时, 需要将captacha添加到accessRules里, 以允许所有用户访问该方法.\n最后, 就是在view里显示captcha了, 方法如下:\n<pre lang="PHP">\n<div class="simple">\n<label> </label>\nwidget(''CCaptcha''); ?&gt;</div>\n<div class="simple"></div></pre>\n这里用了2行来处理captcha, 效果会比较美观.', 1, '2009-06-04 12:22:54', '2009-06-04 12:22:54', 0, 0, 'yii-captcha'),
 (35, '美化ArchLinux - Compiz + AWN', '好看的桌面和主题可以愉悦工作者的心情, 心情愉快了, 自然工作就更加顺利了, 效率也就提高了.\n\n一、Compiz\n\n这次要安装的是大名鼎鼎的Compiz. 相信很多Linuxer都看过Ubuntu的3D效果, 觉得非常震撼, 事实上, Ubuntu只不过是使用Compiz这个包来得到这个效果的, 我们得Arch自然不会在这方面落后它了.\n<!--more-->\n使用\npacman -S compiz-fusion-gtk\n来安装compiz-fusion(它是compiz的一个分支), 安装完成后, 将compiz-fusion &加入到启动会话里已实现开机自动启动.\n重启X后发现, 窗口的标题栏全都不见了, 这是新版本的compiz-fusion默认没有打开 <strong>窗口装饰(window-decorator)</strong> 的原因. 不用担心, 打开 系统->首选项->CompizConfig设置管理器, 找到 窗口装饰(window-decorator), 激活它即可. 同时需要激活的还有 <strong>最大化</strong>, <strong>调整窗口大小</strong> 和 <strong>移动窗口</strong>, 否则你将不能操作窗口, 这是件多么痛苦的事情啊. 都激活后, 重启X即可.\n\n二、Avant-Window-Navigator (AWN)\nAWN是Linux下的一个老牌Dock工具了, 口碑颇好, 不过最近有被Cario-Dock超越的趋势. 但是咱们这里, 还是安装源里提供的AWN.\n使用\npacman -S avant-window-navigator\n安装AWN, 然后从 应用程序->附近 来启动AWN, 启动后, 在Dock上点击右键, 选择Dock Preferences设置AWN, 勾中开机自动启动即可. 现在, 就可以把常用的程序从菜单里拖到AWN上使用了, 非常之方便.\n\n三、Cario-Dock\n感谢葡萄皮同学的帮助,   已经找到了安装Cario-Dock得安装方法, 首先确保安装了yaourt, 然后使用yaourt Cario-Dock来安装Cario-Dock和Cario-Dock-plugins, 安装完成后, 就可以从 应用程序->系统工具->glx-Cario-Dock 来启动Cario-Dock了.\n\n有人说有图才有真相~今天就让大家看看我平常工作的桌面:\n<img src="http://davidshieh.cn/wp-content/uploads/2009/06/desktop-with-windows.jpg" alt="desktop-with-windows" title="desktop-with-windows" width="300" height="168" class="aligncenter size-medium wp-image-191" />', 1, '2009-06-15 23:34:06', '2009-06-15 23:34:06', 0, 0, 'archlinux-compiz-awn'),
 (36, 'ArchLinux小技巧(不断更新中)', '一、取消难听的电脑喇叭声音\n在使用终端的时候, 经常会听到刺耳的警告声音. 比如说, 按tab的时候, 报错的时候, 有时觉得很吵. 以前可以在系统->首选项里找声音把它关掉, 升级到Gnome 2.26后, 这个选项没有了. 有时觉得很烦, 于是找到了个办法把它关掉.\n修改/etc/rc.conf文件, 找到MODULES=()项, 将!pcspkr和!snd_pcsp加入到里面即可了, 从此与烦人的喇叭警报say goodbye!\n<!--more-->\n\n二、自动同步时间\n使用\npacman -S openntpd\n安装openntpd同步时间程序, 如果系统开机时自动同步时间, 将openntpd加入到启动daemons即可, 建议在openntpd前加@使它后台启动.', 1, '2009-06-16 00:35:12', '2009-06-16 00:35:12', 0, 0, 'archlinux-tips'),
 (37, '功能强大的yaourt - AUR', '一直以为Pacman是Arch下唯一的, 也是最好的包管理软件, 从来没有去关注过AUR, 今天得 <a href="http://imxxb.com"><strong><em>高人</em></strong></a> 指点, 安装了yaourt, 才发现这个管理软件也是异常的强大, 有了它, 我们就可以安装所有AUR里的软件了.\n\n另 : 添加一个资源非常丰富的Arch源.\n配置/etc/pacman.conf文件, 将\n[archlinuxfr]\nServer = http://repo.archlinux.fr/x86_64\n加入文件的末尾, 然后pacman -Sy 即可更新此源.', 1, '2009-06-16 00:42:53', '2009-06-16 00:42:53', 0, 0, 'powerful-tool-yaourt-aur'),
@@ -177,22 +176,22 @@ INSERT INTO `entries` (`id`, `title`, `content`, `categoryId`, `createdTime`, `m
 (65, '使用lxml解析HTML', 'python下解析HTML的类库有很多, 经过我几天的尝试, 发现lxml是效率最高, 也是处理unicode最好的类库了.\r\n如果你也是用Gentoo的话, 那么使用emerge -av lxml就可以安装lxml了. lxml是依赖于libxml2的, 所以这个包必须是以装的. 一般linux上, 默认都已经装了这个库, 装之前看一眼就行了.\r\n<!--more-->\r\n解析HTML, 一般通过string的形式导入进去, 然后用html parser来解析, 看一下代码:\r\n<pre lang="python">\r\nimport lxml.html as H\r\nimport urllib2\r\n\r\npage = urllib2.urlopen("http://news.163.com/")\r\ndoc = H.document_fromstring("".join([i.strip(''\n\r'').rstrip().lstrip() for i in page.readlines()])) #这么做的目的是去掉多余的空格和换行\r\n\r\nprint H.tostring(doc) #可以看一下我们解析出来的东西, 内容是unicode编码的\r\n</pre>\r\n\r\n通过HTML parser解析的html节点, 一般有以下的方法:\r\n<ul>\r\n	<li>find_class(class_name): 按照class的名字找节点, 结果是一个list, 没有则为空list</li>\r\n	<li>get_element_by_id(id, default=None): 按照id的名字找节点, 结果是对象, 没有则为None</li>\r\n</ul>\r\n\r\n', 1, '2009-11-06 16:52:48', '2009-11-06 16:52:48', 0, 0, 'parsing-html-by-lxml-using-python'),
 (66, '最近家中断网, 博客更新速度变慢', '最近家中断网了, 把我郁闷的啊, 家里又没有电视, 真是没地方打发时间.\r\n\r\n博客更新的速度也变慢了, 上班还有上班的事, 没有时间发博客. 现在就等搬进新房子了, 第一件事就是开通宽带, 哈哈, 咱搞IT的, 不能没有网络!', 1, '2009-11-06 17:03:35', '2009-11-06 17:03:35', 0, 0, '%e6%9c%80%e8%bf%91%e5%ae%b6%e4%b8%ad%e6%96%ad%e7%bd%91-%e5%8d%9a%e5%ae%a2%e6%9b%b4%e6%96%b0%e9%80%9f%e5%ba%a6%e5%8f%98%e6%85%a2'),
 (67, '最近真是烦心事情多啊', '最近真的很多烦心事, 房子在装修, 每周都要去看一下, 周末没有时间休息.\r\n\r\n房东实在可恶, 下定决心要换房子, 找个可以住2-3个月的即可.\r\n\r\n空间不支持Python, 需要找一个支持Python的空间或者VPS. Kangzj, 我就靠你找了~嘿嘿\r\n\r\n希望这些事情能在近期搞定.\r\n\r\nP.S. 最近买了个魔方, 可以慢慢磨练我的耐性了, 经过2天的锻炼, 已经可以完美的拼好一面了, 汗, 目前就这水平..正在努力提高中!', 1, '2009-11-09 11:45:15', '2009-11-09 11:45:15', 0, 0, '%e6%9c%80%e8%bf%91%e7%9c%9f%e6%98%af%e7%83%a6%e5%bf%83%e4%ba%8b%e6%83%85%e5%a4%9a%e5%95%8a'),
-(68, 'web.py代码结构', '最近用上了web.py, 这个东西实在灵活, 它提供的只是基本的东西, 想要扩展, 那就自己动手, 你想让它变成什么样, 都可以. 嘿嘿, 适合偏执狂使用.\r\n\r\n用了近一天的web.py, 对它有了个大概的了解, 现就我理解的web.py, 说说我的程序是如何设计结构的.\r\n<!--more-->\r\n首先是一个code.py文件, 里面放上程序的入口代码, 比如:\r\n<pre lang="python">\r\n#!/usr/bin/python\r\n#-*-coding:utf-8-*-\r\n\r\nimport web\r\n\r\nurls = (\r\n        ''/$'', ''index'',\r\n        ''/register/$'', ''register'',\r\n        ''/login/$'', ''login'',\r\n        ''/logout/$'', ''logout'',\r\n    )\r\n\r\napp = web.application(urls, globals())\r\nrender = web.template.render(''templates/'', base = ''layout'', globals = {''session'':session})\r\ndb = web.database(dbn="mysql", db="qingbao", user="root", pw="root")\r\n\r\nif __name__ == "__main__":\r\n    app.run()\r\n</pre>\r\n这是一个web.py程序运行所必须的代码了, 也是最基础的代码了, 这里面了定义了一个app, 一个render和一个db, 如果需要session, 也可以把session写在这里.\r\n\r\n在我们的程序中, 可能会用到一些配置属性, 可以把它们都放进settings.py里, 然后在code.py里导入, 这样会让入口文件近可能的精简, 也易于阅读. 其实也可以考虑把app, render等属性放入到settings.py里, 方便管理和修改. 我的目的就是, 做到代码的分类, 改哪个部分的代码, 找哪个文件就可以了.\r\n\r\n在接下来的使用中, 我们也会发现我们会需要很多的form, 这时, 就可以使用一个forms.py来把form都放在里面, code.py里导入这些form即可, 比如说, 我的forms.py文件里有2个form:\r\n<pre lang="python">\r\n#!/usr/bin/python\r\n#-*-coding:utf-8-*-\r\n\r\nimport web\r\nfrom web import form\r\n\r\npassword_validate = form.regexp(r".{6,15}$", u"请输入6-15位的密码")\r\nemail_validate = form.regexp(r".*@.*", u"请输入合法的email地址")\r\n\r\nregister_form = form.Form(\r\n        form.Textbox("email", email_validate, description=u"Email地址"),    \r\n        form.Password("password", password_validate, description=u"密码"),\r\n        form.Password("password_confirm", description=u"密码确认"),\r\n        form.Button("submit", type="submit", description=u"注册"),\r\n        validators = [\r\n                form.Validator("密码必须相同", lambda i: i.password == i.password_confirm)\r\n            ]\r\n    )\r\n\r\nlogin_form = form.Form(\r\n        form.Textbox("email", email_validate, description=u"Email地址"),\r\n        form.Password("password", password_validate, description=u"密码"),\r\n        form.Button("submit", type="submit", description=u"登录"),\r\n    )\r\n</pre>\r\n这样, 我在code.py里, 只要一句from forms import register_form, login_form就可以把我的form到导入进来了(这里尽量别用*, 因为其实我们并不需要forms.py里的validate变量, :-) )\r\n', 1, '2009-11-10 18:03:58', '2009-11-10 18:03:58', 0, 0, 'web-py-structure'),
+(68, 'web.py代码结构', '<p>最近用上了web.py, 这个东西实在灵活, 它提供的只是基本的东西, 想要扩展, 那就自己动手, 你想让它变成什么样, 都可以. 嘿嘿, 适合偏执狂使用.</p>\r\n\r\n<p>用了近一天的web.py, 对它有了个大概的了解, 现就我理解的web.py, 说说我的程序是如何设计结构的.</p>\r\n\r\n<p>首先是一个code.py文件, 里面放上程序的入口代码, 比如:</p>\r\n<pre name="code" class="brush:python">\r\n#!/usr/bin/python\r\n#-*-coding:utf-8-*-\r\n\r\nimport web\r\n\r\nurls = (\r\n        ''/$'', ''index'',\r\n        ''/register/$'', ''register'',\r\n        ''/login/$'', ''login'',\r\n        ''/logout/$'', ''logout'',\r\n    )\r\n\r\napp = web.application(urls, globals())\r\nrender = web.template.render(''templates/'', base = ''layout'', globals = {''session'':session})\r\ndb = web.database(dbn="mysql", db="qingbao", user="root", pw="root")\r\n\r\nif __name__ == "__main__":\r\n    app.run()\r\n</pre>\r\n<p>这是一个web.py程序运行所必须的代码了, 也是最基础的代码了, 这里面了定义了一个app, 一个render和一个db, 如果需要session, 也可以把session写在这里.</p>\r\n\r\n<p>在我们的程序中, 可能会用到一些配置属性, 可以把它们都放进settings.py里, 然后在code.py里导入, 这样会让入口文件近可能的精简, 也易于阅读. 其实也可以考虑把app, render等属性放入到settings.py里, 方便管理和修改. 我的目的就是, 做到代码的分类, 改哪个部分的代码, 找哪个文件就可以了.</p>\r\n\r\n<p>在接下来的使用中, 我们也会发现我们会需要很多的form, 这时, 就可以使用一个forms.py来把form都放在里面, code.py里导入这些form即可, 比如说, 我的forms.py文件里有2个form:</p>\r\n<pre name="code" class="brush:python">\r\n#!/usr/bin/python\r\n#-*-coding:utf-8-*-\r\n\r\nimport web\r\nfrom web import form\r\n\r\npassword_validate = form.regexp(r".{6,15}$", u"请输入6-15位的密码")\r\nemail_validate = form.regexp(r".*@.*", u"请输入合法的email地址")\r\n\r\nregister_form = form.Form(\r\n        form.Textbox("email", email_validate, description=u"Email地址"),    \r\n        form.Password("password", password_validate, description=u"密码"),\r\n        form.Password("password_confirm", description=u"密码确认"),\r\n        form.Button("submit", type="submit", description=u"注册"),\r\n        validators = [\r\n                form.Validator("密码必须相同", lambda i: i.password == i.password_confirm)\r\n            ]\r\n    )\r\n\r\nlogin_form = form.Form(\r\n        form.Textbox("email", email_validate, description=u"Email地址"),\r\n        form.Password("password", password_validate, description=u"密码"),\r\n        form.Button("submit", type="submit", description=u"登录"),\r\n    )\r\n</pre>\r\n<p>这样, 我在code.py里, 只要一句from forms import register_form, login_form就可以把我的form到导入进来了(这里尽量别用*, 因为其实我们并不需要forms.py里的validate变量, :-) )</p>\r\n', 1, '2009-11-10 18:03:58', '2009-11-10 18:03:58', 0, 0, 'web-py-structure'),
 (69, '我的Linux系统之伤', '使用linux已经有1年之久了, 期间换过很多发行版. 每个人都有自己的linux路线, 我的路线是, Redhat->Ubuntu->Debian->Suse(装了后没怎么用就删了)->Fedora(使用时间没超过一周)->CentOS(只能算尝试)->ArchLinux->Gentoo, 这个路线比较曲折.\r\n\r\n其中比较钟意的有Debian, Arch和Gentoo, 目前使用的是Gentoo. 对我来说, Debian足够稳定, 但是软件包比较老, Arch足够新, 但是又没Gentoo的portage灵活, Gentoo又新又灵活, 但是不厌其烦的升级+编译, 也让我开始有一些厌倦了.\r\n<!--more-->\r\n前两天看上了Sabayon, 感觉还不错, 今天试用了下, 非常的失望, 简直就是Gentoo里的Ubuntu啊, 安装程序本身就有bug, 点掉的东西依然会装上, 选择了xfce, 装上的却是Gnome, 中文支持也有很严重的问题, 字高矮不齐, 应该是字体选择的问题. 进入系统后, 由于Sabayon的源非常少, 所以只能用它的官方源, 在意大利, 速度只有30K上下, 实在不能忍受. Sabayon的包管理系统是Entropy, 也是由python写的, 工作原理与Portage相似, 只是Entropy安装的载体是二进制包, Portage是源码. 但是Entropy有个致命的弱点, 就是它的更新不支持断点续传, 如果你在更新到99%的时候掉线了, 或者由于任何原因断掉的话, 下一次的更新将是从头开始!!!这让人不能接受!!!\r\n\r\n其实Sabayon的本意也许是好的, 给想使用Gentoo,  又嫌编译麻烦的人, 创造一个接触Gentoo的好机会, 但是无奈现在它们的团队还不够成熟, 作出来的发行版离Ubuntu还相差甚远.\r\n\r\n其实, 我所说的这些, 总结成一句话就是, 我已经不知道该选择哪个linux了. Gentoo的portage系统很优秀, USE也很灵活, 让我爱不释手, 但是不停的编译让我有些许厌倦. Arch的包很新, 但是无奈软件仓库没有Gentoo大, aur又不能自定义USE来编译, 让人想爱又爱不起来. 唉, 无奈我已经习惯Gentoo的各种命令和各种配置文件的存放位置了, 看来习惯真的是很改掉的.\r\n\r\nP.S. 个人对几大Linux的试用总结:\r\n<strong>1.Debian</strong>\r\n一个非常优秀的Linux版本, 看看它的衍生版数量就知道它的优秀了. 强大的apt系统构建起了一个强大的Debian. 但是无奈Debian的发行版周期比较长, 软件包更新的速度也比较慢.\r\n<strong>2.Ubuntu</strong>\r\n非常适合新手的一个Linux版本, 简单易用. Ubuntu自带了太多的软件包和特效, 使得Ubuntu运行起来比其它的Linux都要慢一些, 所需要的配置甚至比Windows还要高, 让人有些望而止步.\r\n<strong>3.Fedora</strong>\r\n来自Linux世家的redhat, 继承了优良的血统, 拥有4大软件包管理系统之一的rpm包管理系统--yum, 另外三个分别是, Debian的apt, Arch的pacman和Gentoo的portage. 可惜Fedora只是redhat的一个试验田, 从来没有什么革命性的创新能够吸引所有人的眼球, 始终被Ubuntu打压着.\r\n<strong>4.Archlinux</strong>\r\n构建于LFS的Linux系统, 拥有良好的结构设计, 和FreeBSD一样, 系统级的配置都放在一个文件里, 方便修改. 同时拥有优秀的包管理系统pacman, 和KISS理念, 使得Arch慢慢成为Linux爱好者的最爱. 高定制性是Arch一直以来的卖点, 软件包的更新速度也让其它发行版汗颜. 没有版本的概念, 升级系统是无缝的, 可以从任何一个版本平稳升级到最新版.\r\n<strong>5.Gentoo</strong>\r\n高手的最爱, Geek的最爱. Gentoo的高定制性让所有使用者为之疯狂, 不同的USE可以打造出完全不同的Linux. 基于src的系统使得Gentoo可以永远使用最新的软件包, 但是无休止的编译也使得Gentoo被处于浪费资源和不环保的争辩中. 但是不得不承认, Portage是Linux界唯一可以和FreeBSD竞争的系统.', 1, '2009-11-19 00:25:18', '2009-11-19 00:25:18', 0, 0, 'linux-select'),
 (70, 'Gentoo下安装VirtualBox', '使用Portage安装有一点点麻烦, 需要设置一下modules和用户组, 让我们开始吧.\r\n\r\n<!--more-->\r\n\r\n<strong>第一步:</strong>\r\n<pre lang="bash">\r\nemerge virtualbox-bin\r\n</pre>\r\n这个包编译起来时间会很长, 使用binary就可以了.\r\n\r\n<strong>第二步:</strong>\r\n<pre lang="bash">\r\ngpasswd -a <USERNAME> vboxusers\r\n</pre>\r\n将自己加入vboxusers组\r\n\r\n<strong>第三步:</strong>\r\n重新登录, 嘎嘎, 这步最简单\r\n\r\n<strong>第四步:</strong>\r\n<pre lang="bash">\r\nmodprobe vboxdrv\r\n</pre>\r\n加载VirtualBox的module\r\n\r\n<strong>第五步:</strong>\r\n<pre lang="bash">\r\necho ''modules="${modules} vboxdrv"'' >> /etc/conf.d/modules\r\n</pre>\r\n这步是关键, 因为谁也不想每次启动后都手动加载vboxdrv, 对吧.\r\n\r\n现在, 开始享受你的VirtualBox吧, 哈哈.', 1, '2009-11-26 01:08:52', '2009-11-26 01:08:52', 0, 0, 'virtualbox-installation-on-gentoo'),
 (71, '大卫粘贴使用量突破100!', '十一前后的时候, 我做了一个简单的代码粘贴网, 功能比较简单, 但是速度还是比较快的, 主流的语言也都支持了.\r\n\r\n现在上线已经有一个月了, 使用量终于突破100了!\r\n第101贴是: <a href="http://david-paste.cn/paste/101/">http://david-paste.cn/paste/101/</a>\r\n<!--more-->\r\n纪念一下!\r\n这里继续做广告, 如果你有一些代码需要给别人展示, 真的要考虑大卫粘贴, 又简单又好用, 访问地址 - <a href="http://david-paste.cn">http://david-paste.cn/</a>\r\n\r\nP.S. 现在上线的是大卫粘贴 0.2beta版, 0.3beta已经提上日程了, 无奈最近工作有些许忙, 透露一下, 0.3beta将采用web.py框架.', 1, '2009-11-27 00:40:58', '2009-11-27 00:40:58', 0, 0, 'david-paste-over-100-pastes'),
 (72, '换上了iBus(修改)', '一直听朋友iBus输入法非常好， 但是我都坚持使用fcitx， 因为它实在太轻巧了。这两天上wave， 奇怪的事情发生了，用fcitx根本打不出完整的句子来， 总是重复输入我打的东西， 让我很是郁闷，于是决定换iBus。\r\n\r\n安装步骤一共有3步：\r\n第一步安装ibus\r\n<pre lang="bash">emerge ibus ibus-pinyin ibus-table ibus-table-wubi #我拼音和五笔都用</pre>\r\n第二步运行ibus-setup配置iBus\r\n<pre lang="bash">ibus-setup</pre>\r\n配置好以后，在.bashrc里加入如下的代码：\r\n<pre lang="bash">export GTK_IM_MODULE="xim"\r\nexport QT_IM_MODULE="xim"\r\nexport XMODIFIERS="@im=ibus"</pre>\r\n第三步是将iBus加入到开机启动程序中，命令为\r\n<pre lang="bash">ibus-daemon -d -x</pre>\r\n三步都完成了以后， 重新登录即可。如果重新登录后， 发现ibus的图标没有，可是使用下面的命令重新构建gtk的图标缓存：\r\n<pre lang="bash">gtk-update-icon-cache /usr/share/icons/hicolor/</pre>\r\nEnjoy iBus！\r\n\r\n<span style="color: #ff0000;">P.S. wave里不能输入整句的原因是使用chrome浏览器, 不是输入法的问题, 而且用了一段时间后, 发现iBus的反应速度没有fcitx快, 我又换回去了.</span>', 1, '2009-11-27 13:06:36', '2009-11-27 13:06:36', 0, 0, 'install-ibus-on-gentoo');
 INSERT INTO `entries` (`id`, `title`, `content`, `categoryId`, `createdTime`, `modifiedTime`, `viewNum`, `commentNum`, `slug`) VALUES
-(73, 'VIM配置文件', '以前把自己的配置文件发出来过, 博客迁移过以后, 文章找不着了, 现在重新发一次.\r\n<!--more-->\r\n<pre lang="conf" lang="1">\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"  Created by David Shieh\r\n"  E-mail : mykingheaven@gmail.com\r\n"   blog  : kingheaven.alwaysdata.net\r\n"\r\n"  CreatedTime:2009-02-06 14:03\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 全局配置\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"关掉兼容模式\r\nset nocompatible\r\n\r\n"设置历史记录步数\r\nset history=400\r\n\r\n"开启文件类型判断插件\r\nfiletype plugin on\r\nfiletype indent on\r\n\r\n"当文件在外部被修改，自动更新该文件\r\nset autoread\r\n\r\n"激活鼠标的使用\r\nset mouse=a\r\n\r\n"设置'',''为leader快捷键\r\nlet mapleader = ","\r\nlet g:mapleader = ","\r\n\r\n"设置快速保存和退出\r\n"快速保存为,s\r\n"快速退出（保存）为,w\r\n"快速退出（不保存）为,q\r\nnmap <leader>s :w!<cr>\r\nnmap <leader>w :wq!<cr>\r\nnmap <leader>q :q!<cr>\r\n\r\n"设置快捷键为win方式的快捷键\r\nsource $VIMRUNTIME/mswin.vim\r\nbehave mswin\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 字体和颜色\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"开启语法\r\nsyntax enable\r\n\r\n"设置字体\r\nset guifont=dejaVu Sans MONO 10\r\n\r\n"设置配色\r\ncolorscheme desert\r\n\r\n"高亮显示当前行\r\nset cursorline\r\nhi cursorline guibg=#222222\r\nhi CursorColumn guibg=#333333\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 文件和备份 \r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"关闭自动备份\r\nset nobackup\r\nset nowb\r\n\r\n"关闭交换文件\r\nset noswapfile\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 折叠\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"开启折叠\r\nset nofen\r\nset fdl=0\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 文字处理\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"使用空格来替换tab\r\nset expandtab\r\n"设置所有的tab和缩进为4个空格\r\nset tabstop=4\r\nset shiftwidth=4\r\nset softtabstop=4\r\nset smarttab\r\n"不要在单词中断行\r\nset lbr\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 缩进\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"自动缩进(继承前一行的缩进)\r\nset ai\r\n\r\n"智能缩进\r\nset si\r\n\r\n"自动换行\r\nset wrap\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => Vim 界面\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"Turn on WiLd menu\r\nset wildmenu\r\n\r\n"显示标尺\r\nset ruler\r\n\r\n"设置命令行的高度\r\nset cmdheight=1\r\n\r\n"显示行数\r\nset nu\r\n\r\n"Do not redraw, when running macros.. lazyredraw\r\nset lz\r\n\r\n"设置退格\r\nset backspace=eol,start,indent\r\n\r\n"Bbackspace and cursor keys wrap to\r\nset whichwrap+=<,>,h,l\r\n\r\n"Set magic on\r\nset magic\r\n\r\n"关闭遇到错误时的声音提示\r\nset noerrorbells\r\nset novisualbell\r\n\r\n"显示匹配的括号([{和}])\r\nset showmatch\r\n\r\n"How many tenths of a second to blink\r\nset mat=2\r\n\r\n"高亮显示搜索的内容\r\nset hlsearch\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 编码设置 \r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"设置编码\r\nset encoding=utf-8\r\n"设置文件编码\r\nset fileencodings=utf-8\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => NerdTree 插件\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"设置NerdTree的快捷键为F10\r\nmap <F10> :NERDTreeToggle<CR>\r\n\r\n""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 状态栏的设置\r\n""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"开启状态栏\r\nset laststatus=2\r\n\r\n"显示当前目录的函数\r\nfunction! CurDir()\r\n    let curdir = substitute(getcwd(), ''/Users/amir/'', "~/", "g")\r\n    return curdir\r\nendfunction\r\n\r\n"设置状态栏的信息\r\nset statusline= %F%m%r%h %w  CWD: %r%{CurDir()}%h   Line: %l/%L:%c\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => Tag list (ctags)\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"不同时显示多个文件的tag，只显示当前文件的\r\nlet Tlist_Show_One_File = 1\r\n"如果taglist窗口是最后一个窗口，则退出vim\r\nlet Tlist_Exit_OnlyWindow = 1\r\n"在右侧窗口中显示taglist窗口\r\nlet Tlist_Use_Right_Window = 1\r\n\r\n"设置TagList的快捷键为F9\r\nmap <F9> :TlistToggle<CR>\r\nmap <leader>tag :TlistToggle<CR>\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 标签控制\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"设置标签的快捷键\r\nmap <leader>te :tabedit\r\nmap <leader>tc :tabclose<cr>\r\nmap <leader>tm :tabmove\r\nmap <leader>tl :bn<cr>\r\nmap <leader>tr :bp<cr>\r\n</pre>', 1, '2009-12-01 11:03:26', '2009-12-01 11:03:26', 0, 0, 'vim-configuration'),
+(73, 'VIM配置文件', '<p>以前把自己的配置文件发出来过, 博客迁移过以后, 文章找不着了, 现在重新发一次.</p>\r\n\r\n<pre name="code" class="brush:plain">\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"  Created by David Shieh\r\n"  E-mail : mykingheaven@gmail.com\r\n"   blog  : kingheaven.alwaysdata.net\r\n"\r\n"  CreatedTime:2009-02-06 14:03\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 全局配置\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"关掉兼容模式\r\nset nocompatible\r\n\r\n"设置历史记录步数\r\nset history=400\r\n\r\n"开启文件类型判断插件\r\nfiletype plugin on\r\nfiletype indent on\r\n\r\n"当文件在外部被修改，自动更新该文件\r\nset autoread\r\n\r\n"激活鼠标的使用\r\nset mouse=a\r\n\r\n"设置'',''为leader快捷键\r\nlet mapleader = ","\r\nlet g:mapleader = ","\r\n\r\n"设置快速保存和退出\r\n"快速保存为,s\r\n"快速退出（保存）为,w\r\n"快速退出（不保存）为,q\r\nnmap <leader>s :w!<cr>\r\nnmap <leader>w :wq!<cr>\r\nnmap <leader>q :q!<cr>\r\n\r\n"设置快捷键为win方式的快捷键\r\nsource $VIMRUNTIME/mswin.vim\r\nbehave mswin\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 字体和颜色\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"开启语法\r\nsyntax enable\r\n\r\n"设置字体\r\nset guifont=dejaVu Sans MONO 10\r\n\r\n"设置配色\r\ncolorscheme desert\r\n\r\n"高亮显示当前行\r\nset cursorline\r\nhi cursorline guibg=#222222\r\nhi CursorColumn guibg=#333333\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 文件和备份 \r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"关闭自动备份\r\nset nobackup\r\nset nowb\r\n\r\n"关闭交换文件\r\nset noswapfile\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 折叠\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"开启折叠\r\nset nofen\r\nset fdl=0\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 文字处理\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"使用空格来替换tab\r\nset expandtab\r\n"设置所有的tab和缩进为4个空格\r\nset tabstop=4\r\nset shiftwidth=4\r\nset softtabstop=4\r\nset smarttab\r\n"不要在单词中断行\r\nset lbr\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 缩进\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"自动缩进(继承前一行的缩进)\r\nset ai\r\n\r\n"智能缩进\r\nset si\r\n\r\n"自动换行\r\nset wrap\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => Vim 界面\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"Turn on WiLd menu\r\nset wildmenu\r\n\r\n"显示标尺\r\nset ruler\r\n\r\n"设置命令行的高度\r\nset cmdheight=1\r\n\r\n"显示行数\r\nset nu\r\n\r\n"Do not redraw, when running macros.. lazyredraw\r\nset lz\r\n\r\n"设置退格\r\nset backspace=eol,start,indent\r\n\r\n"Bbackspace and cursor keys wrap to\r\nset whichwrap+=<,>,h,l\r\n\r\n"Set magic on\r\nset magic\r\n\r\n"关闭遇到错误时的声音提示\r\nset noerrorbells\r\nset novisualbell\r\n\r\n"显示匹配的括号([{和}])\r\nset showmatch\r\n\r\n"How many tenths of a second to blink\r\nset mat=2\r\n\r\n"高亮显示搜索的内容\r\nset hlsearch\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 编码设置 \r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"设置编码\r\nset encoding=utf-8\r\n"设置文件编码\r\nset fileencodings=utf-8\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => NerdTree 插件\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"设置NerdTree的快捷键为F10\r\nmap <F10> :NERDTreeToggle<CR>\r\n\r\n""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 状态栏的设置\r\n""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"开启状态栏\r\nset laststatus=2\r\n\r\n"显示当前目录的函数\r\nfunction! CurDir()\r\n    let curdir = substitute(getcwd(), ''/Users/amir/'', "~/", "g")\r\n    return curdir\r\nendfunction\r\n\r\n"设置状态栏的信息\r\nset statusline= %F%m%r%h %w  CWD: %r%{CurDir()}%h   Line: %l/%L:%c\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => Tag list (ctags)\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"不同时显示多个文件的tag，只显示当前文件的\r\nlet Tlist_Show_One_File = 1\r\n"如果taglist窗口是最后一个窗口，则退出vim\r\nlet Tlist_Exit_OnlyWindow = 1\r\n"在右侧窗口中显示taglist窗口\r\nlet Tlist_Use_Right_Window = 1\r\n\r\n"设置TagList的快捷键为F9\r\nmap <F9> :TlistToggle<CR>\r\nmap <leader>tag :TlistToggle<CR>\r\n\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n" => 标签控制\r\n"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""\r\n"设置标签的快捷键\r\nmap &lt;leader&gt;te :tabedit\r\nmap &lt;leader&gt;tc :tabclose<cr>\r\nmap &lt;leader&gt;tm :tabmove\r\nmap &lt;leader&gt;tl :bn<cr>\r\nmap &lt;leader&gt;tr :bp<cr>\r\n</pre>', 1, '2009-12-01 11:03:26', '2009-12-01 11:03:26', 0, 0, 'vim-configuration'),
 (74, '新版david-blog测试中', '花了两天的时间, 用web.py写了一个博客, 目前已经可以展示了, 访问地址是:\r\n<a href="http://blog.davidshieh.cn/" target="_blank">http://blog.davidshieh.cn/</a>.\r\n\r\n这几天我会继续开发, 争取把功能做的完善一些, 目前已经完成的功能有:\r\n1. 日志列表(首页)\r\n2. 日志分类\r\n3. 日志标签\r\n4. 查看留言\r\n5. 提交留言\r\n\r\n<!--more-->\r\n剩下的功能有:\r\n1. <span style="color: #ff0000;"><del datetime="2009-12-05T16:18:46+00:00">制作日志的rss (12月6日完成)</del></span>\r\n2. 继续美化页面\r\n3. <span style="color: #ff0000;"><del datetime="2009-12-05T16:18:46+00:00">应用缓存 (12月5日完成)</del></span>\r\n4. 给提交留言加上captcha验证码\r\n5. 后台添加发送邮件的功能(这个可以放到最后做)\r\n6. <span style="color: #ff0000;"><del datetime="2009-12-05T16:18:46+00:00">代码优化, 完善代码的结构(代码分类, 配置分离) (12月5日完成)</del></span>\r\n\r\n现在使用的版本, 给它定的版本号为0.1alpha, 当上面的功能基本完善了后, 版本将升级为0.2beta, 使用单数alpha, 双数beta的版本控制规则.\r\n\r\n<span style="color: #ff6600;">P.S. 如果要求的人比较多的话, 我可以把程序开源, 放在google code上.</span>', 1, '2009-12-04 15:03:44', '2009-12-04 15:03:44', 0, 0, 'david-blog-preview'),
 (75, 'CentOS 下安装Memcached', '租的VPS没有memcached, 自然要自己安装了. 郁闷的是, CentOS里还没有memcached的包, 我又只好自己编译安装了.\r\n\r\n安装memcached, 首先要升级系统里的libevent, 一般都是用yum先把它删掉, 然后自己编译新的, 我没有删掉它, 直接装了新的.\r\n下载地址:\r\n<a href="http://monkey.org/~provos/libevent-1.4.13-stable.tar.gz">http://monkey.org/~provos/libevent-1.4.13-stable.tar.gz</a>\r\n这里用的是1.4.13的稳定版, 安装完成后, 使用\r\nln -s /usr/local/lib/libevent.1.4.so.2 /usr/lib\r\n在/usr/lib里创建新版libevent的软链接\r\n<!--more-->\r\n下面可以安装memcached了, 下载地址为:\r\n<a href="http://memcached.googlecode.com/files/memcached-1.4.4.tar.gz">http://memcached.googlecode.com/files/memcached-1.4.4.tar.gz</a>\r\n安装完成后, 使用\r\nln -s /usr/local/bin/memcached /usr/bin\r\n创建memcached的链接\r\n\r\n要让memcache开机即启动, 则需要将memcached里的scripts/memcached.sysv拷贝到/etc/init.d/里并改名为memcached\r\n然后使用/etc/init.d/memcached start即可启动memcache服务.\r\n', 1, '2009-12-04 17:52:59', '2009-12-04 17:52:59', 0, 0, 'install-memcached-on-centos'),
-(76, 'Python-Memcache轻松使用', '安装完python-memcache后, 我们可以轻松的使用它来加速我们的程序了.只需要两步就可以完成操作, 嘿嘿.\r\n\r\n第一步是连接到我们的memcached服务器:\r\n<pre lang="python">\r\nimport memcache\r\nmc = memcache.Client([''127.0.0.1:11211''], debug=0)\r\n</pre>\r\n<!--more-->\r\n第二步就是调用API了:\r\n<pre lang="python">\r\nmc.set(''KEY_NAME'', ''VALUE'', 60) #添加一个数据进memcached, 并设置超时时间为60秒\r\nmc.get(''KEY_NAME'') #取出我们的数据, 如果数据不存在或者已经超时, 则值为None\r\nmc.delete(''KEY_NAME'') #将值从memcached中删除\r\n</pre>\r\n\r\n怎么样, 够简单吧, 尽情享受memcache带来的高性能吧!\r\n\r\n参考文档:\r\n1. <a href="http://oursimplehouse.blog.sohu.com/63588732.html">http://oursimplehouse.blog.sohu.com/63588732.html</a>\r\n2. <a href="http://www.tummy.com/Community/software/python-memcached/">http://www.tummy.com/Community/software/python-memcached/</a>', 1, '2009-12-04 18:03:26', '2009-12-04 18:03:26', 0, 0, 'how-to-use-python-memcache'),
-(77, '自己制作RSS 2.0', '最近给我的David-Blog添加了RSS功能, 以后大家可以订阅我的博客了, 不过鉴于David-Blog还没有完全制作好, 想订阅的人可以先等一等了. 今天就讲一下自己制作RSS的过程.\r\n\r\n首先要知道, RSS没有想像的复杂, 它只是一个符合一定规则的XML文档, 只要遵循RSS2.0的规范, 创建一个RSS是非常简单的事情.\r\n<!--more-->\r\n下面我们来一步一步创建RSS文档:\r\n\r\n1. 创建一个xml文件\r\n<pre lang="Xml">\r\n<?xml version="1.0" encoding="utf-8" ?>\r\n</pre>\r\n\r\n2. 声明这是一个rss文档, 并且符合2.0规范\r\n<pre lang="Xml">\r\n<rss version="2.0">\r\n<channel>\r\n</pre>\r\n\r\n3. 写如自己的channel信息\r\n<pre lang="Xml">\r\n<title>The title of my RSS 2.0 Feed</title> #channel的名字\r\n<link>http://www.example.com/</link> #channel的地址\r\n<description>This is my rss 2 feed description</description> #channel的描述\r\n<lastBuildDate>Mon, 12 Sep 2005 18:37:00 GMT</lastBuildDate> #最后一次更新该rss的时间, 注意, 时间格式一定要是这样的, 这是符合RFC 822规范的\r\n<language>zh-cn</language> #rss的语言, 中国人, 就写zh-cn啦\r\n</pre>\r\n\r\n4. 添加自己的item信息\r\n<pre lang="xml">\r\n<item>\r\n<title>Title of an item</title> #item的标题\r\n<link>http://example.com/item/123</link> #该item的地址\r\n<guid>http://example.com/item/123</guid> #这个不知道是什么, 总之填地址就对啦\r\n<pubDate>Mon, 12 Sep 2005 18:37:00 GMT</pubDate> #发布的日期, 同样要符合RFC 822规范\r\n<description>[CDATA[ This is the description. ]]</description> #该item的描述, 可以写入item的正文, 也可以写一部分\r\n</item> #多条item的时候, 循环添加就可以了\r\n</pre>\r\n\r\n5. 给RSS写一个结尾\r\n<pre lang="xml">\r\n</channel>\r\n</rss>\r\n</pre>\r\n\r\n完成上面的步骤, 一个RSS文件就创建完成了. 如果使用web.py的话, 可以把该格式写进一个xml文件中, 然后使用render来渲染一下就OK了.\r\n例子:\r\n<pre lang="python">\r\nweb.header(''Content-Type'', ''text/xml'') #注意, 指定header是必须的\r\nreturn render.index(code)\r\n</pre>\r\n\r\n这样, 一个完整的RSS2.0就创建完成了! Enjoy it~!\r\n\r\n参考文章:\r\n1. <a href="http://www.petefreitag.com/item/465.cfm">Howto Create an RSS 2.0 Feed</a>', 1, '2009-12-06 23:46:02', '2009-12-06 23:46:02', 0, 0, 'how-to-create-rss-2-yourself');
+(76, 'Python-Memcache轻松使用', '<p>安装完python-memcache后, 我们可以轻松的使用它来加速我们的程序了.只需要两步就可以完成操作, 嘿嘿.</p>\r\n\r\n<p>第一步是连接到我们的memcached服务器:</p>\r\n<pre name="code" class="brush:python">\r\nimport memcache\r\nmc = memcache.Client([''127.0.0.1:11211''], debug=0)\r\n</pre>\r\n\r\n<p>第二步就是调用API了:</p>\r\n<pre name="code" class="brush:python">\r\nmc.set(''KEY_NAME'', ''VALUE'', 60) #添加一个数据进memcached, 并设置超时时间为60秒\r\nmc.get(''KEY_NAME'') #取出我们的数据, 如果数据不存在或者已经超时, 则值为None\r\nmc.delete(''KEY_NAME'') #将值从memcached中删除\r\n</pre>\r\n\r\n<p>怎么样, 够简单吧, 尽情享受memcache带来的高性能吧!</p>\r\n\r\n<p>参考文档:</p>\r\n<p>1. <a href="http://oursimplehouse.blog.sohu.com/63588732.html">http://oursimplehouse.blog.sohu.com/63588732.html</a></p>\r\n<p>2. <a href="http://www.tummy.com/Community/software/python-memcached/">http://www.tummy.com/Community/software/python-memcached/</a></p>', 1, '2009-12-04 18:03:26', '2009-12-04 18:03:26', 0, 0, 'how-to-use-python-memcache'),
+(77, '自己制作RSS 2.0', '<p>最近给我的David-Blog添加了RSS功能, 以后大家可以订阅我的博客了, 不过鉴于David-Blog还没有完全制作好, 想订阅的人可以先等一等了. 今天就讲一下自己制作RSS的过程.</p>\r\n\r\n<p>首先要知道, RSS没有想像的复杂, 它只是一个符合一定规则的XML文档, 只要遵循RSS2.0的规范, 创建一个RSS是非常简单的事情.</p>\r\n\r\n<p>下面我们来一步一步创建RSS文档:</p>\r\n\r\n<p>1. 创建一个xml文件</p>\r\n<pre name="code" class="brush:xml">\r\n&lt;?xml version="1.0" encoding="utf-8" ?&gt;\r\n</pre>\r\n\r\n<p>2. 声明这是一个rss文档, 并且符合2.0规范</p>\r\n<pre ame="code" class="brush:xml">\r\n&lt;rss version="2.0"&gt;\r\n&lt;channel&gt;\r\n</pre>\r\n\r\n<p>3. 写如自己的channel信息</p>\r\n<pre ame="code" class="brush:xml">\r\n&lt;title&gt;The title of my RSS 2.0 Feed&lt;/title&gt; #channel的名字\r\n<link>http://www.example.com/&lt;/link&gt; #channel的地址\r\n<description>This is my rss 2 feed description</description> #channel的描述\r\n<lastBuildDate>Mon, 12 Sep 2005 18:37:00 GMT</lastBuildDate> #最后一次更新该rss的时间, 注意, 时间格式一定要是这样的, 这是符合RFC 822规范的\r\n<language>zh-cn</language> #rss的语言, 中国人, 就写zh-cn啦\r\n</pre>\r\n\r\n<p>4. 添加自己的item信息</p>\r\n<pre ame="code" class="brush:xml">\r\n<item>\r\n&lt;title&gt;Title of an item&lt;/title&gt; #item的标题\r\n&lt;link&gt;http://example.com/item/123&lt;/link&gt; #该item的地址\r\n<guid>http://example.com/item/123</guid> #这个不知道是什么, 总之填地址就对啦\r\n<pubDate>Mon, 12 Sep 2005 18:37:00 GMT</pubDate> #发布的日期, 同样要符合RFC 822规范\r\n<description>[CDATA[ This is the description. ]]</description> #该item的描述, 可以写入item的正文, 也可以写一部分\r\n</item> #多条item的时候, 循环添加就可以了\r\n</pre>\r\n\r\n<p>5. 给RSS写一个结尾</p>\r\n<pre ame="code" class="brush:xml">\r\n&lt;/channel&gt;\r\n&lt;/rss&gt;\r\n</pre>\r\n\r\n<p>完成上面的步骤, 一个RSS文件就创建完成了. 如果使用web.py的话, 可以把该格式写进一个xml文件中, 然后使用render来渲染一下就OK了.</p>\r\n<p>例子:</p>\r\n<pre ame="code" class="brush:python">\r\nweb.header(''Content-Type'', ''text/xml'') #注意, 指定header是必须的\r\nreturn render.index(code)\r\n</pre>\r\n\r\n<p>这样, 一个完整的RSS2.0就创建完成了! Enjoy it~!</p>\r\n\r\n<p>参考文章:</p>\r\n1. <a href="http://www.petefreitag.com/item/465.cfm">Howto Create an RSS 2.0 Feed</a>', 1, '2009-12-06 23:46:02', '2009-12-06 23:46:02', 0, 0, 'how-to-create-rss-2-yourself');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `entry_tag`
+-- 表的结构 `entry_tag`
 --
 
 CREATE TABLE IF NOT EXISTS `entry_tag` (
@@ -202,18 +201,20 @@ CREATE TABLE IF NOT EXISTS `entry_tag` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `entry_tag`
+-- 转存表中的数据 `entry_tag`
 --
 
 INSERT INTO `entry_tag` (`entryId`, `tagId`) VALUES
 (1, 1),
 (1, 2),
-(2, 2);
+(2, 2),
+(3, 1),
+(3, 2);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `links`
+-- 表的结构 `links`
 --
 
 CREATE TABLE IF NOT EXISTS `links` (
@@ -222,33 +223,43 @@ CREATE TABLE IF NOT EXISTS `links` (
   `url` varchar(255) NOT NULL,
   `createdTime` datetime NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
--- Dumping data for table `links`
+-- 转存表中的数据 `links`
 --
 
 INSERT INTO `links` (`id`, `name`, `url`, `createdTime`) VALUES
 (1, 'web.py官网', 'http://webpy.org/', '2009-12-02 16:26:36'),
-(2, 'Python官网', 'http://python.org/', '2009-12-02 16:27:00');
+(2, 'Python官网', 'http://python.org/', '2009-12-02 16:27:00'),
+(3, 'Selective Memory', 'http://imxxb.com/', '2009-12-10 01:06:43');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tags`
+-- 表的结构 `tags`
 --
 
 CREATE TABLE IF NOT EXISTS `tags` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) NOT NULL,
-  `entryNum` int(11) NOT NULL,
+  `entryNum` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
 
 --
--- Dumping data for table `tags`
+-- 转存表中的数据 `tags`
 --
 
 INSERT INTO `tags` (`id`, `name`, `entryNum`) VALUES
-(1, 'python', 1),
-(2, 'test', 2);
+(1, 'Python', 1),
+(3, 'Apache', 0),
+(4, 'ArchLinux', 0),
+(5, 'Captcha', 0),
+(6, 'Gentoo', 0),
+(7, 'Fastcgi', 0),
+(8, 'Fcitx', 0),
+(9, 'jQuery', 0),
+(10, 'PHP', 0),
+(11, 'PyGTK', 0),
+(12, 'Yii', 0);
