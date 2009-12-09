@@ -81,7 +81,7 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 }
 .blog_each h1 a:link,
 .blog_each h1 a:visited {
-    color:#D90000;
+    color:black;
     font-family:"Microsoft YaHei" !important;
     text-shadow:0 1px 0 #FFFFFF;
 }

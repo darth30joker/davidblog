@@ -42,9 +42,9 @@ $(document).ready(function(){
     <div class="blog_each">
         <h1><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a></h1>
         <h3>
-            分类:<a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
+            分类 : <a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
             % if entry.tags:
-                   | 标签:
+                   | 标签 : 
                 % for tag in entry.tags:
                     <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
                 % endfor
