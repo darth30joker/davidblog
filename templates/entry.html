@@ -17,6 +17,7 @@ $(document).ready(function(){
                 success: function(data) {
                     $('#comments').find('h2').eq(0).after(data);
                     $('#comments_num').html(parseInt(commentNum) + 1);
+                    $('#comment_form')[0].reset();
                 },
                 url: '/add_comment/',
             });
@@ -54,28 +55,29 @@ $(document).ready(function(){
         <div>${ entry.content }</div>
     </div>
     <div id="comments">
-        <h2><% num = len(entry.comments) %><span id="comments_num">${ num }</span> 条评论</h2>
+        <h2><% num = entry.commentNum %><span id="comments_num">${ num }</span> 条评论</h2>
         % if entry.comments:
-            % for comment in entry.comments:
-                <div class="comment">
-                    <% import hashlib %>
-                    <h1><img src="http://www.gravatar.com/avatar/${ hashlib.md5(comment.email.lower()).hexdigest() }?s=50" /></h1>
-                    <h2><a href="${ comment.url }">${ comment.username }</a></h2>
-                    <h3>@${ comment.createdTime.strftime("%Y-%m-%d %H:%M") }</h3>
-                    <p>${ comment.comment }</p>
-                </div>
-            % endfor
             % if pages > 1:
                 <div id="page_link">
                     % if page > 1:
-                        <span id="pre_page"><a href="/entry/${ entry.slug }/?page=${ page - 1 }">上一页</a></span>
+                        <span id="pre_page"><a href="/entry/${ entry.entry_slug }/?page=${ page - 1 }">上一页</a></span>
                     % endif
                     % if page < pages:
-                        <span id="next_page"><a href="/entry/${ entry.slug }/?page=${ page + 1 }">下一页</a></span>
+                        <span id="next_page"><a href="/entry/${ entry.entry_slug }/?page=${ page + 1 }">下一页</a></span>
                     % endif
                     <span id="cur_page">${ page }/${ pages }</span>
                 </div>
             % endif
+            % for num, comment in enumerate(entry.comments):
+                <div class="comment">
+                    <span>${ (page - 1) * pageCount + num + 1 } #</span>
+                    <% import hashlib %>
+                    <h1><img src="http://www.gravatar.com/avatar/${ hashlib.md5(comment.email.lower()).hexdigest() }?s=50" /></h1>
+                    <h2><a href="${ comment.url }">${ comment.username }</a></h2>
+                    <h3>@${ comment.createdTime.strftime("%Y-%m-%d %H:%M") }</h3>
+                    <p>${ comment.comment | h }</p>
+                </div>
+            % endfor
         % endif
         <div id="comment_form">
             <h2>我想留言</h2>

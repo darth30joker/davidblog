@@ -1,5 +1,7 @@
 <div class="comment">
+    <% import hashlib %>
+    <h1><img src="http://www.gravatar.com/avatar/${ hashlib.md5(datas.email.lower()).hexdigest() }?s=50" /></h1>
     <h2><a href="${ datas.url }">${ datas.username }</a></h2>
     <h3>@${ createdTime }</h3>
-    <p>${ datas.comment }</p>
+    <p>${ datas.comment | h }</p>
 </div>

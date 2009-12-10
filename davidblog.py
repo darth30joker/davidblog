@@ -8,11 +8,11 @@ import admin
 
 urls = (
         '/admin', admin.app_admin,
-        '/', 'views.index',    
-        '/entry/(.*)/', 'views.entry',    
-        '/category/(.*)/', 'views.category',    
-        '/tag/(.*)/', 'views.tag',    
-        '/add_comment/', 'views.addComment',
+        '/', 'views.index',
+        '^/entry/(.*)/$', 'views.entry',
+        '^/category/(.*)/$', 'views.category',
+        '^/tag/(.*)/$', 'views.tag',
+        '^/add_comment/$', 'views.addComment',
         '^/rss.xml$', 'views.rss',
     )
 

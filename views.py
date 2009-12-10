@@ -8,6 +8,7 @@ from cache import mcache
 import time
 
 datas = dict()
+datas['pageCount'] = pageCount
 
 def getCategories():
     categories = mcache.get('categories')
@@ -42,7 +43,7 @@ class index(object):
         page = web.input(page=1)
         page = int(page.page)
         entry_count = db.query("SELECT COUNT(id) AS num FROM entries")
-        pages = float(entry_count[0]['num'] / pageCount)
+        pages = float(float(entry_count[0]['num']) / pageCount)
         if pages > int(pages):
             pages = int(pages + 1)
         elif pages == 0:
@@ -65,10 +66,10 @@ class index(object):
 class entry(object):
     def GET(self, slug):
         entry = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id WHERE en.slug = $slug', vars={'slug':slug}))
-        page = web.input(page=1)
-        page = int(page.page)
-        comment_count = db.query("SELECT COUNT(id) AS num FROM comments WHERE entryId = $id", vars = {'id':int(entry[0].entryId)})
-        pages = float(comment_count[0]['num'] / pageCount)
+        input = web.input(page = 1)
+        page = int(input.page)
+        comment_count = list(db.query("SELECT COUNT(id) AS num FROM comments WHERE entryId = $id", vars = {'id':int(entry[0].entryId)}))
+        pages = float(float(comment_count[0]['num']) / pageCount)
         if pages > int(pages):
             pages = int(pages + 1)
         elif pages == 0:
@@ -79,7 +80,7 @@ class entry(object):
             page = pages
         for one in entry:
             one.tags = db.query('SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id', vars = {'id': one.entryId})
-            one.comments = db.query('SELECT * FROM comments WHERE entryId = $id ORDER BY createdTime DESC LIMIT $start, $limit', vars = {'id': one.entryId, 'start':(page - 1) * pageCount, 'limit':pageCount})
+            one.comments = db.query('SELECT * FROM comments WHERE entryId = $id ORDER BY createdTime ASC LIMIT $start, $limit', vars = {'id': one.entryId, 'start':(page - 1) * pageCount, 'limit':pageCount})
 
         f = commentForm()
 
@@ -115,7 +116,7 @@ class category(object):
         page = web.input(page=1)
         page = int(page.page)
         entry_count = db.query("SELECT COUNT(en.id) AS num FROM entries en LEFT JOIN categories ca ON ca.id = en.categoryId WHERE ca.slug = $slug", vars = {'slug':slug})
-        pages = float(entry_count[0]['num'] / 10)
+        pages = float(float(entry_count[0]['num']) / 10)
         if pages > int(pages):
             pages = int(pages + 1)
         elif pages == 0:
@@ -146,7 +147,7 @@ class tag(object):
         page = web.input(page=1)
         page = int(page.page)
         entry_count = len(entry_list)
-        pages = float(entry_count / 10)
+        pages = float(float(entry_count) / 10)
         if pages > int(pages):
             pages = int(pages + 1)
         elif pages == 0:
