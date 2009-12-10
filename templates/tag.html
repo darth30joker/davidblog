@@ -1,6 +1,6 @@
 <%inherit file="base.html" />
 
-<%def name="title()">分类 - 首页</%def>
+<%def name="title()">标签 ${ slug }</%def>
 
 <div id="blog_list">
     % if entries:
@@ -9,7 +9,7 @@
             <li><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a> | @${ entry.createdTime }</li>
         % endfor
     % else:
-        <p>here</p>
+        <p>该标签下还没有日志.</p>
     % endif
     <div id="page_link">
         % if page > 1:

@@ -34,12 +34,7 @@ def my_loadhook():
     datas['categories'] = getCategories()
     datas['tags'] = getTags()
     datas['links'] = getLinks()
-
-def my_processor(handler):
-    startTime = time.time()
-    result = handler()
-    datas['usedTime'] = time.time() - startTime
-    return result
+    datas['startTime'] = time.time()
 
 class index(object):
     def GET(self):
@@ -63,6 +58,7 @@ class index(object):
         datas['entries'] = entries
         datas['page'] = page
         datas['pages'] = pages
+        datas['usedTime'] = time.time() - datas['startTime']
 
         return render.index(**datas)
 
@@ -91,23 +87,30 @@ class entry(object):
         datas['pages'] = pages
         datas['entry'] = entry[0]
         datas['f'] = f
+        datas['usedTime'] = time.time() - datas['startTime']
+
         return render.entry(**datas)
 
 class addComment(object):
     def POST(self):
-        datas = web.input()
+        inputs = web.input()
         createdTime = datetime.now().strftime("%Y-%m-%d %H:%M")
-        if datas.url =="":
-            datas.url = "#"
-        db.insert('comments', entryId = datas.id, username = datas.username, email = datas.email, url = datas.url, createdTime = createdTime, comment = datas.comment)
-        entry = db.query('SELECT commentNum FROM entries WHERE id = $id', vars = {'id':datas.id})
-        db.update('entries', where = 'id = %s' % datas.id, commentNum = entry[0].commentNum + 1)
-        datas['datas'] = datas
+        if inputs.url =="":
+            inputs.url = "#"
+        db.insert('comments', entryId = inputs.id, username = inputs.username, email = inputs.email, url = inputs.url, createdTime = createdTime, comment = inputs.comment)
+        entry = db.query('SELECT commentNum FROM entries WHERE id = $id', vars = {'id':inputs.id})
+        db.update('entries', where = 'id = %s' % inputs.id, commentNum = entry[0].commentNum + 1)
+
+        datas['datas'] = inputs
         datas['createdTime'] = createdTime
+
         return render.comment(**datas)
 
 class category(object):
     def GET(self, slug):
+        category = list(db.query('SELECT name FROM categories WHERE slug = $slug', vars = {'slug':slug}))
+        if len(category) == 0:
+            raise web.notfound()
         # 读取当前页的文章
         page = web.input(page=1)
         page = int(page.page)
@@ -124,9 +127,12 @@ class category(object):
 
         entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON ca.id = en.categoryId WHERE ca.slug = $slug ORDER BY en.createdTime DESC LIMIT $start, $limit', vars = {'slug':slug, 'start':(page - 1) * pageCount, 'limit':pageCount}))
 
+
         datas['entries'] = entries
         datas['page'] = page
         datas['pages'] = pages
+        datas['usedTime'] = time.time() - datas['startTime']
+        datas['category_name'] = category[0].name
 
         return render.category(**datas)
 
@@ -155,6 +161,8 @@ class tag(object):
         datas['entries'] = entries
         datas['page'] = page
         datas['pages'] = pages
+        datas['usedTime'] = time.time() - datas['startTime']
+        datas['slug'] = slug
 
         return render.tag(**datas)
 
@@ -183,3 +191,9 @@ class rss(object):
         web.header('Content-Type', 'text/xml')
         rss = rss.encode('utf-8')
         return rss
+
+def notfound():
+    return web.notfound("对不起, 您所访问的地址并不存在.")
+
+def internalerror():
+    return web.internalerror("对不起, 网站遇到一个不可遇见的错误.")

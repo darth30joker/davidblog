@@ -111,6 +111,7 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 }
 .blog_each > div p {
     margin:15px 0;
+    line-height:1.5em;
 }
 
 #side_bar {
