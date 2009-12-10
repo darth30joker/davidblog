@@ -5,6 +5,9 @@ from forms import commentForm
 from datetime import datetime
 from settings import db, render, pageCount
 from cache import mcache
+import time
+
+datas = dict()
 
 def getCategories():
     categories = mcache.get('categories')
@@ -27,6 +30,17 @@ def getLinks():
         mcache.set('links', links)
     return links
 
+def my_loadhook():
+    datas['categories'] = getCategories()
+    datas['tags'] = getTags()
+    datas['links'] = getLinks()
+
+def my_processor(handler):
+    startTime = time.time()
+    result = handler()
+    datas['usedTime'] = time.time() - startTime
+    return result
+
 class index(object):
     def GET(self):
         # 读取当前页的文章
@@ -46,7 +60,11 @@ class index(object):
         for entry in entries:
             entry.tags = db.query("SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id", vars = {'id':entry.entryId})
 
-        return render.index(entries = entries, page = page, pages = pages, categories = getCategories(), tags = getTags(), links = getLinks())
+        datas['entries'] = entries
+        datas['page'] = page
+        datas['pages'] = pages
+
+        return render.index(**datas)
 
 class entry(object):
     def GET(self, slug):
@@ -69,7 +87,11 @@ class entry(object):
 
         f = commentForm()
 
-        return render.entry(entry = entry[0], categories = getCategories(), tags = getTags(), links = getLinks(), f = f, page = page, pages = pages)
+        datas['page'] = page
+        datas['pages'] = pages
+        datas['entry'] = entry[0]
+        datas['f'] = f
+        return render.entry(**datas)
 
 class addComment(object):
     def POST(self):
@@ -80,7 +102,9 @@ class addComment(object):
         db.insert('comments', entryId = datas.id, username = datas.username, email = datas.email, url = datas.url, createdTime = createdTime, comment = datas.comment)
         entry = db.query('SELECT commentNum FROM entries WHERE id = $id', vars = {'id':datas.id})
         db.update('entries', where = 'id = %s' % datas.id, commentNum = entry[0].commentNum + 1)
-        return render.comment(datas = datas, createdTime = createdTime)
+        datas['datas'] = datas
+        datas['createdTime'] = createdTime
+        return render.comment(**datas)
 
 class category(object):
     def GET(self, slug):
@@ -100,7 +124,11 @@ class category(object):
 
         entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON ca.id = en.categoryId WHERE ca.slug = $slug ORDER BY en.createdTime DESC LIMIT $start, $limit', vars = {'slug':slug, 'start':(page - 1) * pageCount, 'limit':pageCount}))
 
-        return render.category(entries = entries, categories = getCategories(), tags = getTags(), links = getLinks(), page = page, pages = pages)
+        datas['entries'] = entries
+        datas['page'] = page
+        datas['pages'] = pages
+
+        return render.category(**datas)
 
 class tag(object):
     def GET(self, slug):
@@ -124,7 +152,11 @@ class tag(object):
 
         entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime FROM entries en WHERE en.id in ($ids)', vars = {'ids':','.join(entry_list)}))
 
-        return render.tag(entries = entries, categories = getCategories(), tags = getTags(), links = getLinks(), page = page, pages = pages)
+        datas['entries'] = entries
+        datas['page'] = page
+        datas['pages'] = pages
+
+        return render.tag(**datas)
 
 class rss(object):
     def GET(self):

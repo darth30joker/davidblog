@@ -18,5 +18,8 @@ urls = (
 app = web.application(urls, globals(), autoreload = True)
 session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'captcha': 0})
 
+app.add_processor(web.loadhook(views.my_loadhook))
+app.add_processor(views.my_processor)
+
 if __name__ == '__main__':
     app.run()
