@@ -86,7 +86,7 @@ body { font-family:"Dajavu Sans MONO, Arial"}
     text-shadow:0 1px 0 #FFFFFF;
 }
 .blog_each h1 a:hover {
-	text-decoration: underline;
+    color:#D90000;
 }
 .blog_each h2,
 .blog_each h3 {
