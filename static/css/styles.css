@@ -161,8 +161,17 @@ body { font-family:"Dajavu Sans MONO, Arial"}
     padding:20px;
     margin-bottom:20px;
 }
+.comment h1 {
+    float:left;
+    height:50px;
+    margin:5px;
+    width:50px;
+}
 .comment h2 {
     font-size:14px;
+    float:left;
+    margin:7px 5px;
+    width:500px;
 }
 .comment h2 a:link,
 .comment h2 a:visited {
@@ -171,9 +180,14 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 .comment h3 {
     font-size:11px;
     color:#666;
+    float:left;
+    margin:5px;
+    width:500px;
 }
 .comment p {
     margin:10px 0;
+    clear:both;
+    padding:10px;
 }
 #comment_form > h2 {
     font-size:16px;

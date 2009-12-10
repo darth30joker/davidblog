@@ -58,6 +58,8 @@ $(document).ready(function(){
         % if entry.comments:
             % for comment in entry.comments:
                 <div class="comment">
+                    <% import hashlib %>
+                    <h1><img src="http://www.gravatar.com/avatar/${ hashlib.md5(comment.email.lower()).hexdigest() }?s=50" /></h1>
                     <h2><a href="${ comment.url }">${ comment.username }</a></h2>
                     <h3>@${ comment.createdTime.strftime("%Y-%m-%d %H:%M") }</h3>
                     <p>${ comment.comment }</p>
