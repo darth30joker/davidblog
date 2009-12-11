@@ -3,9 +3,12 @@
 import web
 from forms import categoryForm
 from datetime import datetime
-from settings import db
+from settings import db, pageCount
 from settings import render_admin as render 
 from cache import mcache
+
+para = dict()
+para['pageCount'] = pageCount
 
 class index(object):
     def GET(self):
@@ -176,6 +179,40 @@ class tag(object):
         entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime FROM entries en WHERE en.id in ($ids)', vars = {'ids':','.join(entry_list)}))
 
         return render.tag(entries = entries, categories = getCategories(), tags = getTags(), links = getLinks(), page = page, pages = pages)
+
+class entry(object):
+    def GET(self):
+        page = web.input(page=1)
+        page = int(page.page)
+        entryNum = db.query("SELECT COUNT(id) AS num FROM entries")
+        pages = float(float(entryNum[0]['num']) / pageCount)
+        if pages > int(pages):
+            pages = int(pages + 1)
+        elif pages == 0:
+            pages = 1
+        else:
+            pages = int(pages)
+        if page > pages:
+            page = pages
+        entries = list(db.query('SELECT * FROM entries ORDER BY createdTime DESC LIMIT $start, $limit', vars={'start': (page - 1) * pageCount, 'limit':pageCount}))
+
+        para['page'] = page
+        para['pages'] = pages
+        para['entries'] = entries
+
+        return render.entry(**para)
+
+class entry_add(object):
+    def GET(self):
+        #f = entryForm()
+        return render.entry_add(**para)
+
+    def POST(self):
+        f = entryForm()
+        if f.validates():
+            data = dict(**f.d)
+            db.insert('tags', name = data['title'], slug = data['slug'], categoryId = data['categoryId'], createdTime = datetime.now(), modifiedTime = datetime.now())
+        return web.seeother('/entry/')
 
 class reblog(object):
     def GET(self):
