@@ -10,6 +10,13 @@ from cache import mcache
 para = dict()
 para['pageCount'] = pageCount
 
+def getCategories():
+    categories = mcache.get('adminCategories')
+    if categories is None:
+        categories = list(db.query("SELECT * FROM categories ORDER BY name ASC"))
+        mcache.set('adminCategories', categories)
+    return categories
+
 class index(object):
     def GET(self):
         entryNum = db.query('SELECT COUNT(id) AS num FROM entries')
@@ -204,14 +211,50 @@ class entry(object):
 
 class entry_add(object):
     def GET(self):
-        #f = entryForm()
+        para['categories'] = getCategories()
         return render.entry_add(**para)
 
     def POST(self):
-        f = entryForm()
-        if f.validates():
-            data = dict(**f.d)
-            db.insert('tags', name = data['title'], slug = data['slug'], categoryId = data['categoryId'], createdTime = datetime.now(), modifiedTime = datetime.now())
+        data = web.input()
+        db.insert('tags', name = data['title'], slug = data['slug'], categoryId = data['categoryId'], createdTime = datetime.now(), modifiedTime = datetime.now())
+        return web.seeother('/entry/')
+
+class entry_edit(object):
+    def GET(self, id):
+        entry = list(db.query("SELECT * FROM entries WHERE id = $id", vars={'id':id}))
+        tags = list(db.query("SELECT t.name AS name FROM entry_tag et LEFT JOIN tags t ON et.tagId = t.id WHERE et.entryId = $id", vars={'id':id}))
+        entry[0].tagList = "".join([one.name for one in tags])
+        para['entry'] = entry[0]
+        para['categories'] = getCategories()
+
+        return render.entry_edit(**para)
+
+    def POST(self, id):
+        entry = list(db.query("SELECT * FROM entries WHERE id = $id", vars={'id':id}))
+        entryTags = list(db.query("SELECT t.name AS name FROM entry_tag et LEFT JOIN tags t ON et.tagId = t.id WHERE et.entryId = $id", vars={'id':id}))
+        entryTags = [one.name for one in entryTags]
+
+        data = web.input(title=None, slug=None, categoryId=None, tags=None, content=None)
+        #处理tags, 这个比较麻烦
+        #首先要读出来该文章原先的tags, 再跟更改后的tags比较
+        #如果有tag被删除, 则需要将entry_tag中的记录删掉
+        #删tag的时候, 如果tag的entryNum等于0, 则把改记录删除, 否则把entryNum-1
+        #添加tag的时候, 先判断tag是否存在, 如果tag存在, 则将entry和tag绑定, 并将tag的entryNum+1, 否则创建tag
+        if data.tags is not None:
+            tagList = data.tags.split(',')
+            originalTags = set(entryTags)
+            newTags = set(tagList)
+            tagsAdd = newTags - originalTags
+            tagsDel = originalTags - newTags
+            #添加tag
+            for tag in tagsAdd:
+                temp = list(db.query("SELECT * FROM tags WHERE name = $name", vars={'name':tag}))
+                if len(temp) > 0:
+                    db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entry[0].id, 'tagId':temp[0].id})
+                    db.query('UPDATE tags SET entryNum = $entryNum WHERE tagId = $tagId', vars={'entryNum':int(temp[0].entryNum) + 1, 'tagId':temp[0].id})
+            #删除tag
+
+
         return web.seeother('/entry/')
 
 class reblog(object):

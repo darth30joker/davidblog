@@ -117,3 +117,14 @@ a:hover {
     font-size:12px;
 }
 label.error {color:red;}
+
+#edit_entry td {
+    padding:2px 10px;
+}
+#edit_entry input {
+    width:200px;
+}
+#edit_entry textarea {
+    width:600px;
+    height:300px;
+}
