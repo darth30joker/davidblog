@@ -289,6 +289,67 @@ class entry_del(object):
                 if temp[0].entryNum == 1:
                     db.query('DELETE FROM tags WHERE id = $tagId', vars={'tagId':tag.tagId})
                 db.query('DELETE FROM entry_tag WHERE entryId = $entryId AND tagId = $tagId', vars={'entryId':tag.entryId, 'tagId':tag.tagId})
+        return web.seeother('/entry/')
+
+class links(object):
+    def GET(self):
+        page = web.input(page=1)
+        page = int(page.page)
+        linkNum = list(db.query("SELECT COUNT(id) AS num FROM links"))
+        pages = float(linkNum[0]['num'] / 10)
+        if pages > int(pages):
+            pages = int(pages + 1)
+        elif pages == 0:
+            pages = 1
+        else:
+            pages = int(pages)
+        if page > pages:
+            page = pages
+        links = list(db.query('SELECT * FROM links ORDER BY name ASC LIMIT $start, 10', vars={'start': (page - 1) * 10}))
+
+        para['page'] = page
+        para['pages'] = pages
+        para['links'] = links
+
+        return render.tag(**para)
+
+class link_add(object):
+    def GET(self):
+        f = linkForm()
+
+        para['f'] = f
+
+        return render.link_add(**para)
+
+    def POST(self):
+        f = linkForm()
+        if f.validates():
+            data = dict(**f.d)
+            db.insert('links', name = data['name'], url = data['url'])
+        return web.seeother('/links/')
+
+class link_edit(object):
+    def GET(self, id):
+        f = linkForm()
+        links = list(db.query("SELECT * FROM links WHERE id = $id", vars = {'id':id}))
+        f.get('name').value = links[0].name
+        f.get('url').value = links[0].slug
+
+        para['f'] = f
+
+        return render.link_edit(**para)
+
+    def POST(self, id):
+        f = linkForm()
+        if f.validates():
+            data = dict(**f.d)
+            db.update('links', where = "id = %s" % id, name = data['name'], url = data['url'])
+        return web.seeother('/links/')
+
+class link_del(object):
+    def GET(self, id):
+        db.delete('links', where = 'id = %s' % id)
+        return web.seeother('/links/')
 
 class reblog(object):
     def GET(self):
