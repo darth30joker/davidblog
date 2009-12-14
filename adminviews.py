@@ -216,7 +216,7 @@ class entry_add(object):
 
     def POST(self):
         data = web.input(tags = None)
-        entryId = db.insert('entries', title = data['title'], slug = data['slug'], categoryId = data['categoryId'], createdTime = datetime.now(), modifiedTime = datetime.now(), 'content' = data['content'])
+        entryId = db.insert('entries', title = data['title'], slug = data['slug'], categoryId = data['categoryId'], createdTime = datetime.now(), modifiedTime = datetime.now(), content = data['content'])
         if data['tags'] is not None:
             tags = [i.lstrip().rstrip() for i in data['tags'].split(',')]
             for tag in tags:
@@ -267,17 +267,18 @@ class entry_edit(object):
             #删除tag
             for tag in tagsDel:
                 temp = list(db.query("SELECT * FROM tags WHERE name = $name", vars={'name':tag}))
-                if temp[0].entryNum == 1:
-                    db.query('DELETE FROM tags WHERE id = $tagId', vars={'tagId':temp[0].id})
-                else:
-                    db.query('UPDATE tags SET `entryNum` = $entryNum WHERE id = $tagId', vars={'entryNum':int(temp[0].entryNum) - 1, 'tagId':temp[0].id})
-                db.query('DELETE FROM entry_tag WHERE entryId = $entryId AND tagId = $tagId', vars={'entryId':entry[0].id, 'tagId':temp[0].id})
+                if len(temp) > 0:
+                    if temp[0].entryNum == 1:
+                        db.query('DELETE FROM tags WHERE id = $tagId', vars={'tagId':temp[0].id})
+                    else:
+                        db.query('UPDATE tags SET `entryNum` = $entryNum WHERE id = $tagId', vars={'entryNum':int(temp[0].entryNum) - 1, 'tagId':temp[0].id})
+                    db.query('DELETE FROM entry_tag WHERE entryId = $entryId AND tagId = $tagId', vars={'entryId':entry[0].id, 'tagId':temp[0].id})
 
         return web.seeother('/entry/')
 
 class entry_del(object):
     def GET(self, id):
-        entry = list(db.query('SELECT * FROM entries WHERE id = $id', vars={'id':id})
+        entry = list(db.query('SELECT * FROM entries WHERE id = $id', vars={'id':id}))
         if len(entry) > 0:
             db.query('DELETE FROM entries WHERE id = $id', vars={'id':id})
             category = list(db.query('SELECT * FROM categories WHERE id = $id', vars={'id':entry[0].categoryId}))

@@ -19,3 +19,9 @@ categoryForm = form.Form(
         form.Textbox('slug', form.notnull),
         form.Button('submit', type="submit", description = u"添加")
     )
+
+linkForm = form.Form(
+        form.Textbox('name', form.notnull),
+        form.Textbox('url', form.notnull, url_validate),
+        form.Button('submit', type="submit", description = u"添加")
+    )
