@@ -215,8 +215,18 @@ class entry_add(object):
         return render.entry_add(**para)
 
     def POST(self):
-        data = web.input()
-        db.insert('tags', name = data['title'], slug = data['slug'], categoryId = data['categoryId'], createdTime = datetime.now(), modifiedTime = datetime.now())
+        data = web.input(tags = None)
+        entryId = db.insert('entries', title = data['title'], slug = data['slug'], categoryId = data['categoryId'], createdTime = datetime.now(), modifiedTime = datetime.now(), 'content' = data['content'])
+        if data['tags'] is not None:
+            tags = [i.lstrip().rstrip() for i in data['tags'].split(',')]
+            for tag in tags:
+                temp = list(db.query("SELECT * FROM tags WHERE name = $name", vars={'name':tag}))
+                if len(temp) > 0:
+                    db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entryId, 'tagId':temp[0].id})
+                    db.query('UPDATE tags SET entryNum = $entryNum WHERE tagId = $tagId', vars={'entryNum':int(temp[0].entryNum) + 1, 'tagId':temp[0].id})
+                else:
+                    tagId = db.query("INSERT INTO tags (`name`) VALUES ('%s')" % tag.replace("'", "''"))
+                    db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entryId, 'tagId':tagId})
         return web.seeother('/entry/')
 
 class entry_edit(object):
@@ -226,7 +236,6 @@ class entry_edit(object):
         entry[0].tagList = "".join([one.name for one in tags])
         para['entry'] = entry[0]
         para['categories'] = getCategories()
-
         return render.entry_edit(**para)
 
     def POST(self, id):
@@ -244,18 +253,42 @@ class entry_edit(object):
             tagList = data.tags.split(',')
             originalTags = set(entryTags)
             newTags = set(tagList)
-            tagsAdd = newTags - originalTags
-            tagsDel = originalTags - newTags
+            tagsDel = newTags - originalTags
+            tagsAdd = originalTags - newTags
             #添加tag
             for tag in tagsAdd:
                 temp = list(db.query("SELECT * FROM tags WHERE name = $name", vars={'name':tag}))
                 if len(temp) > 0:
                     db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entry[0].id, 'tagId':temp[0].id})
                     db.query('UPDATE tags SET entryNum = $entryNum WHERE tagId = $tagId', vars={'entryNum':int(temp[0].entryNum) + 1, 'tagId':temp[0].id})
+                else:
+                    tagId = db.query("INSERT INTO tags (`name`) VALUES ('%s')" % tag.replace("'", "''"))
+                    db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entry[0].id, 'tagId':tagId})
             #删除tag
-
+            for tag in tagsDel:
+                temp = list(db.query("SELECT * FROM tags WHERE name = $name", vars={'name':tag}))
+                if temp[0].entryNum == 1:
+                    db.query('DELETE FROM tags WHERE id = $tagId', vars={'tagId':temp[0].id})
+                else:
+                    db.query('UPDATE tags SET `entryNum` = $entryNum WHERE id = $tagId', vars={'entryNum':int(temp[0].entryNum) - 1, 'tagId':temp[0].id})
+                db.query('DELETE FROM entry_tag WHERE entryId = $entryId AND tagId = $tagId', vars={'entryId':entry[0].id, 'tagId':temp[0].id})
 
         return web.seeother('/entry/')
+
+class entry_del(object):
+    def GET(self, id):
+        entry = list(db.query('SELECT * FROM entries WHERE id = $id', vars={'id':id})
+        if len(entry) > 0:
+            db.query('DELETE FROM entries WHERE id = $id', vars={'id':id})
+            category = list(db.query('SELECT * FROM categories WHERE id = $id', vars={'id':entry[0].categoryId}))
+            db.query('UPDATE categories SET `entryNum` = $entryNum WHERE id = $categoryId', vars={'entryNum':int(category[0].entryNum) - 1, 'categoryId':category[0].id})
+            tags = list(db.query('SELECT t.id AS tagId, t.entryNum AS entryNum FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $entryId', vars= {'entryId':entry[0].id}))
+            for tag in tags:
+                if tag.entryNum > 2:
+                    db.query('UPDATE tags SET `entryNum` = $entryNum WHERE id = $id', vars={'entryNum':int(tag.entryNum) - 1, 'id':tag.tagId})
+                if temp[0].entryNum == 1:
+                    db.query('DELETE FROM tags WHERE id = $tagId', vars={'tagId':tag.tagId})
+                db.query('DELETE FROM entry_tag WHERE entryId = $entryId AND tagId = $tagId', vars={'entryId':tag.entryId, 'tagId':tag.tagId})
 
 class reblog(object):
     def GET(self):
