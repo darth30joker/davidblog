@@ -201,7 +201,7 @@ class entry(object):
             pages = int(pages)
         if page > pages:
             page = pages
-        entries = list(db.query('SELECT * FROM entries ORDER BY createdTime DESC LIMIT $start, $limit', vars={'start': (page - 1) * pageCount, 'limit':pageCount}))
+        entries = list(db.query('SELECT * FROM entries e LEFT JOIN categories c ON e.categoryId = c.id ORDER BY createdTime DESC LIMIT $start, $limit', vars={'start': (page - 1) * pageCount, 'limit':pageCount}))
 
         para['page'] = page
         para['pages'] = pages
