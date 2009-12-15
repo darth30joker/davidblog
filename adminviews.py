@@ -225,7 +225,7 @@ class entry_add(object):
                     db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entryId, 'tagId':temp[0].id})
                     db.query('UPDATE tags SET entryNum = $entryNum WHERE tagId = $tagId', vars={'entryNum':int(temp[0].entryNum) + 1, 'tagId':temp[0].id})
                 else:
-                    tagId = db.query("INSERT INTO tags (`name`) VALUES ('%s')" % tag.replace("'", "''"))
+                    tagId = db.insert('tags', name = tag.replace("'", "''"), entryNum = 1)
                     db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entryId, 'tagId':tagId})
         return web.seeother('/entry/')
 
@@ -265,7 +265,7 @@ class entry_edit(object):
                     db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entry[0].id, 'tagId':temp[0].id})
                     db.query('UPDATE tags SET entryNum = $entryNum WHERE tagId = $tagId', vars={'entryNum':int(temp[0].entryNum) + 1, 'tagId':temp[0].id})
                 else:
-                    tagId = db.insert('tags', name = tag.replace("'", "''"))
+                    tagId = db.insert('tags', name = tag.replace("'", "''"), entryNum = 1)
                     db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entry[0].id, 'tagId':tagId})
             #删除tag
             for tag in tagsDel:
