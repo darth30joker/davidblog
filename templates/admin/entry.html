@@ -1,0 +1,30 @@
+<%inherit file="base.html" />
+<%def name="title()">日志管理</%def>
+
+<table>
+    <tr>
+        <th>No.</th>
+        <th>名称</th>
+        <th>栏目</th>
+        <th>操作</th>
+    </tr>
+    % for i, one in enumerate(entries):
+        <tr>
+            <td>${ (page - 1) * 10 + i + 1 }</td>
+            <td>${ one.title }</td>
+            <td>${ one.categoryName }</td>
+            <td>
+                <a href="/admin/entry/edit/${ one.entryId }/">修改</a>
+                <a href="/admin/entry/del/${ one.entryId }/">删除</a>
+            </td>
+        </tr>
+    % endfor
+</table>
+
+<div id="pager">
+    % for i in range(pages):
+        <span><a href="/admin/entry/?page=${ i + 1 }">${ i + 1 }</a></span>
+    % endfor
+</div>
+
+<p><a href="/admin/entry/add/">添加新的分类</a></p>
