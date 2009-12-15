@@ -201,7 +201,7 @@ class entry(object):
             pages = int(pages)
         if page > pages:
             page = pages
-        entries = list(db.query('SELECT * FROM entries e LEFT JOIN categories c ON e.categoryId = c.id ORDER BY createdTime DESC LIMIT $start, $limit', vars={'start': (page - 1) * pageCount, 'limit':pageCount}))
+        entries = list(db.query('SELECT e.id AS entryId, e.title AS title, e.slug AS slug, c.name AS categoryName FROM entries e LEFT JOIN categories c ON c.id = e.categoryId ORDER BY e.createdTime DESC LIMIT $start, $limit', vars={'start': (page - 1) * pageCount, 'limit':pageCount}))
 
         para['page'] = page
         para['pages'] = pages
@@ -231,9 +231,12 @@ class entry_add(object):
 
 class entry_edit(object):
     def GET(self, id):
-        entry = list(db.query("SELECT * FROM entries WHERE id = $id", vars={'id':id}))
+        entry = list(db.query("SELECT e.id AS entryId, e.title AS title, e.slug AS slug, e.categoryId AS categoryId, e.content AS content, c.name AS categoryName FROM entries e LEFT JOIN categories c ON c.id = e.categoryId WHERE e.id = $id", vars={'id':id}))
         tags = list(db.query("SELECT t.name AS name FROM entry_tag et LEFT JOIN tags t ON et.tagId = t.id WHERE et.entryId = $id", vars={'id':id}))
-        entry[0].tagList = "".join([one.name for one in tags])
+        if len(tags) > 0:
+            entry[0].tagList = ",".join([one.name for one in tags])
+        else:
+            entry[0].tagList = ''
         para['entry'] = entry[0]
         para['categories'] = getCategories()
         return render.entry_edit(**para)
@@ -253,8 +256,8 @@ class entry_edit(object):
             tagList = data.tags.split(',')
             originalTags = set(entryTags)
             newTags = set(tagList)
-            tagsDel = newTags - originalTags
-            tagsAdd = originalTags - newTags
+            tagsAdd = newTags - originalTags
+            tagsDel = originalTags - newTags
             #添加tag
             for tag in tagsAdd:
                 temp = list(db.query("SELECT * FROM tags WHERE name = $name", vars={'name':tag}))
@@ -262,7 +265,7 @@ class entry_edit(object):
                     db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entry[0].id, 'tagId':temp[0].id})
                     db.query('UPDATE tags SET entryNum = $entryNum WHERE tagId = $tagId', vars={'entryNum':int(temp[0].entryNum) + 1, 'tagId':temp[0].id})
                 else:
-                    tagId = db.query("INSERT INTO tags (`name`) VALUES ('%s')" % tag.replace("'", "''"))
+                    tagId = db.insert('tags', name = tag.replace("'", "''"))
                     db.query('INSERT INTO entry_tag (`entryId`, `tagId`) VALUES ($entryId, $tagId)', vars={'entryId':entry[0].id, 'tagId':tagId})
             #删除tag
             for tag in tagsDel:
