@@ -92,6 +92,13 @@ class entry(object):
 
         return render.entry(**datas)
 
+class page(object):
+    def GET(self, slug):
+        page = list(db.select('pages', where='slug = "%s"' % slug))
+        if not page:
+            datas['usedTime'] = time.time() - datas['startTime']
+            return render.page(**datas)
+
 class addComment(object):
     def POST(self):
         inputs = web.input()

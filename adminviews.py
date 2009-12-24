@@ -1,5 +1,6 @@
 #coding:utf-8
 
+import hashlib
 import web
 from forms import categoryForm
 from datetime import datetime
@@ -31,6 +32,22 @@ class index(object):
                 tagNum = tagNum[0].num,
                 linkNum = linkNum[0].num
             )
+
+class login(object):
+    def GET(self):
+        return render.login()
+
+    def POST(self):
+        i = web.input()
+        if username == 'davidx' and password == 'daniel':
+            session.isLogin = 1
+        return web.seeother('/')
+
+class logout(object):
+    def GET(self):
+        session.isLogin = 0
+        session.kill()
+    return web.seeother('/')
 
 class categories(object):
     def GET(self):
@@ -356,6 +373,41 @@ class link_del(object):
     def GET(self, id):
         db.delete('links', where = 'id = %s' % id)
         return web.seeother('/links/')
+
+class page(object):
+    def GET(self):
+        pages = list(db.select('pages'))
+
+        para['pages'] = pages
+
+        return render.page(**para)
+
+class page_add(object):
+    def GET(self):
+        return render.page_add(**para)
+
+    def POST(self):
+        data = web.input()
+        db.insert('pages', title = data['title'], slug = data['slug'], createdTime = datetime.now(), content = data['content'])
+        return web.seeother('/page/')
+
+class page_edit(object):
+    def GET(self, id):
+        page = list(db.select('pages', where='id = %s' % id))
+        if not page:
+            para['page'] = page[0]
+        return render.page_edit(**para)
+
+    def POST(self, id):
+        data = web.input(title=None, slug=None, content=None)
+        if not title and not slug and not content:
+            db.update('pages', where="id = %s" % id, title=data.title, slug=data.slug, content=data.content)
+        return web.seeother('/page/')
+
+class page_del(object):
+    def GET(self, id):
+        db.delete('pages', where='id = %s' % id)
+        return web.seeother('/page/')
 
 class reblog(object):
     def GET(self):

@@ -10,6 +10,7 @@ urls = (
         '/admin', admin.app_admin,
         '/', 'views.index',
         '^/entry/(.*)/$', 'views.entry',
+        '^/page/(.*)/$', 'views.page',
         '^/category/(.*)/$', 'views.category',
         '^/tag/(.*)/$', 'views.tag',
         '^/add_comment/$', 'views.addComment',

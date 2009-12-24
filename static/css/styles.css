@@ -106,7 +106,7 @@ body { font-family:"Dajavu Sans MONO, Arial"}
     color:red;
 }
 .blog_each > div {
-    font-size:14px;
+    font-size:12px;
     margin:50px 0;
 }
 .blog_each > div p {
@@ -158,8 +158,8 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 }
 .comment {
     border:1px solid #ccc;
-    padding:20px;
-    margin-bottom:20px;
+    padding:10px;
+    margin-bottom:10px;
 }
 .comment h1 {
     float:left;
@@ -170,8 +170,8 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 .comment h2 {
     font-size:14px;
     float:left;
-    margin:7px 5px;
-    width:500px;
+    margin:7px 7px;
+    width:550px;
 }
 .comment h2 a:link,
 .comment h2 a:visited {

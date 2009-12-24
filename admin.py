@@ -7,6 +7,8 @@ import adminviews
 urls = (
         '', 'adminviews.reblog',    
         '/', 'adminviews.index',
+        '/login/', 'adminviews.login',
+        '/logout/', 'adminviews.logout',
         '/categories/', 'adminviews.categories',
         '/category/add/', 'adminviews.category_add',
         '/category/del/(.*)/$', 'adminviews.category_del',
@@ -19,7 +21,11 @@ urls = (
         '/entry/add/', 'adminviews.entry_add',
         '/entry/del/(.*)/$', 'adminviews.entry_del',
         '/entry/edit/(.*)/$', 'adminviews.entry_edit',
+        '/page/', 'adminviews.page',
+        '/page/add/', 'adminviews.page_add',
+        '/page/del/(.*)/$', 'adminviews.page_del',
+        '/page/edit/(.*)/$', 'adminviews.page_edit',
     )
 
 app_admin = web.application(urls, globals(), autoreload = True)
-session = web.session.Session(app_admin, web.session.DiskStore('sessions'), initializer={'captcha': 0})
+session = web.session.Session(app_admin, web.session.DiskStore('sessions'), initializer={'isLogin': 0})
