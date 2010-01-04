@@ -1,6 +1,7 @@
 #coding:utf-8
 
 import web
+from davidblog import session
 from forms import commentForm
 from datetime import datetime
 from settings import db, render, pageCount
@@ -36,6 +37,7 @@ def my_loadhook():
     datas['tags'] = getTags()
     datas['links'] = getLinks()
     datas['startTime'] = time.time()
+    web.ctx.session = session
 
 class index(object):
     def GET(self):

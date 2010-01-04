@@ -28,4 +28,3 @@ urls = (
     )
 
 app_admin = web.application(urls, globals(), autoreload = True)
-session = web.session.Session(app_admin, web.session.DiskStore('sessions'), initializer={'isLogin': 0})

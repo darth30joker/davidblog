@@ -18,7 +18,16 @@ def getCategories():
         mcache.set('adminCategories', categories)
     return categories
 
+def login_required(*args):
+    def wrapFunc():
+        print session.isLogin
+        #if session.isLogin == 0:
+        #    return web.seeother('/login/')
+        return func()
+    return wrapFunc
+
 class index(object):
+    #@login_required
     def GET(self):
         entryNum = db.query('SELECT COUNT(id) AS num FROM entries')
         commentNum = db.query('SELECT COUNT(id) AS num FROM comments')
@@ -39,7 +48,7 @@ class login(object):
 
     def POST(self):
         i = web.input()
-        if username == 'davidx' and password == 'daniel':
+        if i.username == 'davidx' and i.password == 'daniel':
             session.isLogin = 1
         return web.seeother('/')
 
@@ -47,7 +56,7 @@ class logout(object):
     def GET(self):
         session.isLogin = 0
         session.kill()
-    return web.seeother('/')
+        return web.seeother('/')
 
 class categories(object):
     def GET(self):

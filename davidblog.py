@@ -3,7 +3,7 @@
 
 import web
 import views
-from views import my_loadhook, notfound, internalerror
+from views import my_loadhook
 import admin
 
 urls = (
@@ -18,7 +18,7 @@ urls = (
     )
 
 app = web.application(urls, globals(), autoreload = True)
-session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'captcha': 0})
+session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'captcha': 0, 'isAdmin':0})
 
 app.add_processor(web.loadhook(my_loadhook))
 #app.notfound = notfound
