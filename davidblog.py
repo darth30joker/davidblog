@@ -15,6 +15,7 @@ urls = (
         '^/tag/(.*)/$', 'views.tag',
         '^/add_comment/$', 'views.addComment',
         '^/rss.xml$', 'views.rss',
+        '^/test$', 'views.test',
     )
 
 app = web.application(urls, globals(), autoreload = True)

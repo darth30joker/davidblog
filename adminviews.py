@@ -7,6 +7,7 @@ from datetime import datetime
 from settings import db, pageCount
 from settings import render_admin as render 
 from cache import mcache
+#from davidblog import session
 
 para = dict()
 para['pageCount'] = pageCount
@@ -17,6 +18,9 @@ def getCategories():
         categories = list(db.query("SELECT * FROM categories ORDER BY name ASC"))
         mcache.set('adminCategories', categories)
     return categories
+
+def admin_loadhook():
+    web.ctx.session = session
 
 def login_required(*args):
     def wrapFunc():
