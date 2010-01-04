@@ -37,7 +37,11 @@ def my_loadhook():
     datas['tags'] = getTags()
     datas['links'] = getLinks()
     datas['startTime'] = time.time()
+<<<<<<< HEAD
     #web.ctx.session = globals()['session']
+=======
+    #web.ctx.session = session
+>>>>>>> master
 
 class index(object):
     def GET(self):
