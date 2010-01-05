@@ -19,11 +19,18 @@ urls = (
     )
 
 app = web.application(urls, globals(), autoreload = True)
-session = web.session.Session(app, web.session.DiskStore('sessions'), initializer={'captcha': 0, 'isAdmin':0})
+session = web.session.Session(app,
+        web.session.DiskStore('sessions'),
+        initializer={'captcha': 0, 'isAdmin':0})
 
 app.add_processor(web.loadhook(my_loadhook))
 #app.notfound = notfound
 #app.internalerror = internalerror
 
+def getSession():
+    if not web.config.get('_session'):
+        web.config._session = session
+
 if __name__ == '__main__':
+    getSession()
     app.run()

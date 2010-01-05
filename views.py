@@ -1,7 +1,6 @@
 #coding:utf-8
 
 import web
-#from davidblog import session
 from forms import commentForm
 from datetime import datetime
 from settings import db, render, pageCount
@@ -37,11 +36,8 @@ def my_loadhook():
     datas['tags'] = getTags()
     datas['links'] = getLinks()
     datas['startTime'] = time.time()
-<<<<<<< HEAD
-    #web.ctx.session = globals()['session']
-=======
-    #web.ctx.session = session
->>>>>>> master
+    global session
+    session = web.config._session
 
 class index(object):
     def GET(self):
@@ -214,9 +210,10 @@ def internalerror():
 
 class test(object):
     def GET(self):
-        print globals()
-        return "helre"
-        if web.ctx.session is not None:
-            return 'here'
+        """
+        if session:
+            return session.captcha
         else:
             return 'there'
+        """
+        return web.ctx.session
