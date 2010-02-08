@@ -17,7 +17,6 @@ a:hover {
     margin:0 auto;
 }
 #head {
-    margin:20px 0;
 }
 #logo {
     padding:20px 0;
@@ -43,13 +42,12 @@ a:hover {
 #menu {
     font-size:14px;
     padding-left:20px;
-    width:180px;
-    float:left;
     border-right:1px solid #ccc;
 }
 #menu ul li {
     padding:5px 10px;
     list-style:none;
+    display:inline;
 }
 #main {
     border-top:1px solid #ccc;
@@ -72,59 +70,20 @@ a:hover {
     padding-left:50px;
 }
 /** Entry page **/
-#comments > h2 {
-    font-size:16px;
-    margin:10px 0;
-}
-.comment {
-    border:1px solid #ccc;
-    padding:20px;
-    margin-bottom:20px;
-}
-.comment h2 {
-    font-size:14px;
-}
-.comment h2 a:link,
-.comment h2 a:visited {
-    color:#004B91;
-}
-.comment h3 {
-    font-size:11px;
-    color:#666;
-}
-.comment p {
-    margin:10px 0;
-}
-#comment_form > h2 {
-    font-size:16px;
-}
-#comment_form tr {
-    padding:10px 0;
-}
-#comment_form td {
-    width:180px;
-    padding:5px 0;
-    vertical-align:top;
-    font-size:12px;
-}
-#comment_form input {
-    width:510px;
-    font-size:12px;
-}
-#comment_form textarea {
-    width:510px;
-    height:150px;
-    font-size:12px;
-}
 label.error {color:red;}
-
-#edit_entry td {
-    padding:2px 10px;
+#entry_edit {
+    width:812px;
+    margin:0 auto;
 }
-#edit_entry input {
-    width:200px;
+#entry_form table th {
+    vertical-align:top;
+    width:90px;
+    text-align:right;
+    padding-right:10px;
 }
-#edit_entry textarea {
-    width:600px;
-    height:300px;
+#entry_form table td input {
+    width:698px;
+}
+#entry_form table tr {
+    line-height:35px;
 }

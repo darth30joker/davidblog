@@ -2,35 +2,31 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>${self.title()} - 后台管理</title>
+        <title>{% block title %}{% endblock %} - 后台管理</title>
         <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
         <link rel="stylesheet" type="text/css" href="/static/css/admin.css" />
         <link rel="SHORTCUT ICON" href="/static/favicon.ico" />
-        <script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.3.2.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-1.3.2.min.js"></script>
     </head>
     <body>
         <div id="page">
             <div id="head">
                 <div id="logo">
-                    <h1><a href="/">泥泞的沼泽</a><span>0.2 alpha</span></h1>
+                    <h1><a href="/">泥泞的沼泽</a><span>0.3 alpha</span></h1>
                     <p>技术改变生活</p>
                 </div>
-
             </div>
-            <div id="main">
-                <div id="menu">
-                    <ul>
-                        <li><a href="/admin/categories/">分类管理</a></li>
-                        <li><a href="/admin/tags/">标签管理</a></li>
-                        <li><a href="/admin/entry/">文章管理</a></li>
-                        <li><a href="/admin/page/">页面管理</a></li>
-                        <li><a href="/admin/comments/">评论管理</a></li>
-                        <li><a href="/admin/links/">链接管理</a></li>
-                    </ul>
-                </div>
-                <div id="content">${ self.body() }</div>
-                <br class="clearfloat" />
+            <div id="menu">
+                <ul>
+                    <li><a href="/admin/category/list/">分类管理</a></li>
+                    <li><a href="/admin/tag/list/">标签管理</a></li>
+                    <li><a href="/admin/entry/list/">文章管理</a></li>
+                    <li><a href="/admin/page/list/">页面管理</a></li>
+                    <li><a href="/admin/comment/list/">评论管理</a></li>
+                    <li><a href="/admin/link/list/">链接管理</a></li>
+                </ul>
             </div>
+            <div id="main">{% block content %}{% endblock %}<br class="clearfloat" /></div>
             <div id="foot">
                 <p>版权所有©2009 - 2010 <a href="http://davidx.me/">David Xie</a> | 如有转贴, 请注明出处. @转自<a href="http://blog.davidx.me/">&lt;泥泞的沼泽:http://blog.davidx.me/&gt;</a> | Powered by <a href="http://webpy.org/" target="_blank">web.py</a></p>
             </div>

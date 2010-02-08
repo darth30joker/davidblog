@@ -1,43 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>登录 - 后台管理</title>
-        <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-        <link rel="stylesheet" type="text/css" href="/static/css/admin.css" />
-        <link rel="SHORTCUT ICON" href="/static/favicon.ico" />
-        <script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.3.2.min.js"></script>
-    </head>
-    <body>
-        <div id="page">
-            <div id="head">
-                <div id="logo">
-                    <h1><a href="/">泥泞的沼泽</a><span>0.2 alpha</span></h1>
-                    <p>技术改变生活</p>
-                </div>
-
-            </div>
-            <div id="main">
-                <form action="/admin/login/" method="post">
-                    <table>
-                        <tr>
-                            <td><label>用户名</label></td>
-                            <td><input type="text" name="username" /></td>
-                        </tr>
-                        <tr>
-                            <td><label>密码</label></td>
-                            <td><input type="text" name="password" /></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td><input type="submit" value="登录" /></td>
-                        </tr>
-                    </table>
-                </form>
-            </div>
-            <div id="foot">
-                <p>版权所有©2009 David Shieh | 如有转贴, 请注明出处. <a href="http://davidshieh.cn/">http://davidshieh.cn/</a> | Powered by <a href="http://webpy.org/" target="_blank">web.py</a></p>
-            </div>
-        </body>
-</html>
-
+{% extends "base.html" %}
+{% block title %}登录{% endblock %}
+{% block content %}
+<form action="/admin/login/" method="post">
+    <h1>{{ error }}</h1>
+    <table>
+        <tr>
+            <td><label>用户名</label></td>
+            <td><input type="text" name="username" /></td>
+        </tr>
+        <tr>
+            <td><label>密码</label></td>
+            <td><input type="password" name="password" /></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" value="登录" /></td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

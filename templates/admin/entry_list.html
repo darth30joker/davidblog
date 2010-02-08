@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}日志列表{% endblock %}
+{% block content %}
+<table>
+    <tr>
+        <th>名称</th>
+        <th>栏目</th>
+        <th>操作</th>
+    </tr>
+    {% for one in entries %}
+        <tr>
+            <td>{{ one.title }}</td>
+            <td>{{ one.categoryName }}</td>
+            <td>
+                <a href="/admin/entry/edit/{{ one.entryId }}/">修改</a>
+                <a href="/admin/entry/del/{{ one.entryId }}/">删除</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<div id="pager">
+    {% for i in range(p[1]) %}
+        <span><a href="/admin/entry/list/?page={{ i + 1 }}">{{ i + 1 }}</a></span>
+    {% endfor %}
+</div>
+
+<p><a href="/admin/entry/add/">添加新文章</a></p>
+{% endblock %}

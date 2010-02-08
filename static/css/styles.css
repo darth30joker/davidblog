@@ -11,7 +11,9 @@ a:hover {
 .clearfloat {
     clear:both;
 }
-body { font-family:"Dajavu Sans MONO, Arial"}
+body {
+    font:12px/1.6em Verdana,Helvetica,Arial,sans-serif;
+}
 #page {
     width:960px;
     margin:0 auto;
@@ -109,9 +111,13 @@ body { font-family:"Dajavu Sans MONO, Arial"}
     font-size:12px;
     margin:50px 0;
 }
-.blog_each > div p {
+.blog_each > div > p {
     margin:15px 0;
     line-height:1.5em;
+}
+.blog_each > div > ol,
+.blog_each > div > ul {
+    margin-left:25px;
 }
 
 #side_bar {
@@ -122,9 +128,8 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 .side_bar_component {
     margin:22px;
 }
-.side_bar_component span a:link,
-.side_bar_component span a:visited {
-    color:red;
+.side_bar_component span {
+    margin:0 2px;
 }
 .side_bar_component a {
     font-size:14px;
@@ -139,7 +144,7 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 .side_bar_component ul li span {
     color:red;
 }
-#page_link { font-size:12px;padding:5px; }
+#page_link { font-size:12px;width:100%; }
 #page_link a { text-decoration:underline; }
 #pre_page { float:left; }
 #pre_page a:link,
@@ -150,6 +155,9 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 }
 #next_page { float:right; }
 #cur_page { margin:0 auto;display:block;width:100px;text-align:center; }
+#page_link td {
+    width:33%;
+}
 
 /** Entry page **/
 #comments > h2 {
@@ -199,6 +207,13 @@ body { font-family:"Dajavu Sans MONO, Arial"}
 #comment_form tr {
     padding:10px 0;
 }
+#comment_form th {
+    width:160px;
+    padding:9px 10px;
+    text-align:right;
+    vertical-align:top;
+    font-size:12px;
+}
 #comment_form td {
     width:180px;
     padding:5px 0;
@@ -214,4 +229,4 @@ body { font-family:"Dajavu Sans MONO, Arial"}
     height:150px;
     font-size:12px;
 }
-label.error {color:red;}
+.wrong {color:red;}
