@@ -262,6 +262,7 @@ class entry_add(object):
     @login_required
     def GET(self):
         d['categories'] = getCategories()
+        d['f'] = entryForm()
         return render.entry_add(**d)
 
     @login_required
