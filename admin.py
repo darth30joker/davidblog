@@ -19,13 +19,13 @@ urls = (
         '/tag/del/(.*)/', 'adminviews.tag_del',
         '/tag/edit/(.*)/', 'adminviews.tag_edit',
         '/entry/list/', 'adminviews.entry_list',
-        '/entry/add', 'adminviews.entry_add',
-        '/entry/del/(.*)', 'adminviews.entry_del',
-        '/entry/edit/(.*)', 'adminviews.entry_edit',
-        '/page/list', 'adminviews.page_list',
-        '/page/add', 'adminviews.page_add',
-        '/page/del/(.*)', 'adminviews.page_del',
-        '/page/edit/(.*)', 'adminviews.page_edit',
+        '/entry/add/', 'adminviews.entry_add',
+        '/entry/del/(.*)/', 'adminviews.entry_del',
+        '/entry/edit/(.*)/', 'adminviews.entry_edit',
+        '/page/list/', 'adminviews.page_list',
+        '/page/add/', 'adminviews.page_add',
+        '/page/del/(.*)/', 'adminviews.page_del',
+        '/page/edit/(.*)/', 'adminviews.page_edit',
     )
 
 app_admin = web.application(urls, globals(), autoreload = True)
