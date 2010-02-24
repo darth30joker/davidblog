@@ -6,6 +6,8 @@ from datetime import datetime
 from settings import db, render, pageCount
 from cache import mcache
 import time
+from sqlalchemy.orm import scoped_session, sessionmaker
+from models import *
 
 datas = dict()
 datas['pageCount'] = pageCount
@@ -38,6 +40,7 @@ def my_loadhook():
     datas['startTime'] = time.time()
     global session
     session = web.config._session
+    web.ctx.orm = scoped_session(sessionmaker(bind=engine))
 
 class index(object):
     def GET(self):
