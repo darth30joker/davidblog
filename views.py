@@ -79,35 +79,39 @@ class entry(object):
             'FROM entries en '
             'LEFT JOIN categories ca ON en.categoryId = ca.id '
             'WHERE en.slug = $slug', vars={'slug':slug}))
-        entry[0].content = markdown.markdown(entry[0].content)
-        i= web.input(page = 1)
-        comment = list(db.query(
-            'SELECT COUNT(id) AS num FROM comments WHERE entryId = $id',
-            vars = {'id':int(entry[0].entryId)}))
-        p = getPagination(i.page, comment[0].num, pageCount)
-        for one in entry:
-            one.tags = list(db.query(
-                'SELECT * FROM entry_tag et '
-                'LEFT JOIN tags t ON t.id = et.tagId '
-                'WHERE et.entryId = $id',
-                vars = {'id': one.entryId}))
-            one.comments = list(db.query(
-                'SELECT * FROM comments '
-                'WHERE entryId = $id '
-                'ORDER BY createdTime ASC LIMIT $start, $limit',
-                vars = {'id': one.entryId, 'start':(p[0] - 1) * pageCount,
-                    'limit':pageCount}))
-        return entry[0], p
+        if len(entry) > 0:
+            entry[0].content = markdown.markdown(entry[0].content)
+            i= web.input(page = 1)
+            comment = list(db.query(
+                'SELECT COUNT(id) AS num FROM comments WHERE entryId = $id',
+                vars = {'id':int(entry[0].entryId)}))
+            p = getPagination(i.page, comment[0].num, pageCount)
+            for one in entry:
+                one.tags = list(db.query(
+                    'SELECT * FROM entry_tag et '
+                    'LEFT JOIN tags t ON t.id = et.tagId '
+                    'WHERE et.entryId = $id',
+                    vars = {'id': one.entryId}))
+                one.comments = list(db.query(
+                    'SELECT * FROM comments '
+                    'WHERE entryId = $id '
+                    'ORDER BY createdTime ASC LIMIT $start, $limit',
+                    vars = {'id': one.entryId, 'start':(p[0] - 1) * pageCount,
+                        'limit':pageCount}))
+            return entry[0], p
+        else:
+            return None, None
 
     def GET(self, slug):
         f = commentForm()
         d['entry'], d['p'] = self.getEntry(slug)
-        db.update('entries',
-            where='id=%s' % d['entry'].entryId,
-            viewNum=int(d['entry'].viewNum)+1)
-        d['f'] = f
-        d['usedTime'] = time.time() - d['startTime']
-        return render.entry(**d)
+        if d['entry']:
+            db.update('entries',
+                where='id=%s' % d['entry'].entryId,
+                viewNum=int(d['entry'].viewNum)+1)
+            d['f'] = f
+            d['usedTime'] = time.time() - d['startTime']
+            return render.entry(**d)
 
     def POST(self, slug):
         f = commentForm()

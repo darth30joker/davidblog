@@ -518,6 +518,3 @@ class page_del(object):
         db.delete('pages', where='id = %s' % id)
         return web.seeother('/page/')
 
-class reblog(object):
-    def GET(self):
-        raise web.seeother('/')
