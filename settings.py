@@ -9,7 +9,7 @@ import os
 pageCount = 5
 
 #数据库配置
-db = web.database(dbn = 'mysql', db = 'davidblog', user='root', pw = 'root')
+db = web.database(dbn = 'mysql', db = 'davidblog_new', user='root', pw = 'root')
 
 #memcache配置
 mc = memcache.Client(['127.0.0.1:11211'], debug=0)

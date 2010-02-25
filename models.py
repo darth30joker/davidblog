@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 
-from sqlalchemy import create_engine, Table, ForeignKey
+from sqlalchemy import create_engine, Table, ForeignKey, mapper
 from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.ext.declarative import declarative_base
@@ -10,7 +10,7 @@ engine = create_engine('mysql://root:root@localhost/davidblog', echo=True)
 Base = declarative_base()
 metadata = Base.metadata
 
-entry_tags = Table('entry_tag', metadata,
+entry_tag = Table('entry_tag', metadata,
             Column('entryId', Integer, ForeignKey('entries.id')),
             Column('tagId', Integer, ForeignKey('tags.id'))
         )
@@ -26,7 +26,6 @@ class Entry(Base):
     modifiedTime = Column(DateTime)
     viewNum = Column(Integer, default=0)
     commentNum = Column(Integer, default=0)
-    tags = relation('Tag', secondary=entry_tags, backref='entries')
 
     def __init__(self, title):
         self.title = title
@@ -48,7 +47,6 @@ class Tag(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
     entryNum = Column(Integer, default=0)
-    entries = relation('Entry', secondary=entry_tags, backref='tags')
 
     def __init__(self, name):
         self.name = name
@@ -80,3 +78,4 @@ class Link(Base):
     url = Column(String)
     createdTime = Column(DateTime)
 
+mapper()
