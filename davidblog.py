@@ -23,7 +23,8 @@ session = web.session.Session(app,
         web.session.DiskStore('sessions'),
         initializer={'captcha': 0, 'isAdmin':0})
 
-app.add_processor(web.loadhook(my_loadhook))
+#app.add_processor(web.loadhook(my_loadhook))
+app.add_processor(my_handler)
 #app.notfound = notfound
 #app.internalerror = internalerror
 

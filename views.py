@@ -8,9 +8,9 @@ from cache import mcache
 import time
 from sqlalchemy.orm import scoped_session, sessionmaker
 from models import *
+from utils import Pagination
 
-datas = dict()
-datas['pageCount'] = pageCount
+d = dict()
 
 def getCategories():
     categories = mcache.get('categories')
@@ -42,31 +42,36 @@ def my_loadhook():
     session = web.config._session
     web.ctx.orm = scoped_session(sessionmaker(bind=engine))
 
+def my_handler(handler):
+    datas['categories'] = getCategories()
+    datas['tags'] = getTags()
+    datas['links'] = getLinks()
+    datas['startTime'] = time.time()
+    web.ctx.session = web.config._session
+    web.ctx.orm = scoped_session(sessionmaker(bind=engine))
+    try:
+        return handler()
+    except web.HTTPError:
+        web.ctx.orm.commit()
+        raise
+    except:
+        web.ctx.orm.rollback()
+        raise
+    finally:
+        web.ctx.orm.commit()
+
 class index(object):
     def GET(self):
         # 读取当前页的文章
-        page = web.input(page=1)
-        page = int(page.page)
-        entry_count = db.query("SELECT COUNT(id) AS num FROM entries")
-        pages = float(float(entry_count[0]['num']) / pageCount)
-        if pages > int(pages):
-            pages = int(pages + 1)
-        elif pages == 0:
-            pages = 1
-        else:
-            pages = int(pages)
-        if page > pages:
-            page = pages
-        entries = list(db.query("SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id ORDER BY createdTime DESC LIMIT $start, $limit", vars = {'start':(page - 1) * pageCount, 'limit':pageCount}))
-        for entry in entries:
-            entry.tags = db.query("SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id", vars = {'id':entry.entryId})
+        i = web.input(page=1)
+        entryCount = web.ctx.orm.query(Entry).count()
+        p = Pagination(entryCount, 5, int(i.page))
 
-        datas['entries'] = entries
-        datas['page'] = page
-        datas['pages'] = pages
-        datas['usedTime'] = time.time() - datas['startTime']
+        d['entries'] = web.ctx.orm.query(Entry).order_by(Entry.createdTime)[p.get_start():p.limit]
+        d['p'] = p
+        d['usedTime'] = time.time() - d['startTime']
 
-        return render.index(**datas)
+        return render.index(**d)
 
 class entry(object):
     def GET(self, slug):

@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 
-from sqlalchemy import create_engine, Table, ForeignKey, mapper
+from sqlalchemy import create_engine, Table, ForeignKey
 from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.ext.declarative import declarative_base
@@ -27,8 +27,12 @@ class Entry(Base):
     viewNum = Column(Integer, default=0)
     commentNum = Column(Integer, default=0)
 
-    def __init__(self, title):
+    tags = relation('Tag', secodary=entry_tag, backref='entries')
+
+    def __init__(self, title, slug, content):
         self.title = title
+        self.slug = slug
+        self.content = content
 
     def __repr__(self):
        return "<Entry ('%s')>" % (self.title,)
@@ -78,4 +82,3 @@ class Link(Base):
     url = Column(String)
     createdTime = Column(DateTime)
 
-mapper()
