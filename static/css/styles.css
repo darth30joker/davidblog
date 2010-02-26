@@ -119,6 +119,13 @@ body {
 .blog_each > div > ul {
     margin-left:25px;
 }
+.blog_each > div > pre {
+	background-color:#EEEEEE;
+	border:1px solid #CCCCCC;
+	color:#000000;
+	overflow:auto;
+	padding:5px;
+}
 
 #side_bar {
     float:left;
