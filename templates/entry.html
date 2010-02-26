@@ -1,88 +1,36 @@
-<%inherit file="base.html" />
-
-<%def name="title()">${ entry.title }</%def>
-
-<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-    $('#comment_form').find('form').validate({    
-        errorClass:"error",
-        submitHandler: function(form) {
-            var form = $('#comment_form').find('form');
-            var commentNum = $('#comments_num').html();
-            $.ajax({
-                data:'id=' + form.find('input[name=id]').attr('value') + '&username=' + form.find('input[name=username]').attr('value') + '&email=' + form.find('input[name=email]').attr('value') + '&url=' + form.find('input[name=url]').attr('value') + '&comment=' + form.find('textarea[name=comment]').attr('value'),
-                type:'post',
-                dataType:'text',
-                success: function(data) {
-                    $('#comments').find('h2').eq(0).after(data);
-                    $('#comments_num').html(parseInt(commentNum) + 1);
-                    $('#comment_form')[0].reset();
-                },
-                url: '/add_comment/',
-            });
-            form.submit(function(){ return false; });
-            return false;
-        },
-        rules: {
-            username: { required: true, minlength: 1, maxlength: 12 },
-            email: { required: true, email: true },
-            url: { url: true },
-            comment: { required: true},
-        },
-        messages: {
-            email: { required: "必须填入邮件地址", email: '必须填入正确的邮件地址' },
-            username: { required: "必须输入用户名", minlength: "用户名不能少于3个字母", maxlength: "用户名不能多于12个字符" },
-            url: { url: "必须输入正确的url地址" },
-            comment: { required: "留言内容不能为空" }
-        }
-    });
-});
-</script>
+{% extends "base.html" %}
+{% block title %}{{ entry.title }}{% endblock %}
+{% block content %}
 <div id="blog_list">
-    <div class="blog_each">
-        <h1><a href="/entry/${ entry.entry_slug }/">${ entry.title }</a></h1>
-        <h3>
-            分类 : <a href="/category/${ entry.category_slug }/">${ entry.category_name }</a>
-            % if entry.tags:
-                   | 标签 : 
-                % for tag in entry.tags:
-                    <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
-                % endfor
-            % endif
-                | @${ entry.createdTime } | ${ entry.commentNum } 条回复
-        </h3>
-        <div>${ entry.content }</div>
-    </div>
+    {% include "_entry.html" %}
     <div id="comments">
-        <h2><% num = entry.commentNum %><span id="comments_num">${ num }</span> 条评论</h2>
-        % if entry.comments:
-            % if pages > 1:
+        <h2><span id="comments_num">{{ comments | length }}</span> 条评论</h2>
+        {% if entry.comments %}
+            {% if p.pages > 1 %}
                 <div id="page_link">
-                    % if page > 1:
-                        <span id="pre_page"><a href="/entry/${ entry.entry_slug }/?page=${ page - 1 }">上一页</a></span>
-                    % endif
-                    % if page < pages:
-                        <span id="next_page"><a href="/entry/${ entry.entry_slug }/?page=${ page + 1 }">下一页</a></span>
-                    % endif
-                    <span id="cur_page">${ page }/${ pages }</span>
+                    {% if p.page > 1 %}
+                        <span id="pre_page"><a href="/entry/{{ entry.entry_slug }}/?page={{ p.page - 1 }}">上一页</a></span>
+                    {% endif %}
+                    {% if p.page < p.pages %}
+                        <span id="next_page"><a href="/entry/{{ entry.entry_slug }}/?page={{ p.page + 1 }}">下一页</a></span>
+                    {% endif %}
+                    <span id="cur_page">{{ p.page }}/{{ p.pages }}</span>
                 </div>
-            % endif
-            % for num, comment in enumerate(entry.comments):
+            {% endif %}
+            {% for comment in comments %}
                 <div class="comment">
-                    <span>${ (page - 1) * pageCount + num + 1 } #</span>
-                    <% import hashlib %>
-                    <h1><img src="http://www.gravatar.com/avatar/${ hashlib.md5(comment.email.lower()).hexdigest() }?s=50" /></h1>
-                    <h2><a href="${ comment.url }">${ comment.username }</a></h2>
-                    <h3>@${ comment.createdTime.strftime("%Y-%m-%d %H:%M") }</h3>
-                    <p>${ comment.comment | h }</p>
+                    <span>#</span>
+                    <h1><img src="http://www.gravatar.com/avatar/" /></h1>
+                    <h2><a href="{{ comment.url }}">{{ comment.username }}</a></h2>
+                    <h3>@{{ comment.createdTime }}</h3>
+                    <p>{{ comment.comment }}</p>
                 </div>
-            % endfor
-        % endif
+            {% endfor %}
+        {% endif %}
         <div id="comment_form">
             <h2>我想留言</h2>
             <form action="/add_comment/" method="POST">
-                <input type="hidden" name="id" value="${ entry.entryId }" />
+                <input type="hidden" name="id" value="{{ entry.entryId }}" />
                 <table>
                     <tr>
                         <td>昵称 *</td>
@@ -109,32 +57,7 @@ $(document).ready(function(){
         </div>
     </div>
 </div>
-
-<div id="side_bar">
-    <div class="side_bar_component">
-        <h2>标签</h2>
-        % for tag in tags:
-            <span><a href="/tag/${ tag.name }/">${ tag.name }</a></span>
-        % endfor
-    </div>
-
-    <div class="side_bar_component">
-        <h2>目录</h2>
-        <ul>
-            % for one in categories:
-                <li><a href="/category/${ one.slug }/">${ one.name } (${ one.entryNum })</a></li>
-            % endfor
-        </ul>
-    </div>
-
-    <div class="side_bar_component">
-        <h2>链接</h2>
-        <ul>
-            % for one in links:
-            <li><a href="${ one.url }" target="_blank">${ one.name }</a></li>
-            % endfor
-        </ul>
-    </div>
-</div>
+{% include "_leftbar.html" %}
 
 <br class="clearfloat" />
+{% endblock %}

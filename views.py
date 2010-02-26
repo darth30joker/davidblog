@@ -12,13 +12,6 @@ from utils import Pagination
 
 d = dict()
 
-def getCategories():
-    categories = mcache.get('categories')
-    if categories is None:
-        categories = list(db.query('SELECT * FROM categories ORDER BY name ASC'))
-        mcache.set('categories', categories)
-    return categories
-
 def getTags():
     tags = mcache.get('tags')
     if tags is None:
@@ -34,19 +27,17 @@ def getLinks():
     return links
 
 def my_loadhook():
-    datas['categories'] = getCategories()
-    datas['tags'] = getTags()
-    datas['links'] = getLinks()
-    datas['startTime'] = time.time()
+    d['tags'] = getTags()
+    d['links'] = getLinks()
+    d['startTime'] = time.time()
     global session
     session = web.config._session
     web.ctx.orm = scoped_session(sessionmaker(bind=engine))
 
 def my_handler(handler):
-    datas['categories'] = getCategories()
-    datas['tags'] = getTags()
-    datas['links'] = getLinks()
-    datas['startTime'] = time.time()
+    d['tags'] = getTags()
+    d['links'] = getLinks()
+    d['startTime'] = time.time()
     web.ctx.session = web.config._session
     web.ctx.orm = scoped_session(sessionmaker(bind=engine))
     try:
@@ -75,32 +66,19 @@ class index(object):
 
 class entry(object):
     def GET(self, slug):
-        entry = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, en.commentNum AS commentNum, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON en.categoryId = ca.id WHERE en.slug = $slug', vars={'slug':slug}))
-        input = web.input(page = 1)
-        page = int(input.page)
-        comment_count = list(db.query("SELECT COUNT(id) AS num FROM comments WHERE entryId = $id", vars = {'id':int(entry[0].entryId)}))
-        pages = float(float(comment_count[0]['num']) / pageCount)
-        if pages > int(pages):
-            pages = int(pages + 1)
-        elif pages == 0:
-            pages = 1
-        else:
-            pages = int(pages)
-        if page > pages:
-            page = pages
-        for one in entry:
-            one.tags = db.query('SELECT * FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId WHERE et.entryId = $id', vars = {'id': one.entryId})
-            one.comments = db.query('SELECT * FROM comments WHERE entryId = $id ORDER BY createdTime ASC LIMIT $start, $limit', vars = {'id': one.entryId, 'start':(page - 1) * pageCount, 'limit':pageCount})
-
+        entry = web.ctx.orm.query(Entry).filter_by(slug=slug).first()
+        i = web.input(page = 1)
+        commentCount = web.ctx.orm.query(Comment).filter_by(entryId=entry.id).count()
+        p = Pagination(commentCount, 5, int(i.page))
+        comments = web.ctx.orm.query(Comment).filter_by(entryId=entry.id)[p.get_start():p.limit]
         f = commentForm()
 
-        datas['page'] = page
-        datas['pages'] = pages
-        datas['entry'] = entry[0]
-        datas['f'] = f
-        datas['usedTime'] = time.time() - datas['startTime']
+        d['p'] = p
+        d['entry'] = entry
+        d['f'] = f
+        d['usedTime'] = time.time() - d['startTime']
 
-        return render.entry(**datas)
+        return render.entry(**d)
 
 class page(object):
     def GET(self, slug):
@@ -108,51 +86,6 @@ class page(object):
         if not page:
             datas['usedTime'] = time.time() - datas['startTime']
             return render.page(**datas)
-
-class addComment(object):
-    def POST(self):
-        inputs = web.input()
-        createdTime = datetime.now().strftime("%Y-%m-%d %H:%M")
-        if inputs.url =="":
-            inputs.url = "#"
-        db.insert('comments', entryId = inputs.id, username = inputs.username, email = inputs.email, url = inputs.url, createdTime = createdTime, comment = inputs.comment)
-        entry = db.query('SELECT commentNum FROM entries WHERE id = $id', vars = {'id':inputs.id})
-        db.update('entries', where = 'id = %s' % inputs.id, commentNum = entry[0].commentNum + 1)
-
-        datas['datas'] = inputs
-        datas['createdTime'] = createdTime
-
-        return render.comment(**datas)
-
-class category(object):
-    def GET(self, slug):
-        category = list(db.query('SELECT name FROM categories WHERE slug = $slug', vars = {'slug':slug}))
-        if len(category) == 0:
-            raise web.notfound()
-        # 读取当前页的文章
-        page = web.input(page=1)
-        page = int(page.page)
-        entry_count = db.query("SELECT COUNT(en.id) AS num FROM entries en LEFT JOIN categories ca ON ca.id = en.categoryId WHERE ca.slug = $slug", vars = {'slug':slug})
-        pages = float(float(entry_count[0]['num']) / 10)
-        if pages > int(pages):
-            pages = int(pages + 1)
-        elif pages == 0:
-            pages = 1
-        else:
-            pages = int(pages)
-        if page > pages:
-            page = pages
-
-        entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime, ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name FROM entries en LEFT JOIN categories ca ON ca.id = en.categoryId WHERE ca.slug = $slug ORDER BY en.createdTime DESC LIMIT $start, $limit', vars = {'slug':slug, 'start':(page - 1) * pageCount, 'limit':pageCount}))
-
-
-        datas['entries'] = entries
-        datas['page'] = page
-        datas['pages'] = pages
-        datas['usedTime'] = time.time() - datas['startTime']
-        datas['category_name'] = category[0].name
-
-        return render.category(**datas)
 
 class tag(object):
     def GET(self, slug):

@@ -7,7 +7,7 @@ class Pagination(object):
         if intPages == 0:
             pages = 1
         if floatPages > intPages:
-            pages = pages + 1
+            pages = intPages + 1
         if currentPage < 1:
             currentPage = 1
         if currentPage > pages:

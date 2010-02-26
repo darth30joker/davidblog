@@ -3,7 +3,7 @@
 
 import web
 import views
-from views import my_loadhook
+from views import my_handler
 import admin
 
 urls = (
