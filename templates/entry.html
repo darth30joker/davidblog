@@ -9,10 +9,10 @@
             {% if p.pages > 1 %}
                 <div id="page_link">
                     {% if p.page > 1 %}
-                        <span id="pre_page"><a href="/entry/{{ entry.entry_slug }}/?page={{ p.page - 1 }}">上一页</a></span>
+                        <span id="pre_page"><a href="/entry/{{ entry.entry_slug }}/?page={{ p.prev_page }}">上一页</a></span>
                     {% endif %}
                     {% if p.page < p.pages %}
-                        <span id="next_page"><a href="/entry/{{ entry.entry_slug }}/?page={{ p.page + 1 }}">下一页</a></span>
+                        <span id="next_page"><a href="/entry/{{ entry.entry_slug }}/?page={{ p.next_page }}">下一页</a></span>
                     {% endif %}
                     <span id="cur_page">{{ p.page }}/{{ p.pages }}</span>
                 </div>
@@ -20,7 +20,7 @@
             {% for comment in comments %}
                 <div class="comment">
                     <span>#</span>
-                    <h1><img src="http://www.gravatar.com/avatar/" /></h1>
+					<h1><img src="{{ comment.email|avatar }}" /></h1>
                     <h2><a href="{{ comment.url }}">{{ comment.username }}</a></h2>
                     <h3>@{{ comment.createdTime }}</h3>
                     <p>{{ comment.comment }}</p>
@@ -29,25 +29,33 @@
         {% endif %}
         <div id="comment_form">
             <h2>我想留言</h2>
-            <form action="/add_comment/" method="POST">
+			<form action="/entry/{{ entry.slug }}/" method="POST">
                 <input type="hidden" name="id" value="{{ entry.entryId }}" />
                 <table>
                     <tr>
-                        <td>昵称 *</td>
-                        <td><input type="text" name="username" /></td>
+                        <th>昵称 *</th>
+						<td><input type="text" name="username" value="{{ f.username.value|notnull }}">{{ f.username.note|formnote }}</td>
                     </tr>
                     <tr>
-                        <td>Email地址 *</td>
-                        <td><input type="text" name="email" /></td>
+                        <th>Email地址 *</th>
+                        <td><input type="text" name="email" value="{{ f.email.value|notnull }}">{{ f.email.note|formnote }}</td>
                     </tr>
                     <tr>
-                        <td>个人网站</td>
-                        <td><input type="text" name="url" /></td>
+                        <th>个人网站</th>
+                        <td><input type="text" name="url" value="{{ f.url.value|notnull }}">{{ f.url.note|formnote }}</td>
                     </tr>
                     <tr>
-                        <td>留言内容</td>
-                        <td><textarea name="comment"></textarea></td>
+                        <th>留言内容</th>
+                        <td><textarea name="comment">{{ f.comment.value|notnull }}</textarea>{{ f.comment.note|formnote }}</td>
                     </tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td><img src="/captcha/" /></td>
+					</tr>
+					<tr>
+						<th>Captcha(*)</th>
+						<td><input type="text" name="captcha" value="{{ f.captcha.value|notnull }}">{{ f.captcha.note|formnote }}</td>
+					</tr>
                     <tr>
                         <td>&nbsp;</td>
                         <td><input type="submit" value="发表留言" style="width:auto;" /></td>

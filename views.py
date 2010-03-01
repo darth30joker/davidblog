@@ -8,7 +8,7 @@ from cache import mcache
 import time
 from sqlalchemy.orm import scoped_session, sessionmaker
 from models import *
-from utils import Pagination
+from utils import Pagination, getCaptcha
 
 d = dict()
 
@@ -26,14 +26,6 @@ def getLinks():
         mcache.set('links', links)
     return links
 
-def my_loadhook():
-    d['tags'] = getTags()
-    d['links'] = getLinks()
-    d['startTime'] = time.time()
-    global session
-    session = web.config._session
-    web.ctx.orm = scoped_session(sessionmaker(bind=engine))
-
 def my_handler(handler):
     d['tags'] = getTags()
     d['links'] = getLinks()
@@ -48,8 +40,15 @@ def my_handler(handler):
     except:
         web.ctx.orm.rollback()
         raise
-    finally:
+    else:
         web.ctx.orm.commit()
+
+class captcha:
+    def GET(self):
+        web.header('Content-type', 'image/gif')
+        captcha = getCaptcha()
+        web.ctx.session.captcha = captcha[0]
+        return captcha[1].read()
 
 class index(object):
     def GET(self):
@@ -58,27 +57,44 @@ class index(object):
         entryCount = web.ctx.orm.query(Entry).count()
         p = Pagination(entryCount, 5, int(i.page))
 
-        d['entries'] = web.ctx.orm.query(Entry).order_by(Entry.createdTime)[p.get_start():p.limit]
+        d['entries'] = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[p.start:p.limit]
         d['p'] = p
         d['usedTime'] = time.time() - d['startTime']
 
         return render.index(**d)
 
 class entry(object):
-    def GET(self, slug):
-        entry = web.ctx.orm.query(Entry).filter_by(slug=slug).first()
-        i = web.input(page = 1)
-        commentCount = web.ctx.orm.query(Comment).filter_by(entryId=entry.id).count()
-        p = Pagination(commentCount, 5, int(i.page))
-        comments = web.ctx.orm.query(Comment).filter_by(entryId=entry.id)[p.get_start():p.limit]
-        f = commentForm()
+    def getEntry(self, slug):
+        if slug:
+            entry = web.ctx.orm.query(Entry).filter_by(slug=slug).first()
+            i = web.input(page = 1)
+            commentCount = web.ctx.orm.query(Comment).filter_by(entryId=entry.id).count()
+            p = Pagination(commentCount, 5, int(i.page))
+            comments = web.ctx.orm.query(Comment).filter_by(entryId=entry.id)[p.start:p.limit]
+            return (entry, p)
 
+    def GET(self, slug):
+        entry, p = self.getEntry(slug)
+        f = commentForm()
         d['p'] = p
         d['entry'] = entry
         d['f'] = f
         d['usedTime'] = time.time() - d['startTime']
-
         return render.entry(**d)
+
+    def POST(self, slug):
+        entry, p = self.getEntry(slug)
+        f = commentForm()
+        if f.validates():
+            comment = Comment(entry.id, f.username.value, f.email.value, f.url.value, f.comment.value)
+            web.ctx.orm.add(comment)
+            raise web.seeother('/entry/%s/' % slug)
+        else:
+            d['p'] = p
+            d['entry'] = entry
+            d['f'] = f
+            d['usedTime'] = time.time() - d['startTime']
+            return render.entry(**d)
 
 class page(object):
     def GET(self, slug):

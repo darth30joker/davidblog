@@ -11,11 +11,9 @@ urls = (
         '/', 'views.index',
         '^/entry/(.*)/$', 'views.entry',
         '^/page/(.*)/$', 'views.page',
-        '^/category/(.*)/$', 'views.category',
         '^/tag/(.*)/$', 'views.tag',
-        '^/add_comment/$', 'views.addComment',
+        '^/captcha/$', 'views.captcha',
         '^/rss.xml$', 'views.rss',
-        '^/test$', 'views.test',
     )
 
 app = web.application(urls, globals(), autoreload = True)

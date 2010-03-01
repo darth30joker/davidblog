@@ -9,10 +9,10 @@
     {% endif %}
     <div id="page_link">
         {% if p.page > 1 %}
-            <span id="pre_page"><a href="/?page={{ p.page - 1 }}">上一页</a></span>
+            <span id="pre_page"><a href="/?page={{ p.prev_page }}">上一页</a></span>
         {% endif %}
         {% if p.page < p.pages %}
-            <span id="next_page"><a href="/?page={{ p.page + 1 }}">下一页</a></span>
+            <span id="next_page"><a href="/?page={{ p.next_page }}">下一页</a></span>
         {% endif %}
         <span id="cur_page">{{ p.page }}/{{ p.pages }}</span>
     </div>
