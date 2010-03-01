@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('mysql://root:root@localhost/davidblog?charset=utf8')
+engine = create_engine('mysql://root:root@localhost/davidblog_new?charset=utf8')
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -57,7 +57,7 @@ class Entry(Base):
         self.content = content
 
     def __repr__(self):
-       return "<Entry ('%s')>" % (self.title,)
+       return "<Entry ('%s')>" % self.id
 
 class Tag(Base):
     __tablename__ = 'tags'

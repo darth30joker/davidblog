@@ -4,7 +4,7 @@
 import web
 import memcache
 from web.contrib.template import render_jinja
-from templatefilters import avatar, notnull, formnote
+from templatefilters import avatar, notnull, formnote, content
 import os
 
 pageCount = 5
@@ -21,7 +21,8 @@ def getRender():
         os.getcwd() + '/templates',
         encoding = 'utf-8',
     )
-    myFilters = {'avatar':avatar,'notnull':notnull,'formnote':formnote}
+    myFilters = {'avatar':avatar,'notnull':notnull,
+        'formnote':formnote, 'content':content}
     render._lookup.filters.update(myFilters)
     return render
 render = getRender()

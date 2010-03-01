@@ -1,14 +1,15 @@
 #coding:utf-8
-
+from datetime import datetime
+import time
+import cgi
 import web
 from forms import commentForm
-from datetime import datetime
 from settings import db, render, pageCount
 from cache import mcache
-import time
 from sqlalchemy.orm import scoped_session, sessionmaker
 from models import *
 from utils import Pagination, getCaptcha
+from markdown import markdown
 
 d = dict()
 
@@ -56,7 +57,6 @@ class index(object):
         i = web.input(page=1)
         entryCount = web.ctx.orm.query(Entry).count()
         p = Pagination(entryCount, 5, int(i.page))
-
         d['entries'] = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[p.start:p.limit]
         d['p'] = p
         d['usedTime'] = time.time() - d['startTime']
@@ -69,12 +69,13 @@ class entry(object):
             entry = web.ctx.orm.query(Entry).filter_by(slug=slug).first()
             i = web.input(page = 1)
             commentCount = web.ctx.orm.query(Comment).filter_by(entryId=entry.id).count()
-            p = Pagination(commentCount, 5, int(i.page))
-            comments = web.ctx.orm.query(Comment).filter_by(entryId=entry.id)[p.start:p.limit]
+            p = Pagination(int(commentCount), 5, int(i.page))
+            entry.comments = web.ctx.orm.query(Comment).filter_by(entryId=entry.id)[p.start:p.limit]
             return (entry, p)
 
     def GET(self, slug):
         entry, p = self.getEntry(slug)
+        entry.viewNum = entry.viewNum + 1
         f = commentForm()
         d['p'] = p
         d['entry'] = entry
@@ -87,6 +88,8 @@ class entry(object):
         f = commentForm()
         if f.validates():
             comment = Comment(entry.id, f.username.value, f.email.value, f.url.value, f.comment.value)
+            entry.commentNum = entry.commentNum + 1
+            entry.viewNum = entry.viewNum - 1
             web.ctx.orm.add(comment)
             raise web.seeother('/entry/%s/' % slug)
         else:
@@ -105,37 +108,23 @@ class page(object):
 
 class tag(object):
     def GET(self, slug):
-
-        tag = db.query('SELECT et.entryId AS id FROM entry_tag et LEFT JOIN tags t ON et.tagId = t.id WHERE t.name = $slug', vars = {'slug':slug})
-        entry_list = [str(i.id) for i in tag]
-
-        # 读取当前页的文章
-        page = web.input(page=1)
-        page = int(page.page)
-        entry_count = len(entry_list)
-        pages = float(float(entry_count) / 10)
-        if pages > int(pages):
-            pages = int(pages + 1)
-        elif pages == 0:
-            pages = 1
-        else:
-            pages = int(pages)
-        if page > pages:
-            page = pages
-
-        entries = list(db.query('SELECT en.id AS entryId, en.title AS title, en.content AS content, en.slug AS entry_slug, en.createdTime AS createdTime FROM entries en WHERE en.id in ($ids)', vars = {'ids':','.join(entry_list)}))
-
-        datas['entries'] = entries
-        datas['page'] = page
-        datas['pages'] = pages
-        datas['usedTime'] = time.time() - datas['startTime']
-        datas['slug'] = slug
-
-        return render.tag(**datas)
+        i = web.input(page=1)
+        try:
+            page = int(i.page)
+        except:
+            page = 1
+        tag = web.ctx.orm.query(Tag).filter_by(name=slug).first()
+        p = Pagination(len(tag.entries), 20, page)
+        entries = tag.entries[::-1][p.start:p.limit]
+        d['tag'] = tag
+        d['p'] = p
+        d['entries'] = entries
+        d['usedTime'] = time.time() - d['startTime']
+        return render.tag(**d)
 
 class rss(object):
     def GET(self):
-        entries = list(db.query('SELECT * FROM entries ORDER BY createdTime DESC LIMIT 10'))
+        entries = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC').all()[:10]
         rss = '<?xml version="1.0" encoding="utf-8" ?>\n'
         rss = rss + '<rss version="2.0">\n'
         rss = rss + '<channel>\n'
@@ -147,15 +136,15 @@ class rss(object):
         for one in entries:
             rss = rss + '<item>\n'
             rss = rss + '<title>' + one.title + '</title>\n'
-            rss = rss + '<link>http://davidshieh.cn/entry/' + one.slug + '</link>\n'
-            rss = rss + '<guid>http://davidshieh.cn/entry/' + one.slug + '</link>\n'
+            rss = rss + '<link>http://davidx.me/entry/' + one.slug + '</link>\n'
+            rss = rss + '<guid>http://davidx.me/entry/' + one.slug + '</guid>\n'
             rss = rss + '<pubDate>' + one.createdTime.strftime('%a, %d %b  %Y %H:%M:%S GMT') + '</pubDate>\n'
-            rss = rss + '<description>' + one.content[:100] + '</description>\n'
+            rss = rss + '<description>' + cgi.escape(markdown(one.content)) + '</description>\n'
             rss = rss + '</item>\n'
 
         rss = rss + '</channel>\n'
         rss = rss + '</rss>\n'
-        web.header('Content-Type', 'text/xml')
+        #web.header('Content-Type', 'text/xml')
         rss = rss.encode('utf-8')
         return rss
 

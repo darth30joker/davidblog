@@ -1,5 +1,6 @@
 #-*-coding:utf-8-*-
 import hashlib
+from markdown import markdown
  
 def avatar(value):
     return hashlib.md5(value.lower()).hexdigest()
@@ -15,3 +16,6 @@ def formnote(value):
         return '<span class="wrong">' + value + '</span>'
     else:
         return ''
+
+def content(value):
+    return markdown(value)

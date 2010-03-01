@@ -3,5 +3,5 @@
     <h3>{% if entry.tags %}<span>标签 : </span>{% for tag in entry.tags %}
         <span><a href="/tag/{{ tag.name }}/">{{ tag.name }}</a></span>
         {% endfor %} | {% endif %}<span>发表 : </span>{{ entry.createdTime }} | {{ entry.commentNum }} 条回复</h3>
-    <div>{{ entry.content }}</div>
+    <div>{{ entry.content|content }}</div>
 </div>
