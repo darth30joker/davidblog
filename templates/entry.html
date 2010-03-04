@@ -9,12 +9,12 @@
             {% if p.pages > 1 %}
                 <div id="page_link">
                     {% if p.page > 1 %}
-                        <span id="pre_page"><a href="/entry/{{ entry.slug }}/?page={{ p.prev_page }}">上一页</a></span>
+                        <span id="pre_page"><a href="/entry/{{ entry.slug }}/?page={{ p.prevPage }}">上一页</a></span>
                     {% endif %}
                     {% if p.page < p.pages %}
-                        <span id="next_page"><a href="/entry/{{ entry.slug }}/?page={{ p.next_page }}">下一页</a></span>
+                        <span id="next_page"><a href="/entry/{{ entry.slug }}/?page={{ p.nextPage }}">下一页</a></span>
                     {% endif %}
-                    <span id="cur_page">{{ p.page }}/{{ p.pages }}</span>
+                    <p id="cur_page">{{ p.page }}/{{ p.pages }}</p>
                 </div>
             {% endif %}
             {% for comment in entry.comments %}
@@ -28,43 +28,20 @@
             {% endfor %}
         {% endif %}
         <div id="comment_form">
-            <h2>我想留言</h2>
+            <h2>我想说点什么...</h2>
 			<form action="/entry/{{ entry.slug }}/" method="POST">
-                <input type="hidden" name="id" value="{{ entry.entryId }}" />
-                <table>
-                    <tr>
-                        <th>昵称 *</th>
-						<td><input type="text" name="username" value="{{ f.username.value|notnull }}">{{ f.username.note|formnote }}</td>
-                    </tr>
-                    <tr>
-                        <th>Email地址 *</th>
-                        <td><input type="text" name="email" value="{{ f.email.value|notnull }}">{{ f.email.note|formnote }}</td>
-                    </tr>
-                    <tr>
-                        <th>个人网站</th>
-                        <td><input type="text" name="url" value="{{ f.url.value|notnull }}">{{ f.url.note|formnote }}</td>
-                    </tr>
-                    <tr>
-                        <th>留言内容</th>
-                        <td><textarea name="comment">{{ f.comment.value|notnull }}</textarea>{{ f.comment.note|formnote }}</td>
-                    </tr>
-					<tr>
-						<th>&nbsp;</th>
-						<td><img src="/captcha/" /></td>
-					</tr>
-					<tr>
-						<th>Captcha(*)</th>
-						<td><input type="text" name="captcha" value="{{ f.captcha.value|notnull }}">{{ f.captcha.note|formnote }}</td>
-					</tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td><input type="submit" value="发表留言" style="width:auto;" /></td>
-                    </tr>
-                </table>
+                <p><input type="text" name="username" value="{{ f.username.value|notnull }}">
+                    <label>昵称 *</label>{{ f.username.note|formnote }}</p>
+                <p><input type="text" name="email" value="{{ f.email.value|notnull }}">
+                    <label>Email地址 *</label>{{ f.email.note|formnote }}</p>
+                <p><input type="text" name="url" value="{{ f.url.value|notnull }}">
+                    <label>个人网站</label>{{ f.url.note|formnote }}</p>
+                <p><textarea name="comment">{{ f.comment.value|notnull }}</textarea>{{ f.comment.note|formnote }}</p>
+                <p><input type="text" name="captcha" value="{{ f.captcha.value|notnull }}">
+                    <label><img src="/captcha/" /></label>{{ f.captcha.note|formnote }}</p>
+                <p><input type="submit" value="发表留言" style="width:auto;" /></p>
             </form>
         </div>
     </div>
 </div>
-{% include "_leftbar.html" %}
-<br class="clearfloat" />
 {% endblock %}

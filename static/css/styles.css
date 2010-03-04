@@ -94,6 +94,7 @@ body {
 }
 .blog_each > div {
 	font-size:14px;
+    margin:20px 0;
 }
 .blog_each > div > p {
 	margin:15px 0;
@@ -127,3 +128,57 @@ body {
     text-align:center;
 }
 
+/** comment style **/
+#comments h2 {
+    font-size:16px;
+    color:#97DB72;
+    margin:10px 0;
+}
+.comment {
+    margin:20px 0;
+}
+.comment span {
+    float:right;
+    margin-right:20px;
+    font-size:12px;
+}
+.comment h1 img {
+    width:50px;
+    margin:5px;
+}
+.comment h1,
+.comment h2,
+.comment h3 {
+    float:left;
+}
+.comment h2,
+.comment h3 {
+    width:500px;
+    font-size:14px;
+}
+.comment p {
+    clear:both;
+    font-size:14px;
+}
+#comment_form {
+    border-top:1px dashed #FF9933;
+    margin-top:10px;
+    padding:10px;
+}
+#comment_form h2 {
+    color:#F93;
+}
+#comment_form p {
+    margin:10px;
+}
+#comment_form p label {
+    padding-left:20px;
+    font-size:14px;
+}
+#comment_form p input {
+    width:200px;
+}
+#comment_form textarea {
+    width:500px;
+    height:150px;
+}
