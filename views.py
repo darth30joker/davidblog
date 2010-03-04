@@ -7,7 +7,7 @@ import web
 from forms import commentForm
 from settings import db, render, pageCount
 from cache import mcache
-from sqlalchemy.orm import scoped_session, sessionmaker
+#from sqlalchemy.orm import scoped_session, sessionmaker
 from models import *
 from utils import Pagination, getCaptcha
 from markdown import markdown
@@ -15,21 +15,20 @@ from markdown import markdown
 d = dict()
 
 def getTags():
-    return list(db.query(
-            'SELECT * FROM tags ORDER BY name ASC'))
+    return web.ctx.orm.query(Tag).order_by('tags.name').all()
 
 def getLinks():
-    return list(db.query(
-            'SELECT * FROM links ORDER BY name ASC'))
+    return web.ctx.orm.query(Link).order_by('links.name').all()
 
 def my_handler(handler):
-    d['tags'] = getTags()
-    d['links'] = getLinks()
     d['startTime'] = time.time()
     web.ctx.session = web.config._session
-    web.ctx.orm = scoped_session(sessionmaker(bind=engine))
+    web.ctx.orm = Session()
+    d['tags'] = getTags()
+    d['links'] = getLinks()
     try:
         return handler()
+        web.ctx.orm.close()
     except web.HTTPError:
         web.ctx.orm.commit()
         raise

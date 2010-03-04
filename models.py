@@ -4,8 +4,10 @@ from sqlalchemy import create_engine, Table, ForeignKey
 from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
 engine = create_engine('mysql://root:root@localhost/davidblog_new?charset=utf8')
+Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
 metadata = Base.metadata
