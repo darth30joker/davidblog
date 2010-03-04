@@ -1,3 +1,4 @@
+/** CSS Reset **/
 * {padding:0; margin:0;}
 a {text-decoration:none;}
 img {border:none;}
@@ -11,207 +12,56 @@ a:hover {
 .clearfloat {
     clear:both;
 }
-body { font-family:"Dajavu Sans MONO, Arial"}
-#page {
-    width:960px;
-    margin:0 auto;
+
+/** body **/
+body {
+	background-color:#333;
 }
-#head {
-    margin:20px 0;
+#side_bar {
+	width:200px;
+	float:left;
+	color:#9FC671;
 }
-#logo {
-    padding:20px 0;
-}
-#logo h1 {
-    font-size:34px;
-    margin:5px 0 5px 30px;
-    letter-spacing:5px;
-    width:340px;
-    text-shadow: 1px 1px #bbb;
-    font-family:"Microsoft YaHei" !important;
-}
-#logo h1 span {
-    color:red;
-    float:right;
-    font-size:12px;
-    letter-spacing:0;
-}
-#logo p {
-    font-size:14px;
-    margin-left:30px;
-    font-style:italic;
-    text-shadow: 0px -1px #bbb,0 1px #fff; 
-    color:#e3e1e1; 
-}
-#menu {
-    border-bottom:1px solid #CCC;
-    padding-bottom:5px;
-    font-size:14px;
-    padding-left:20px;
-}
-#menu ul li {
-    display:inline;
-    padding:5px 10px;
-}
-#menu ul li:hover {
-    border-top:1px solid red;
-}
-#foot {
-    border-top:1px solid #ccc;
-    text-align:center;
-    margin:20px;
-}
-#foot p {
-    margin-top:10px;
-    font-size:12px;
-    color:#333;
-}
-/** index page **/
-#blog_list {
-    float:left;
-    width:700px;
-    padding:0 30px 0 30px;
+#main {
+	width:740px;
+	float:left;
+	background-color:#FBF8EF;
+	padding:10px;
+	margin:20px 0;
 }
 .blog_each {
-    margin-bottom:100px;
+	padding:10px;
+	margin:10px 0;
+	border-top:1px dashed #FF9595;
+	border-top-width:70%;
 }
-.blog_each h1 {
-    font-size:26px;
-    padding:5px 0;
+.blog_each > h1 {
+	font-size:22px;
+	padding:5px 0;
 }
-.blog_each h1 a:link,
-.blog_each h1 a:visited {
-    color:black;
-    font-family:"Microsoft YaHei" !important;
-    text-shadow:0 1px 0 #FFFFFF;
+.blog_each > h1 > a {
+	padding:3px;
+	display:block;
 }
-.blog_each h1 a:hover {
-    color:#D90000;
+.blog_each > h1 > a:link,
+.blog_each > h1 > a:visited {
+	color:#3177C1;
 }
-.blog_each h2,
-.blog_each h3 {
-    font-size:12px;
-    color:#ccc;
-    font-style:italic;
+.blog_each > h1 > a:hover {
+	color:white;
+	background-color:#3177C1;
 }
-.blog_each h3 a {
-    text-decoration:underline;
-    color:#444;
-}
-.blog_each h3 a:link,
-.blog_each h3 a:visited {
-    color:#444;
-}
-.blog_each h3 a:hover {
-    color:red;
+.blog_each > h3 {
+	font-size:12px;
 }
 .blog_each > div {
-    font-size:12px;
-    margin:50px 0;
+	font-size:14px;
 }
-.blog_each > div p {
-    margin:15px 0;
-    line-height:1.5em;
+.blog_each > div > p {
+	margin:15px 0;
 }
-
-#side_bar {
-    float:left;
-    width:199px;
-    border-left:1px solid #ccc;
+.blog_each > div a:link,
+.blog_each > div a:visited {
+	text-decoration:underline;
+	color:#A76B2E;
 }
-.side_bar_component {
-    margin:22px;
-}
-.side_bar_component span a:link,
-.side_bar_component span a:visited {
-    color:red;
-}
-.side_bar_component a {
-    font-size:14px;
-}
-.side_bar_component h2 {
-    font-size:16px;
-    color:#333;
-}
-.side_bar_component ul {
-    margin:5px 0 0 20px;
-}
-.side_bar_component ul li span {
-    color:red;
-}
-#page_link { font-size:12px;padding:5px; }
-#page_link a { text-decoration:underline; }
-#pre_page { float:left; }
-#pre_page a:link,
-#pre_page a:visited,
-#next_page a:link,
-#next_page a:visited {
-    color:#004B91;
-}
-#next_page { float:right; }
-#cur_page { margin:0 auto;display:block;width:100px;text-align:center; }
-
-/** Entry page **/
-#comments > h2 {
-    font-size:16px;
-    margin:10px 0;
-}
-.comment {
-    border:1px solid #ccc;
-    padding:10px;
-    margin-bottom:10px;
-}
-.comment h1 {
-    float:left;
-    height:50px;
-    margin:5px;
-    width:50px;
-}
-.comment h2 {
-    font-size:14px;
-    float:left;
-    margin:7px 7px;
-    width:550px;
-}
-.comment h2 a:link,
-.comment h2 a:visited {
-    color:#004B91;
-}
-.comment h3 {
-    font-size:11px;
-    color:#666;
-    float:left;
-    margin:5px;
-    width:500px;
-}
-.comment p {
-    margin:10px 0;
-    clear:both;
-    padding:10px;
-    font-size:12px;
-}
-.comment span {
-    font-size:12px;
-}
-#comment_form > h2 {
-    font-size:16px;
-}
-#comment_form tr {
-    padding:10px 0;
-}
-#comment_form td {
-    width:180px;
-    padding:5px 0;
-    vertical-align:top;
-    font-size:12px;
-}
-#comment_form input {
-    width:510px;
-    font-size:12px;
-}
-#comment_form textarea {
-    width:510px;
-    height:150px;
-    font-size:12px;
-}
-label.error {color:red;}
