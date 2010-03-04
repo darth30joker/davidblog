@@ -1,39 +1,77 @@
 /** CSS Reset **/
-* {padding:0; margin:0;}
-a {text-decoration:none;}
-img {border:none;}
-a:link,
-a:visited {
-    color:black;
-}
-a:hover {
-    color:#D90000;
-}
-.clearfloat {
-    clear:both;
-}
+* { padding:0; margin:0; }
+a { text-decoration:none; }
+img { border:none; }
+.clearfloat { clear:both; }
 
 /** body **/
 body {
 	background-color:#333;
 }
+#foot {
+    color:#9FC671;
+    font-size:10px;
+    margin:10px 0;
+}
+#foot a:link,
+#foot a:visited {
+	text-decoration:underline;
+	color:#A76B2E;
+}
 #side_bar {
 	width:200px;
 	float:left;
+    padding:20px 10px;
+}
+#side_bar a:link,
+#side_bar a:visited {
 	color:#9FC671;
+    font-size:12px;
+}
+#side_bar a:hover {
+    text-decoration:underline;
+    color:#649EDA;
+}
+.side_bar_component {
+    margin:20px;
+    padding:10px;
+}
+.side_bar_component h2 {
+    color:#98E3FC;
+    font-size:18px;
+    margin:10px 0;
+}
+.side_bar_component ul {
+    list-style:disc;
+    margin-left:20px;
 }
 #main {
 	width:740px;
 	float:left;
+	margin:20px 0;
+}
+#blog_list {
 	background-color:#FBF8EF;
 	padding:10px;
-	margin:20px 0;
+}
+#blog_list > ul {
+    margin: 10px 0 10px 30px;
+}
+#blog_list > h2 {
+    font-size:14px;
+    color:#3177C1;
+}
+#blog_list > ul a:link,
+#blog_list > ul a:visited {
+    font-size:12px;
+    text-decoration:underline;
+	color:#A76B2E;
 }
 .blog_each {
 	padding:10px;
 	margin:10px 0;
-	border-top:1px dashed #FF9595;
-	border-top-width:70%;
+	/**border-top:1px dashed #FF9595;
+	border-top-width:70%;**/
 }
 .blog_each > h1 {
 	font-size:22px;
@@ -64,4 +102,27 @@ body {
 .blog_each > div a:visited {
 	text-decoration:underline;
 	color:#A76B2E;
+}
+.blog_each > div ol,
+.blog_each > div ul {
+    margin-left:20px;
+}
+
+/** page link style **/
+#page_link {
+    font-size:12px;
+}
+#page_link a:link,
+#page_link a:visited {
+	color:#3177C1;
+}
+#pre_page {
+    float:left;
+}
+#next_page {
+    float:right;
+}
+#cur_page {
+    width:100%;
+    text-align:center;
 }

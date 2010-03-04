@@ -2,6 +2,12 @@
 {% block title %}首页{% endblock %}
 {% block content %}
 <div id="blog_list">
+    <h2>随机文章:</h2>
+    <ul>
+        {% for entry in randomEntries %}
+            <li><a href="/entry/{{ entry.slug }}/">{{ entry.title }}</a></li>
+        {% endfor %}
+    </ul>
     {% if entries %}
         {% for entry in entries %}
             {% include "_entry.html" %}
@@ -14,7 +20,7 @@
         {% if p.page < p.pages %}
             <span id="next_page"><a href="/?page={{ p.nextPage }}">下一页</a></span>
         {% endif %}
-        <span id="cur_page">{{ p.page }}/{{ p.pages }}</span>
+        <p id="cur_page">{{ p.page }}/{{ p.pages }}</p>
     </div>
 </div>
 {% endblock %}

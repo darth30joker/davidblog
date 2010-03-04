@@ -10,10 +10,12 @@
     </head>
     <body>
 		{% include "_leftbar.html" %}
-		<div id="main">{% block content %}{% endblock %}</div>
+        <div id="main">
+            {% block content %}{% endblock %}
+            <div id="foot">
+                <p>版权所有©2009 <a href="http://davidx.me/">David Xie</a> | 如有转贴, 请注明出处. @转自<a href="http://davidx.me/">&lt;泥泞的沼泽:http://davidx.me/&gt;</a> | Powered by <a href="http://webpy.org/" target="_blank">web.py</a> | 页面加载耗时 {{ "%.3f" % usedTime }}s</p>
+            </div>
+        </div>
 		<br class="clearfloat" />
-		<div id="foot">
-			<p>版权所有©2009 <a href="http://davidx.me/">David Xie</a> | 如有转贴, 请注明出处. @转自<a href="http://davidx.me/">&lt;泥泞的沼泽:http://davidx.me/&gt;</a> | Powered by <a href="http://webpy.org/" target="_blank">web.py</a> | 页面加载耗时 {{ "%.3f" % usedTime }}s</p>
-		</div>
 	</body>
 </html>

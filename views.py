@@ -2,6 +2,7 @@
 from datetime import datetime
 import time
 import cgi
+import random
 import web
 from forms import commentForm
 from settings import db, render, pageCount
@@ -55,12 +56,14 @@ class index(object):
     def GET(self):
         # 读取当前页的文章
         i = web.input(page=1)
+        ids = [int(one.id) for one in web.ctx.orm.query(Entry.id).all()]
+        randomEntries = [web.ctx.orm.query(Entry).filter_by(id=id).first() for id in random.sample(ids, 5)]
         entryCount = web.ctx.orm.query(Entry).count()
         p = Pagination(entryCount, 5, int(i.page))
-        d['entries'] = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[p.start:p.limit]
+        d['entries'] = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[p.start:p.start + p.limit]
         d['p'] = p
         d['usedTime'] = time.time() - d['startTime']
-
+        d['randomEntries'] = randomEntries
         return render.index(**d)
 
 class entry(object):
