@@ -53,6 +53,7 @@ body {
 #blog_list {
 	background-color:#FBF8EF;
 	padding:10px;
+    min-height:800px;
 }
 #blog_list > ul {
     margin: 10px 0 10px 30px;
@@ -95,6 +96,7 @@ body {
 .blog_each > div {
 	font-size:14px;
     margin:20px 0;
+    line-height:22px;
 }
 .blog_each > div > p {
 	margin:15px 0;
