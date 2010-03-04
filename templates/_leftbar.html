@@ -1,0 +1,24 @@
+<div id="side_bar">
+    <div class="side_bar_component">
+        <h2>导航</h2>
+        <ul>
+            <li><a href="/">首页</a></li>
+            <li><a href="http://paste.davidx.me/">大卫粘贴</a></li>
+            <li><a href="/page/about/">关于davidx</a></li>
+    </div>
+    <div class="side_bar_component">
+        <h2>标签</h2>
+        {% for tag in tags %}
+            <span><a href="/tag/{{ tag.name }}/">{{ tag.name }}</a></span>
+        {% endfor %}
+    </div>
+
+    <div class="side_bar_component">
+        <h2>链接</h2>
+        <ul>
+            {% for one in links %}
+                <li><a href="{{ one.url }}" target="_blank">{{ one.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

@@ -1,21 +1,18 @@
-#-*-coding:utf-8-*-
-
+#coding:utf-8
+from datetime import datetime
+import time
+import cgi
+import random
 import web
 from forms import commentForm
-from datetime import datetime
 from settings import db, render, pageCount
 from cache import mcache
-from functions import *
-import time
-import hashlib
-import markdown
+from sqlalchemy.orm import scoped_session, sessionmaker
+from models import *
+from utils import Pagination, getCaptcha
+from markdown import markdown
 
 d = dict()
-d['pageCount'] = pageCount
-
-def getCategories():
-    return list(db.query(
-            'SELECT * FROM categories ORDER BY name ASC'))
 
 def getTags():
     return list(db.query(
@@ -25,184 +22,106 @@ def getLinks():
     return list(db.query(
             'SELECT * FROM links ORDER BY name ASC'))
 
-def my_loadhook():
-    d['categories'] = getCategories()
+def my_handler(handler):
     d['tags'] = getTags()
     d['links'] = getLinks()
     d['startTime'] = time.time()
+    web.ctx.session = web.config._session
+    web.ctx.orm = scoped_session(sessionmaker(bind=engine))
+    try:
+        return handler()
+    except web.HTTPError:
+        web.ctx.orm.commit()
+        raise
+    except:
+        web.ctx.orm.rollback()
+        raise
+    else:
+        web.ctx.orm.commit()
 
 class captcha:
     def GET(self):
-        web.header("Content-Type", "image/gif")
+        web.header('Content-type', 'image/gif')
         captcha = getCaptcha()
-        web.config._session.captcha = captcha[0]
+        web.ctx.session.captcha = captcha[0]
         return captcha[1].read()
 
 class index(object):
     def GET(self):
         # 读取当前页的文章
         i = web.input(page=1)
-        entryCount = db.query(
-            'SELECT COUNT(id) AS num FROM entries')
-        p = getPagination(i.page, entryCount[0].num, pageCount)
-        entries = list(db.query(
-            "SELECT en.id AS entryId, en.title AS title, "
-            "en.content AS content, en.slug AS entry_slug, "
-            "en.createdTime AS createdTime, "
-            "en.commentNum AS commentNum, ca.id AS categoryId, "
-            "ca.slug AS category_slug, ca.name AS category_name "
-            "FROM entries en "
-            "LEFT JOIN categories ca ON en.categoryId = ca.id "
-            "ORDER BY createdTime DESC LIMIT $start, $limit",
-            vars = {'start':(p[0] - 1) * pageCount, 'limit':pageCount}))
-        for entry in entries:
-            entry.tags = db.query(
-                "SELECT * FROM entry_tag et "
-                "LEFT JOIN tags t ON t.id = et.tagId "
-                "WHERE et.entryId = $id", vars = {'id':entry.entryId})
-            entry.content = markdown.markdown(entry.content)
-
-        d['entries'] = entries
+        ids = [int(one.id) for one in web.ctx.orm.query(Entry.id).all()]
+        randomEntries = [web.ctx.orm.query(Entry).filter_by(id=id).first() for id in random.sample(ids, 5)]
+        entryCount = web.ctx.orm.query(Entry).count()
+        p = Pagination(entryCount, 5, int(i.page))
+        d['entries'] = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[p.start:p.start + p.limit]
         d['p'] = p
         d['usedTime'] = time.time() - d['startTime']
-
+        d['randomEntries'] = randomEntries
         return render.index(**d)
 
 class entry(object):
     def getEntry(self, slug):
-        entry = list(db.query(
-            'SELECT en.id AS entryId, en.title AS title, '
-            'en.content AS content, en.slug AS entry_slug, '
-            'en.createdTime AS createdTime, en.viewNum As viewNum, '
-            'en.commentNum AS commentNum, ca.id AS categoryId, '
-            'ca.slug AS category_slug, ca.name AS category_name '
-            'FROM entries en '
-            'LEFT JOIN categories ca ON en.categoryId = ca.id '
-            'WHERE en.slug = $slug', vars={'slug':slug}))
-        if len(entry) > 0:
-            entry[0].content = markdown.markdown(entry[0].content)
-            i= web.input(page = 1)
-            comment = list(db.query(
-                'SELECT COUNT(id) AS num FROM comments WHERE entryId = $id',
-                vars = {'id':int(entry[0].entryId)}))
-            p = getPagination(i.page, comment[0].num, pageCount)
-            for one in entry:
-                one.tags = list(db.query(
-                    'SELECT * FROM entry_tag et '
-                    'LEFT JOIN tags t ON t.id = et.tagId '
-                    'WHERE et.entryId = $id',
-                    vars = {'id': one.entryId}))
-                one.comments = list(db.query(
-                    'SELECT * FROM comments '
-                    'WHERE entryId = $id '
-                    'ORDER BY createdTime ASC LIMIT $start, $limit',
-                    vars = {'id': one.entryId, 'start':(p[0] - 1) * pageCount,
-                        'limit':pageCount}))
-            return entry[0], p
-        else:
-            return None, None
+        if slug:
+            entry = web.ctx.orm.query(Entry).filter_by(slug=slug).first()
+            i = web.input(page = 1)
+            commentCount = web.ctx.orm.query(Comment).filter_by(entryId=entry.id).count()
+            p = Pagination(int(commentCount), 5, int(i.page))
+            entry.comments = web.ctx.orm.query(Comment).filter_by(entryId=entry.id)[p.start:p.limit]
+            return (entry, p)
 
     def GET(self, slug):
+        entry, p = self.getEntry(slug)
+        entry.viewNum = entry.viewNum + 1
         f = commentForm()
-        d['entry'], d['p'] = self.getEntry(slug)
-        if d['entry']:
-            db.update('entries',
-                where='id=%s' % d['entry'].entryId,
-                viewNum=int(d['entry'].viewNum)+1)
-            d['f'] = f
-            d['usedTime'] = time.time() - d['startTime']
-            return render.entry(**d)
+        d['p'] = p
+        d['entry'] = entry
+        d['f'] = f
+        d['usedTime'] = time.time() - d['startTime']
+        return render.entry(**d)
 
     def POST(self, slug):
+        entry, p = self.getEntry(slug)
         f = commentForm()
-        d['entry'], d['p'] = self.getEntry(slug)
         if f.validates():
-            db.insert('comments',
-                    createdTime=datetime.now().strftime("%Y-%m-%d %H:%M"),
-                    entryId=d['entry'].entryId,
-                    username=f.username.value,
-                    email=f.email.value,
-                    url=f.url.value,
-                    comment=f.comment.value)
-            db.update('entries',
-                    where="id=%s" % d['entry'].entryId,
-                    commentNum=int(d['entry'].commentNum)+1)
+            comment = Comment(entry.id, f.username.value, f.email.value, f.url.value, f.comment.value)
+            entry.commentNum = entry.commentNum + 1
+            entry.viewNum = entry.viewNum - 1
+            web.ctx.orm.add(comment)
             raise web.seeother('/entry/%s/' % slug)
         else:
+            d['p'] = p
+            d['entry'] = entry
             d['f'] = f
             d['usedTime'] = time.time() - d['startTime']
             return render.entry(**d)
 
 class page(object):
     def GET(self, slug):
-        page = list(db.select('pages',
-            where='slug = "%s"' % slug))
-        if page:
-            d['usedTime'] = time.time() - d['startTime']
-            d['page'] = page[0]
-            return render.page(**d)
-
-class category(object):
-    def GET(self, slug):
-        category = list(db.query(
-            'SELECT name FROM categories WHERE slug = $slug',
-            vars = {'slug':slug}))
-        if len(category) == 0:
-            raise web.notfound()
-        # 读取当前页的文章
-        i = web.input(page=1)
-        entryCount = db.query(
-                'SELECT COUNT(en.id) AS num FROM entries en '
-                'LEFT JOIN categories ca ON ca.id = en.categoryId '
-                'WHERE ca.slug = $slug', vars = {'slug':slug})
-        p = getPagination(i.page, entryCount[0].num, pageCount)
-        entries = list(db.query(
-            'SELECT en.id AS entryId, en.title AS title, en.content AS content, '
-            'en.slug AS entry_slug, en.createdTime AS createdTime, '
-            'ca.id AS categoryId, ca.slug AS category_slug, ca.name AS category_name '
-            'FROM entries en '
-            'LEFT JOIN categories ca ON ca.id = en.categoryId '
-            'WHERE ca.slug = $slug '
-            'ORDER BY en.createdTime DESC LIMIT $start, $limit',
-            vars = {'slug':slug, 'start':(p[0] - 1) * pageCount,
-                'limit':pageCount}))
-        d['entries'] = entries
-        d['p'] = p
-        d['usedTime'] = time.time() - d['startTime']
-        d['category_name'] = category[0].name
-
-        return render.category(**d)
+        page = list(db.select('pages', where='slug = "%s"' % slug))
+        if not page:
+            datas['usedTime'] = time.time() - datas['startTime']
+            return render.page(**datas)
 
 class tag(object):
     def GET(self, slug):
-
-        tag = db.query(
-                'SELECT et.entryId AS id FROM entry_tag et '
-                'LEFT JOIN tags t ON et.tagId = t.id '
-                'WHERE t.name = $slug', vars = {'slug':slug})
-        entry_list = [str(i.id) for i in tag]
-
-        # 读取当前页的文章
         i = web.input(page=1)
-        entryCount = len(entry_list)
-        p = getPagination(i.page, entryCount, pageCount)
-        entries = list(db.query(
-            'SELECT en.id AS entryId, en.title AS title, '
-            'en.content AS content, en.slug AS entry_slug, '
-            'en.createdTime AS createdTime '
-            'FROM entries en WHERE en.id in ($ids)',
-            vars = {'ids':','.join(entry_list)}))
-
-        d['entries'] = entries
+        try:
+            page = int(i.page)
+        except:
+            page = 1
+        tag = web.ctx.orm.query(Tag).filter_by(name=slug).first()
+        p = Pagination(len(tag.entries), 20, page)
+        entries = tag.entries[::-1][p.start:p.limit]
+        d['tag'] = tag
         d['p'] = p
+        d['entries'] = entries
         d['usedTime'] = time.time() - d['startTime']
-        d['slug'] = slug
-
         return render.tag(**d)
 
 class rss(object):
     def GET(self):
-        entries = list(db.query('SELECT * FROM entries ORDER BY createdTime DESC LIMIT 10'))
+        entries = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC').all()[:10]
         rss = '<?xml version="1.0" encoding="utf-8" ?>\n'
         rss = rss + '<rss version="2.0">\n'
         rss = rss + '<channel>\n'
@@ -214,15 +133,15 @@ class rss(object):
         for one in entries:
             rss = rss + '<item>\n'
             rss = rss + '<title>' + one.title + '</title>\n'
-            rss = rss + '<link>http://davidshieh.cn/entry/' + one.slug + '</link>\n'
-            rss = rss + '<guid>http://davidshieh.cn/entry/' + one.slug + '</link>\n'
+            rss = rss + '<link>http://davidx.me/entry/' + one.slug + '</link>\n'
+            rss = rss + '<guid>http://davidx.me/entry/' + one.slug + '</guid>\n'
             rss = rss + '<pubDate>' + one.createdTime.strftime('%a, %d %b  %Y %H:%M:%S GMT') + '</pubDate>\n'
-            rss = rss + '<description>' + one.content[:100] + '</description>\n'
+            rss = rss + '<description>' + cgi.escape(markdown(one.content)) + '</description>\n'
             rss = rss + '</item>\n'
 
         rss = rss + '</channel>\n'
         rss = rss + '</rss>\n'
-        web.header('Content-Type', 'text/xml')
+        #web.header('Content-Type', 'text/xml')
         rss = rss.encode('utf-8')
         return rss
 

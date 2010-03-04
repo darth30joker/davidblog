@@ -1,35 +1,26 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}首页{% endblock %}
 {% block content %}
 <div id="blog_list">
+    <h2>随机文章:</h2>
+    <ul>
+        {% for entry in randomEntries %}
+            <li><a href="/entry/{{ entry.slug }}/">{{ entry.title }}</a></li>
+        {% endfor %}
+    </ul>
     {% if entries %}
         {% for entry in entries %}
-            <div class="blog_each">
-                <h1><a href="/entry/{{ entry.entry_slug }}/">{{ entry.title }}</a></h1>
-                <h3>分类 : <a href="/category/{{ entry.category_slug }}/">{{ entry.category_name }}</a>
-                    {% if entry.tags %}
-                           | 标签 : 
-                        {% for tag in entry.tags %}
-                        <span><a href="/tag/{{ tag.name }}/">{{ tag.name }}</a></span>
-                        {% endfor %}
-                    {% endif %}
-                        | @{{ entry.createdTime }} | {{ entry.commentNum }} 条回复</h3>
-                <div>{{ entry.content }}</div>
-            </div>
+            {% include "_entry.html" %}
         {% endfor %}
     {% endif %}
-    <table id="page_link">
-        <tr>
-            <td>{% if p[0] > 1 %}
-                <span id="pre_page"><a href="/?page={{ p[0] - 1 }}">上一页</a></span>
-                {% endif %}</td>
-            <td><span id="cur_page">{{ p[0] }}/{{ p[1] }}</span></td>
-            <td>{% if p[0] < p[1] %}
-                <span id="next_page"><a href="/?page={{ p[0] + 1 }}">下一页</a></span>
-                {% endif %}</td>
-        </tr>
-    </table>
+    <div id="page_link">
+        {% if p.page > 1 %}
+            <span id="pre_page"><a href="/?page={{ p.prevPage }}">上一页</a></span>
+        {% endif %}
+        {% if p.page < p.pages %}
+            <span id="next_page"><a href="/?page={{ p.nextPage }}">下一页</a></span>
+        {% endif %}
+        <p id="cur_page">{{ p.page }}/{{ p.pages }}</p>
+    </div>
 </div>
-{% include "sidebar.html" %}
-<br class="clearfloat" />
 {% endblock %}

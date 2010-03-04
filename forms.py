@@ -1,44 +1,27 @@
-﻿#-*-coding=utf-8-*-
-
+#-*-coding=utf-8-*-
 import web
 from web import form
 from settings import db
 
 __all__ = [
-        'loginForm', 'commentForm', 'categoryForm',
-        'linkForm', 'entryForm'
+        'commentForm', 'linkForm'
     ]
 
-usernameValidator = form.regexp(r".{3,15}$", "Username must be 3-15 charactors")
-emailValidator = form.regexp(r".*@.*", 'Please input a valid email address')
-urlValidator = form.regexp(r"http://.*", "Please input a valid url address")
+username_validate = form.regexp(r".{3,15}$", u"请输入3-15位的用户名")
+email_validate = form.regexp(r".*@.*", u"请输入合法的Email地址")
+urlValidator = form.regexp(r"http://.*", u"请输入合法的URL地址")
 captchaValidator = form.Validator('Captcha Code',
-        lambda x: x == web.config._session.captcha)
-
-def passwordValidator(i):
-    user = list(db.query('SELECT * FROM admins WHERE username = $username',
-        vars={'username': i.username}))[0]
-    return hashlib.md5(i.password).hexdigest() == user.password
-    
-loginForm = form.Form(
-        form.Textbox('username',
-            form.notnull, usernameValidator),
-        form.Password('password',
-            form.notnull),
-        validators = [
-            form.Validator('Username/Password wrong!', passwordValidator)
-        ]
-    )
+        lambda x: x == web.ctx.session.captcha)
 
 commentForm = form.Form(
-        form.Textbox('username',
-            form.notnull, usernameValidator),
-        form.Textbox('email',
-            form.notnull, emailValidator),
+        form.Textbox('username', form.notnull, username_validate),
+        form.Textbox('email', form.notnull, email_validate),
         form.Textbox('url'),
         form.Textbox('captcha', captchaValidator,
             description="Captcha Code"),
         form.Textarea('comment', form.notnull),
+        form.Textbox('captcha', captchaValidator),
+        form.Button('submit', type="submit", description=u"留言"),
     )
 
 categoryForm = form.Form(

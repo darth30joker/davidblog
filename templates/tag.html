@@ -1,29 +1,26 @@
-{% extends 'base.html' %}
-{% block title %}标签 - {{ slug }}{% endblock %}
+{% extends "base.html" %}
+{% block title %}标签 {{ tag.name }}{% endblock %}
 {% block content %}
 <div id="blog_list">
-    {% if entries %}
+	{% if entries %}
         <ul>
-        {% for entry in entries %}
-            <li><a href="/entry/{{ entry.entry_slug }}/">{{ entry.title }}</a> | @{{ entry.createdTime }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-    <table id="page_link">
-        <tr>
-            <td>{% if p[0] > 1 %}
-                <span id="pre_page"><a href="/tag/{{ slug }}/?page={{ p[0] - 1 }}">上一页</a></span>
-                {% endif %}</td>
-            <td>
-                <span id="cur_page">{{ p[0] }} / {{ p[1] }}</span>
-            </td>
-            <td>{% if p[0] < p[1] %}
-                <span id="next_page"><a href="/tag/{{ slug }}/?page={{ p[0] + 1 }}">下一页</a></span>
-                {% endif %}</td>
-        </tr>
-    </table>
+		{% for entry in entries %}
+			<li><a href="/entry/{{ entry.slug }}/">{{ entry.title }} | @{{ entry.createdTime }}</a></li>
+		{% endfor %}
+		</ul>
+	{% else %}
+        <p>该标签下还没有日志.</p>
+	{% endif %}
+    <div id="page_link">
+		{% if p.page > 1 %}
+			<span id="pre_page"><a href="/tag/{{ tag.name }}/?page={{ p.prev_page }}">上一页</a></span>
+		{% endif %}
+		<span id="cur_page">{{ p.page }} / {{ p.pages }}</span>
+		{% if p.page < p.pages %}
+			<span id="next_page"><a href="/tag/{{ tag.name }}/?page=${ p.next_page }}">下一页</a></span>
+		{% endif %}
+    </div>
 </div>
-
-{% include 'sidebar.html' %}
+{% include '_leftbar.html' %}
 <br class="clearfloat" />
 {% endblock %}
