@@ -7,7 +7,7 @@ import web
 from forms import commentForm
 from settings import db, render, pageCount
 from cache import mcache
-#from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 from models import *
 from utils import Pagination, getCaptcha
 from markdown import markdown
@@ -20,22 +20,23 @@ def getTags():
 def getLinks():
     return web.ctx.orm.query(Link).order_by('links.name').all()
 
-def my_handler(handler):
-    d['startTime'] = time.time()
+def my_loadhook():
     web.ctx.session = web.config._session
-    web.ctx.orm = Session()
+    d['startTime'] = time.time()
+
+def my_handler(handler):
+    web.ctx.orm = scoped_session(sessionmaker(bind=engine))
     d['tags'] = getTags()
     d['links'] = getLinks()
     try:
         return handler()
-        web.ctx.orm.close()
     except web.HTTPError:
         web.ctx.orm.commit()
         raise
     except:
         web.ctx.orm.rollback()
         raise
-    else:
+    finally:
         web.ctx.orm.commit()
 
 class captcha:
