@@ -15,7 +15,7 @@ urls = (
         '^/rss.xml$', 'views.rss',
     )
 
-app = web.application(urls, globals(), autoreload = True)
+app = web.application(urls, globals())
 session = web.session.Session(
         app, web.session.DiskStore('sessions'),
         initializer={'captcha': 0, 'isAdmin':0})

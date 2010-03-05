@@ -12,6 +12,8 @@ body {
     color:#9FC671;
     font-size:10px;
     margin:10px 0;
+	line-height:18px;
+	text-align:center;
 }
 #foot a:link,
 #foot a:visited {

@@ -3,7 +3,6 @@
 
 import web
 import adminviews
-from adminviews import my_loadhook
 
 urls = (
         '', 'adminviews.back',    
@@ -29,4 +28,4 @@ urls = (
     )
 
 app_admin = web.application(urls, globals(), autoreload = True)
-app_admin.add_processor(web.loadhook(my_loadhook))
+app_admin.add_processor(web.loadhook(adminviews.my_loadhook))

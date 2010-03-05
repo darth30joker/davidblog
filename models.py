@@ -41,8 +41,8 @@ class Entry(Base):
     title = Column(String)
     slug = Column(String, unique=True)
     content = Column(Text)
-    createdTime = Column(DateTime)
-    modifiedTime = Column(DateTime)
+    createdTime = Column(DateTime, default=datetime.now())
+    modifiedTime = Column(DateTime, default=datetime.now())
     viewNum = Column(Integer, default=0)
     commentNum = Column(Integer, default=0)
 
@@ -96,3 +96,9 @@ class Link(Base):
     url = Column(String)
     createdTime = Column(DateTime)
 
+class Admin(Base):
+    __tablename__ = 'admins'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    password = Column(String)
