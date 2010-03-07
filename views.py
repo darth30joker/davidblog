@@ -98,10 +98,11 @@ class entry(object):
 
 class page(object):
     def GET(self, slug):
-        page = list(db.select('pages', where='slug = "%s"' % slug))
-        if not page:
-            datas['usedTime'] = time.time() - datas['startTime']
-            return render.page(**datas)
+        page = web.ctx.orm.query(Page).filter_by(slug=slug).first()
+        if page:
+            d['usedTime'] = time.time() - d['startTime']
+            d['page'] = page
+            return render.page(**d)
 
 class tag(object):
     def GET(self, slug):
