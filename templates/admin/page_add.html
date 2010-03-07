@@ -1,41 +1,49 @@
-<%inherit file="base.html" />
-<%def name="title()">添加新日志</%def>
-	<script type="text/javascript" src="/static/ckeditor/ckeditor.js"></script>
-	<script src="/static/ckeditor/_samples/sample.js" type="text/javascript"></script>
-	<link href="/static/ckeditor/_samples/sample.css" rel="stylesheet" type="text/css"/>
-<div id="edit_entry">
-    <form action="/admin/entry/add/" method="POST">
-    <table>
-        <tr>
-            <td>标题</td>
-            <td><input type="text" name="title" /></td>
-        </tr>
-        <tr>
-            <td>Slug</td>
-            <td><input type="text" name="slug" /></td>
-        </tr>
-        <tr>
-            <td>分类</td>
-            <td>
-                <select name="categoryId">
-                    % for one in categories:
-                        <option value="${ one.id }">${ one.name }(${ one.entryNum })</option>
-                    % endfor
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>标签</td>
-            <td><input type="text" name="tags" /></td>
-        </tr>
-        <tr>
-            <td>正文</td>
-            <td><textarea name="content"></textarea></td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td><input type="submit" value="发表日志" /></td>
-        </tr>
-    </table>
+{% extends "base.html" %}
+{% block title %}添加新页面{% endblock %}
+{% block content %}
+<script type="text/javascript" src="/static/markitup/jquery.markitup.pack.js"></script>
+<script src="/static/markitup/sets/markdown/set.js" type="text/javascript"></script>
+<link href="/static/markitup/sets/markdown/style.css" rel="stylesheet" type="text/css"/>
+<link href="/static/markitup/skins/markitup/style.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+$(document).ready(function()	{
+	// Add markItUp! to your textarea in one line
+	// $('textarea').markItUp( { Settings }, { OptionalExtraSettings } );
+	$('#markItUp').markItUp(mySettings);
+	
+	// You can add content from anywhere in your page
+	// $.markItUp( { Settings } );	
+	$('.add').click(function() {
+ 		$.markItUp( { 	openWith:'<opening tag>',
+						closeWith:'<\/closing tag>',
+						placeHolder:"New content"
+					}
+				);
+ 		return false;
+	});
+	
+	// And you can add/remove markItUp! whenever you want
+	// $(textarea).markItUpRemove();
+	$('.toggle').click(function() {
+		if ($("#markItUp.markItUpEditor").length === 1) {
+ 			$("#markItUp").markItUpRemove();
+			$("span", this).text("get markItUp! back");
+		} else {
+			$('#markItUp').markItUp(mySettings);
+			$("span", this).text("remove markItUp!");
+		}
+ 		return false;
+	});
+});
+</script>
+<div id="entry_edit">
+    <form action="/admin/page/add/" method="POST">
+		<p><input type="text" name="title" value="{{ f.title.value | notnull }}" />{{ f.title.note | notnull }}
+			<label>标题</label></p>
+		<p><input type="text" name="slug" value="{{ f.slug.value | notnull }}" />{{ f.slug.note | notnull }}
+			<label>Slug</label></p>
+		<p><textarea name="content" id="markItUp">{{ f.content.value | notnull }}</textarea>{{ f.content.note | notnull }}</p>
+		<p><input type="submit" value="发表日志" /></p>
     </form>
 </div>
+{% endblock %}

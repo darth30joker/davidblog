@@ -4,7 +4,7 @@ from web import form
 from settings import db
 
 __all__ = [
-        'commentForm', 'linkForm', 'entryForm'
+        'commentForm', 'linkForm', 'entryForm', 'pageForm',
     ]
 
 username_validate = form.regexp(r".{3,15}$", u"请输入3-15位的用户名")
@@ -33,4 +33,10 @@ entryForm = form.Form(
         form.Textbox('title', form.notnull),
         form.Textbox('content', form.notnull),
         form.Textbox('slug', form.notnull),
+    )
+
+pageForm = form.Form(
+        form.Textbox('title', form.notnull),
+        form.Textbox('slug', form.notnull),
+        form.Textbox('content', form.notnull),
     )

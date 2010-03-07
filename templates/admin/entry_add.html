@@ -38,13 +38,13 @@ $(document).ready(function()	{
 </script>
 <div id="edit_entry">
     <form action="/admin/entry/add/" method="POST">
-		<p>{{ f.title.render() }}
+		<p><input type="text" name="title" value="{{ f.title.value | notnull }}" />{{ f.title.note | notnull }}
 			<label>标题</label></p>
-		<p>{{ f.slug.render() }}
+		<p><input type="text" name="slug" value="{{ f.slug.value | notnull }}" />{{ f.slug.note | notnull }}
 			<label>Slug</label></p>
 		<p><input type="text" name="tags" />
 			<label>标签</label></p>
-		<p><textarea name="content" id="markItUp"></textarea></p>
+			<p><textarea name="content" id="markItUp">{{ f.content.value | notnull }}</textarea>{{ f.content.note | notnull }}</p>
 		<p><input type="submit" value="发表日志" /></p>
     </form>
 </div>

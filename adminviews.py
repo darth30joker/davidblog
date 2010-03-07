@@ -79,17 +79,21 @@ class entry_add(object):
     @login_required
     def POST(self):
         i = web.input(tags = None)
+        f = entryForm()
         if f.validates():
             entry = Entry(f.title.value, f.slug.value, f.content.value)
             web.ctx.orm.add(Entry)
-        if i.get('tags') is not None:
-            tags = [i.lstrip().rstrip() for i in i['tags'].split(',')]
-            for tag in tags:
-                t = web.ctx.orm.query(Tag).filter('LOWER(name)=:name').params(name=tag.lower()).first()
-                if t:
-                    entry.tags.append(t)
-                else:
-                    entry.tags.append(Tag(tag))
+            if i.get('tags') is not None:
+                tags = [i.lstrip().rstrip() for i in i['tags'].split(',')]
+                for tag in tags:
+                    t = web.ctx.orm.query(Tag).filter('LOWER(name)=:name').params(name=tag.lower()).first()
+                    if t:
+                        entry.tags.append(t)
+                    else:
+                        entry.tags.append(Tag(tag))
+        else:
+            d['f'] = f
+            return render.entry_add(**d)
         return web.seeother('/entry/list/')
 
 class entry_edit(object):
@@ -153,9 +157,16 @@ class entry_del(object):
         if entry:
             if len(entry.tags) > 0:
                 for tag in entry.tags:
-                    tag.entryNum = tag.entryNum - 1
+                    tagsToDel = list()
+                    if tag.entryNum == 1:
+                        tagsToDel.append(tag)
+                    else:
+                        tag.entryNum = tag.entryNum - 1
                     entry.tags.remove(tag)
             web.ctx.orm.delete(entry)
+            if len(tagsToDel) > 0:
+                for i in tagsToDel:
+                    web.ctx.orm.delete(i)
         return web.seeother('/entry/list/')
 
 class links(object):
@@ -225,45 +236,57 @@ class link_del(object):
         db.delete('links', where = 'id = %s' % id)
         return web.seeother('/links/')
 
-class page(object):
+class page_list(object):
     @login_required
     def GET(self):
-        pages = list(db.select('pages'))
-
-        para['pages'] = pages
-
-        return render.page(**para)
+        pages = web.ctx.orm.query(Page).all()
+        d['pages'] = pages
+        return render.page_list(**d)
 
 class page_add(object):
     @login_required
     def GET(self):
-        return render.page_add(**para)
+        d['f'] = pageForm()
+        return render.page_add(**d)
 
     @login_required
     def POST(self):
-        data = web.input()
-        db.insert('pages', title = data['title'], slug = data['slug'],
-                createdTime = datetime.now(), content = data['content'])
-        return web.seeother('/page/')
+        i = web.input()
+        f = pageForm()
+        if f.validates():
+            page = Page(f.title.value, f.slug.value, f.content.value)
+            web.ctx.orm.add(page)
+        return web.seeother('/page/list/')
 
 class page_edit(object):
+    def getPage(self, id):
+        return web.ctx.orm.query(Page).filter_by(id=id).first()
+
     @login_required
     def GET(self, id):
-        page = list(db.select('pages', where='id = %s' % id))
-        if not page:
-            para['page'] = page[0]
-        return render.page_edit(**para)
+        page = self.getPage(id)
+        f = pageForm()
+        if page:
+            d['page'] = page
+            d['f'] = f
+        return render.page_edit(**d)
 
     @login_required
     def POST(self, id):
-        data = web.input(title=None, slug=None, content=None)
-        if not title and not slug and not content:
-            db.update('pages', where="id = %s" % id, title=data.title, slug=data.slug, content=data.content)
-        return web.seeother('/page/')
+        page = self.getPage(id)
+        f = pageForm()
+        if f.validates():
+            page.title = f.title.value
+            page.slug = f.slug.value
+            page.content = f.content.value
+            page.modifiedTime= datetime.now()
+        return web.seeother('/page/list/')
 
 class page_del(object):
     @login_required
     def GET(self, id):
-        db.delete('pages', where='id = %s' % id)
+        page = web.ctx.orm.query(Page).filter_by(id=id).first()
+        if page:
+            web.ctx.orm.delete(page)
         return web.seeother('/page/')
 

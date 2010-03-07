@@ -79,11 +79,13 @@ class Page(Base):
     title = Column(String)
     slug = Column(String, unique=True)
     content = Column(Text)
-    createdTime = Column(DateTime)
-    modifiedTime = Column(DateTime)
+    createdTime = Column(DateTime, default=datetime.now())
+    modifiedTime = Column(DateTime, default=datetime.now())
 
-    def __init__(self, title):
+    def __init__(self, title, slug, content):
         self.title = title
+        self.slug = slug
+        self.content = content
 
     def __repr__(self):
        return "<Page ('%s')>" % (self.title,)
