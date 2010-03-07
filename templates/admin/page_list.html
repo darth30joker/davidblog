@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}页面管理{% endblock %}
+{% block content %}
+<table>
+    <tr>
+        <th>No.</th>
+        <th>名称</th>
+        <th>操作</th>
+    </tr>
+	{% for i in pages %}
+        <tr>
+			<td>{{ loop.index }}</td>
+			<td>{{ i.title }}</td>
+            <td>
+				<a href="/admin/page/edit/{{ i.id }}/">修改</a> | 
+				<a href="/admin/page/del/{{ i.id }}/">删除</a>
+            </td>
+        </tr>
+	{% endfor %}
+</table>
+<p><a href="/admin/page/add/">添加新页面</a></p>
+{% endblock %}

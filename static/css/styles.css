@@ -8,6 +8,12 @@ img { border:none; }
 body {
 	background-color:#333;
 }
+#logo {
+	width:100px;
+	height:100px;
+	margin:0 auto;
+	margin-top:30px;
+}
 #foot {
     color:#9FC671;
     font-size:10px;
