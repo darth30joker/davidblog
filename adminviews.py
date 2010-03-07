@@ -7,6 +7,7 @@ from forms import *
 from settings import pageCount
 from settings import render_admin as render 
 from utils import Pagination
+from models import *
 
 d = {}
 
@@ -101,6 +102,7 @@ class entry_edit(object):
         entry = self.getEntry(id)
         if entry:
             f = entryForm()
+            entry.tagList = ",".join([i.name for i in entry.tags])
             d['entry'] = entry
             d['f'] = f
             return render.entry_edit(**d)
@@ -113,7 +115,7 @@ class entry_edit(object):
         if f.validates():
             if i.tags is not None:
                 newTags = set([i.strip() for i in i.tags.split(',')])
-                originalTags = set([i.strip() for i in entry.tags.split(',')])
+                originalTags = set([i.name.strip() for i in entry.tags])
                 tagsAdd = list(newTags - originalTags)
                 tagsDel = list(originalTags - newTags)
                 #添加tag
@@ -147,25 +149,14 @@ class entry_edit(object):
 class entry_del(object):
     @login_required
     def GET(self, id):
-        entry = list(db.query('SELECT * FROM entries WHERE id = $id', vars={'id':id}))
-        if len(entry) > 0:
-            db.query('DELETE FROM entries WHERE id = $id', vars={'id':id})
-            category = list(db.query('SELECT * FROM categories WHERE id = $id',
-                vars={'id':entry[0].categoryId}))
-            db.query('UPDATE categories SET `entryNum` = $entryNum WHERE id = $categoryId',
-                    vars={'entryNum':int(category[0].entryNum) - 1, 'categoryId':category[0].id})
-            tags = list(db.query('SELECT t.id AS tagId, t.entryNum AS entryNum '
-                'FROM entry_tag et LEFT JOIN tags t ON t.id = et.tagId '
-                'WHERE et.entryId = $entryId', vars= {'entryId':entry[0].id}))
-            for tag in tags:
-                if tag.entryNum > 2:
-                    db.query('UPDATE tags SET `entryNum` = $entryNum WHERE id = $id',
-                            vars={'entryNum':int(tag.entryNum) - 1, 'id':tag.tagId})
-                if temp[0].entryNum == 1:
-                    db.query('DELETE FROM tags WHERE id = $tagId', vars={'tagId':tag.tagId})
-                db.query('DELETE FROM entry_tag WHERE entryId = $entryId AND tagId = $tagId',
-                        vars={'entryId':tag.entryId, 'tagId':tag.tagId})
-        return web.seeother('/entry/')
+        entry = web.ctx.orm.query(Entry).filter_by(id=id).first()
+        if entry:
+            if len(entry.tags) > 0:
+                for tag in entry.tags:
+                    tag.entryNum = tag.entryNum - 1
+                    entry.tags.remove(tag)
+            web.ctx.orm.delete(entry)
+        return web.seeother('/entry/list/')
 
 class links(object):
     @login_required

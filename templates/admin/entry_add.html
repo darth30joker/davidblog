@@ -38,38 +38,14 @@ $(document).ready(function()	{
 </script>
 <div id="edit_entry">
     <form action="/admin/entry/add/" method="POST">
-    <table>
-        <tr>
-            <th>标题</th>
-            <td>{{ f.title.render() }}</td>
-        </tr>
-        <tr>
-            <th>Slug</th>
-            <td>{{ f.slug.render() }}</td>
-        </tr>
-        <tr>
-            <th>分类</th>
-            <td>
-                <select name="categoryId">
-                    {% for one in categories %}
-                        <option value="{{ one.id }}">{{ one.name }}({{ one.entryNum }})</option>
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <th>标签</th>
-            <td><input type="text" name="tags" /></td>
-        </tr>
-        <tr>
-            <th>正文</th>
-            <td><textarea name="content" id="markItUp"></textarea></td>
-        </tr>
-        <tr>
-            <th>&nbsp;</th>
-            <td><input type="submit" value="发表日志" /></td>
-        </tr>
-    </table>
+		<p>{{ f.title.render() }}
+			<label>标题</label></p>
+		<p>{{ f.slug.render() }}
+			<label>Slug</label></p>
+		<p><input type="text" name="tags" />
+			<label>标签</label></p>
+		<p><textarea name="content" id="markItUp"></textarea></p>
+		<p><input type="submit" value="发表日志" /></p>
     </form>
 </div>
 {% endblock %}

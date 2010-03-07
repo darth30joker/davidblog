@@ -3,7 +3,7 @@
 {% block content %}
 <div id="blog_list">
     {% include "_entry.html" %}
-    <div id="comments">
+    <div id="comments" name="comments">
         <h2><span id="comments_num">{{ entry.comments | length }}</span> 条评论</h2>
         {% if entry.comments %}
             {% if p.pages > 1 %}

@@ -31,7 +31,13 @@ def getRender():
 render = getRender()
 
 #render_jinja配置 -- admin
-render_admin = render_jinja(
-        os.getcwd() + '/templates/admin',
-        encoding = 'utf-8',
-    )
+def getAdminRender():
+    render = render_jinja(
+            os.getcwd() + '/templates/admin',
+            encoding = 'utf-8',
+        )
+    myFilters = {'avatar':avatar,'notnull':notnull,
+        'formnote':formnote, 'content':content}
+    render._lookup.filters.update(myFilters)
+    return render
+render_admin = getAdminRender()

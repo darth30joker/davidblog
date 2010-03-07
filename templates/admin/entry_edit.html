@@ -38,38 +38,14 @@ $(document).ready(function()	{
 </script>
 <div id="entry_edit">
     <form action="/admin/entry/edit/{{ entry.id }}/" method="POST" id="entry_form">
-    <table>
-        <tr>
-            <th>标题</th>
-            <td><input type="text" name="title" value="{{ f.title.value }}" /></td>
-        </tr>
-        <tr>
-            <th>Slug</th>
-            <td><input type="text" name="slug" value="{{ f.slug.value }}" /></td>
-        </tr>
-        <tr>
-            <th>分类</th>
-            <td>
-                <select name="categoryId">
-                    {% for one in categories %}
-                    <option value="{{ one.id }}" {% if one.id == entry.categoryId %}selected="selected"{% endif %}>{{ one.name }}({{ one.entryNum }})</option>
-                    {% endfor %}
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <th>标签</th>
-            <td><input type="text" name="tags" value="{{ entry.tags }}" /></td>
-        </tr>
-        <tr>
-            <th>正文</th>
-            <td><textarea name="content" id="markItUp">{{ entry.content }}</textarea></td>
-        </tr>
-        <tr>
-            <th>&nbsp;</th>
-            <td><input type="submit" value="更新日志" /></td>
-        </tr>
-    </table>
+		<p><input type="text" name="title" value="{{ entry.title }}" />{{ f.title.note | notnull }}
+			<label>标题</label></p>
+		<p><input type="text" name="slug" value="{{ entry.slug }}" />{{ f.slug.note | notnull }}
+			<label>Slug</label></p>
+		<p><input type="text" name="tags" value="{{ entry.tagList }}" />
+			<label>标签</label></p>
+			<p><textarea name="content" id="markItUp">{{ entry.content }}</textarea>{{ f.content.note | notnull }}</p>
+		<p><input type="submit" value="更新日志" /></p>
     </form>
 </div>
 {% endblock %}

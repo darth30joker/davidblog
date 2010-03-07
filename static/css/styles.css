@@ -104,7 +104,9 @@ body {
 	margin:15px 0;
 }
 .blog_each > div a:link,
-.blog_each > div a:visited {
+.blog_each > div a:visited,
+.blog_each > h3 a:link,
+.blog_each > h3 a:visited {
 	text-decoration:underline;
 	color:#A76B2E;
 }
