@@ -64,8 +64,8 @@ class entry_list(object):
         except:
             page = 1
         entryCount = web.ctx.orm.query(Entry).count()
-        p = Pagination(entryCount, pageCount, i.page)
-        entries = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[p.start:p.start+p.limit]
+        p = Pagination(entryCount, pageCount, page)
+        entries = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[int(p.start):int(p.start+p.limit)]
         d['p'] = p
         d['entries'] = entries
         return render.entry_list(**d)

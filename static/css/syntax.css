@@ -1,5 +1,5 @@
 .syntax .hll { background-color: #49483e }
-.syntax  { background: #272822; color: #f8f8f2;padding:10px;line-height:16px; }
+.syntax  { background: #272822; color: #f8f8f2;padding:10px;line-height:16px;overflow-x:auto; }
 .syntax .c { color: #75715e } /* Comment */
 .syntax .err { color: #960050; background-color: #1e0010 } /* Error */
 .syntax .k { color: #66d9ef } /* Keyword */
