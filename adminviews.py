@@ -82,7 +82,7 @@ class entry_add(object):
         f = entryForm()
         if f.validates():
             entry = Entry(f.title.value, f.slug.value, f.content.value)
-            web.ctx.orm.add(Entry)
+            web.ctx.orm.add(entry)
             if i.get('tags') is not None:
                 tags = [i.lstrip().rstrip() for i in i['tags'].split(',')]
                 for tag in tags:
