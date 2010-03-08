@@ -143,7 +143,7 @@ class rss(object):
 
         rss = rss + '</channel>\n'
         rss = rss + '</rss>\n'
-        #web.header('Content-Type', 'text/xml')
+        web.header('Content-Type', 'text/xml')
         rss = rss.encode('utf-8')
         return rss
 
