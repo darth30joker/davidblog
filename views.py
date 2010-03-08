@@ -11,6 +11,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from models import *
 from utils import Pagination, getCaptcha
 from markdown import markdown
+import templatefilters
 
 d = dict()
 
@@ -137,7 +138,7 @@ class rss(object):
             rss = rss + '<link>http://davidx.me/entry/' + one.slug + '</link>\n'
             rss = rss + '<guid>http://davidx.me/entry/' + one.slug + '</guid>\n'
             rss = rss + '<pubDate>' + one.createdTime.strftime('%a, %d %b  %Y %H:%M:%S GMT') + '</pubDate>\n'
-            rss = rss + '<description>' + cgi.escape(markdown(one.content)) + '</description>\n'
+            rss = rss + '<description>' + templatefilters.content(one.content) + '</description>\n'
             rss = rss + '</item>\n'
 
         rss = rss + '</channel>\n'
