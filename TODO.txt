@@ -1,5 +1,5 @@
 1. 全部页面都切换到jinja2上(Done)
-2. 加入一个random entries的功能, 放在右侧
+2. 加入一个random entries的功能, 放在右侧(Done, 放在上侧了)
 3. 优化程序结构
 4. 加入文章搜索功能
-5. 使用pygments处理代码高亮
+5. 使用pygments处理代码高亮(Done)

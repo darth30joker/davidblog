@@ -89,6 +89,18 @@ class entry(object):
             entry.commentNum = entry.commentNum + 1
             entry.viewNum = entry.viewNum - 1
             web.ctx.orm.add(comment)
+            emails = ['mykingheaven@gmail.com']
+            message = u'<p>您在&lt;泥泞的沼泽&gt;上回复的日志 "' + entry.title + u'" 又有新的回复了, 请您去看看.</p><p>' \
+                u'<a href="http://davidx.me/entry/' + slug + u'/#comments">点击查看回复</a></p>'
+            for c in entry.comments:
+                emails.append(c.email)
+            for e in set(emails):
+                try:
+                    web.sendmail('admin@davidx.me', e,
+                        u'您在"泥泞的沼泽"上回复的日志又有新的回复了!', message,
+                        headers={'Content-Type':'text/html;charset=utf-8'})
+                except:
+                    pass
             raise web.seeother('/entry/%s/' % slug)
         else:
             d['p'] = p
