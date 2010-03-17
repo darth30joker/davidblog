@@ -2,13 +2,13 @@
 #-*-coding:utf-8-*-
 
 import web
-import memcache
+#import memcache
 from web.contrib.template import render_jinja
-from templatefilters import avatar, notnull, formnote, content
+from libs.templatefilters import avatar, notnull, formnote, content
 import os
 
 __all__ = [
-        'pageCount', 'db', 'mc', 'render', 'render_admin'    
+        'pageCount', 'render', 'render_admin'    
     ]
 pageCount = 5
 
@@ -16,7 +16,7 @@ pageCount = 5
 db = web.database(dbn = 'mysql', db = 'davidblog_new', user='root', pw = 'root')
 
 #memcache配置
-mc = memcache.Client(['127.0.0.1:11211'], debug=0)
+#mc = memcache.Client(['127.0.0.1:11211'], debug=0)
 
 #render_jinja配置
 def getRender():
