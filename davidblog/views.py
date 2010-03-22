@@ -5,13 +5,12 @@ import cgi
 import random
 import web
 from forms import commentForm
-from settings import db, render, pageCount
-from cache import mcache
+from settings import render, pageCount
 from sqlalchemy.orm import scoped_session, sessionmaker
 from models import *
 from utils import Pagination, getCaptcha
 from markdown import markdown
-import templatefilters
+#from libs import templatefilters
 
 d = dict()
 

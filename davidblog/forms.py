@@ -1,7 +1,6 @@
 #-*-coding=utf-8-*-
 import web
 from web import form
-from settings import db
 
 __all__ = [
         'commentForm', 'linkForm', 'entryForm', 'pageForm',

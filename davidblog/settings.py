@@ -4,7 +4,8 @@
 import web
 #import memcache
 from web.contrib.template import render_jinja
-from libs.templatefilters import avatar, notnull, formnote, content
+from libs import templatefilters
+#import avatar, notnull, formnote, content
 import os
 
 __all__ = [
@@ -13,7 +14,7 @@ __all__ = [
 pageCount = 5
 
 #数据库配置
-db = web.database(dbn = 'mysql', db = 'davidblog_new', user='root', pw = 'root')
+#db = web.database(dbn = 'mysql', db = 'davidblog_new', user='root', pw = 'root')
 
 #memcache配置
 #mc = memcache.Client(['127.0.0.1:11211'], debug=0)
@@ -24,8 +25,8 @@ def getRender():
         os.getcwd() + '/templates',
         encoding = 'utf-8',
     )
-    myFilters = {'avatar':avatar,'notnull':notnull,
-        'formnote':formnote, 'content':content}
+    myFilters = {'avatar':templatefilters.avatar,'notnull':templatefilters.notnull,
+        'formnote':templatefilters.formnote, 'content':templatefilters.content}
     render._lookup.filters.update(myFilters)
     return render
 render = getRender()
@@ -36,8 +37,8 @@ def getAdminRender():
             os.getcwd() + '/templates/admin',
             encoding = 'utf-8',
         )
-    myFilters = {'avatar':avatar,'notnull':notnull,
-        'formnote':formnote, 'content':content}
+    myFilters = {'avatar':templatefilters.avatar,'notnull':templatefilters.notnull,
+        'formnote':templatefilters.formnote, 'content':templatefilters.content}
     render._lookup.filters.update(myFilters)
     return render
 render_admin = getAdminRender()
