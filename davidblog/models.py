@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('mysql://root:root@localhost/davidblog?charset=utf8', echo=False)
+engine = create_engine('sqlite:///db.sqlite', echo=False)
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -104,3 +104,6 @@ class Admin(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String)
     password = Column(String)
+
+if __name__ == "__main__":
+    metadata.create_all(engine)

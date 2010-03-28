@@ -82,15 +82,21 @@ class entry_add(object):
         f = entryForm()
         if f.validates():
             entry = Entry(f.title.value, f.slug.value, f.content.value)
+            entry.created_time = entry.modified_time = datetime.now()
             web.ctx.orm.add(entry)
-            if i.get('tags') is not None:
-                tags = [i.lstrip().rstrip() for i in i['tags'].split(',')]
-                for tag in tags:
-                    t = web.ctx.orm.query(Tag).filter('LOWER(name)=:name').params(name=tag.lower()).first()
-                    if t:
-                        entry.tags.append(t)
-                    else:
-                        entry.tags.append(Tag(tag))
+            try:
+                web.ctx.orm.commit()
+            except:
+                web.ctx.orm.rollback()
+            else:
+                if i.get('tags') is not None:
+                    tags = [i.lstrip().rstrip() for i in i['tags'].split(',')]
+                    for tag in tags:
+                        t = web.ctx.orm.query(Tag).filter('LOWER(name)=:name').params(name=tag.lower()).first()
+                        if t:
+                            entry.tags.append(t)
+                        else:
+                            entry.tags.append(Tag(tag))
         else:
             d['f'] = f
             return render.entry_add(**d)
