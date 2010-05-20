@@ -5,34 +5,35 @@ from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import relation, backref
 from sqlalchemy.ext.declarative import declarative_base
 
-engine = create_engine('sqlite:///db.sqlite', echo=False)
+#engine = create_engine('sqlite:///db.sqlite', echo=False)
+engine = create_engine('mysql://root:root@localhost/davidblog?charset=utf8', echo=False)
 
 Base = declarative_base()
 metadata = Base.metadata
 
 entry_tag = Table('entry_tag', metadata,
-            Column('entryId', Integer, ForeignKey('entries.id')),
-            Column('tagId', Integer, ForeignKey('tags.id'))
+            Column('entry_id', Integer, ForeignKey('entries.id')),
+            Column('tag_id', Integer, ForeignKey('tags.id'))
         )
 
 class Comment(Base):
     __tablename__ = 'comments'
 
     id = Column(Integer, primary_key=True)
-    entryId = Column(Integer, ForeignKey('entries.id'))
+    entry_id = Column(Integer, ForeignKey('entries.id'))
     email = Column(String)
     username = Column(String)
     url = Column(String)
     comment = Column(Text)
-    createdTime = Column(DateTime)
+    created_time = Column(DateTime)
 
-    def __init__(self, entryId, username, email, url, comment):
-        self.entryId = entryId
+    def __init__(self, entry_id, username, email, url, comment):
+        self.entry_id = entry_id
         self.username = username
         self.email = email
         self.url = url
         self.comment = comment
-        self.createdTime = datetime.now()
+        self.created_time = datetime.now()
 
 class Entry(Base):
     __tablename__ = 'entries'
@@ -41,13 +42,13 @@ class Entry(Base):
     title = Column(String)
     slug = Column(String, unique=True)
     content = Column(Text)
-    createdTime = Column(DateTime, default=datetime.now())
-    modifiedTime = Column(DateTime, default=datetime.now())
-    viewNum = Column(Integer, default=0)
-    commentNum = Column(Integer, default=0)
+    created_time = Column(DateTime, default=datetime.now())
+    modified_time = Column(DateTime, default=datetime.now())
+    view_num = Column(Integer, default=0)
+    comment_num = Column(Integer, default=0)
 
     tags = relation('Tag', secondary=entry_tag, backref='entries')
-    comments = relation(Comment, order_by=Comment.createdTime,
+    comments = relation(Comment, order_by=Comment.created_time,
                 backref="entries"
             )
 
@@ -64,7 +65,7 @@ class Tag(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
-    entryNum = Column(Integer, default=0)
+    entry_num = Column(Integer, default=0)
 
     def __init__(self, name):
         self.name = name
@@ -79,8 +80,8 @@ class Page(Base):
     title = Column(String)
     slug = Column(String, unique=True)
     content = Column(Text)
-    createdTime = Column(DateTime, default=datetime.now())
-    modifiedTime = Column(DateTime, default=datetime.now())
+    created_time = Column(DateTime, default=datetime.now())
+    modified_time = Column(DateTime, default=datetime.now())
 
     def __init__(self, title, slug, content):
         self.title = title
@@ -96,7 +97,7 @@ class Link(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     url = Column(String)
-    createdTime = Column(DateTime)
+    created_time = Column(DateTime)
 
 class Admin(Base):
     __tablename__ = 'admins'

@@ -29,10 +29,10 @@ class back(object):
 class index(object):
     @login_required
     def GET(self):
-        d['entryNum'] = web.ctx.orm.query(Entry).count()
-        d['commentNum'] = web.ctx.orm.query(Comment).count()
-        d['tagNum'] = web.ctx.orm.query(Tag).count()
-        d['linkNum'] = web.ctx.orm.query(Link).count()
+        d['entry_num'] = web.ctx.orm.query(Entry).count()
+        d['comment_num'] = web.ctx.orm.query(Comment).count()
+        d['tag_num'] = web.ctx.orm.query(Tag).count()
+        d['link_num'] = web.ctx.orm.query(Link).count()
         return render.index(**d)
 
 class login(object):
@@ -65,7 +65,7 @@ class entry_list(object):
             page = 1
         entryCount = web.ctx.orm.query(Entry).count()
         p = Pagination(entryCount, pageCount, page)
-        entries = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[int(p.start):int(p.start+p.limit)]
+        entries = web.ctx.orm.query(Entry).order_by('entries.created_time DESC')[int(p.start):int(p.start+p.limit)]
         d['p'] = p
         d['entries'] = entries
         return render.entry_list(**d)
