@@ -54,7 +54,7 @@ class index(object):
         #randomEntries = [web.ctx.orm.query(Entry).filter_by(id=id).first() for id in random.sample(ids, 5)]
         entryCount = web.ctx.orm.query(Entry).count()
         p = Pagination(entryCount, 5, int(i.page))
-        d['entries'] = web.ctx.orm.query(Entry).order_by('entries.createdTime DESC')[p.start:p.start + p.limit]
+        d['entries'] = web.ctx.orm.query(Entry).order_by('entries.created_time DESC')[p.start:p.start + p.limit]
         d['p'] = p
         d['usedTime'] = time.time() - d['startTime']
         #d['randomEntries'] = randomEntries

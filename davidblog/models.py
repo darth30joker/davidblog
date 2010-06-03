@@ -21,9 +21,9 @@ class Comment(Base):
 
     id = Column(Integer, primary_key=True)
     entry_id = Column(Integer, ForeignKey('entries.id'))
-    email = Column(String)
-    username = Column(String)
-    url = Column(String)
+    email = Column(String(50))
+    username = Column(String(50))
+    url = Column(String(50))
     comment = Column(Text)
     created_time = Column(DateTime)
 
@@ -39,8 +39,8 @@ class Entry(Base):
     __tablename__ = 'entries'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String)
-    slug = Column(String, unique=True)
+    title = Column(String(255))
+    slug = Column(String(255), unique=True)
     content = Column(Text)
     created_time = Column(DateTime, default=datetime.now())
     modified_time = Column(DateTime, default=datetime.now())
@@ -64,7 +64,7 @@ class Tag(Base):
     __tablename__ = 'tags'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True)
+    name = Column(String(50), unique=True)
     entry_num = Column(Integer, default=0)
 
     def __init__(self, name):
@@ -77,8 +77,8 @@ class Page(Base):
     __tablename__ = 'pages'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String)
-    slug = Column(String, unique=True)
+    title = Column(String(255))
+    slug = Column(String(255), unique=True)
     content = Column(Text)
     created_time = Column(DateTime, default=datetime.now())
     modified_time = Column(DateTime, default=datetime.now())
@@ -95,16 +95,16 @@ class Link(Base):
     __tablename__ = 'links'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    url = Column(String)
+    name = Column(String(45))
+    url = Column(String(45))
     created_time = Column(DateTime)
 
 class Admin(Base):
     __tablename__ = 'admins'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String)
-    password = Column(String)
+    username = Column(String(45))
+    password = Column(String(45))
 
 if __name__ == "__main__":
     metadata.create_all(engine)
