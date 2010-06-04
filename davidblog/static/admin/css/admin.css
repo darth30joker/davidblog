@@ -1,0 +1,13 @@
+#edit_entry form table th {
+	width: 90px;
+	text-align: right;
+	padding-right: 10px;
+}
+#edit_entry form table td input {
+	width: 600px;
+	height: 26px;
+}
+#edit_entry form table td > span {
+	color: red;
+	padding: 5px;
+}

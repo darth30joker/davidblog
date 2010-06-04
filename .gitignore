@@ -1,2 +1,4 @@
 davidblog/sessions/*
 *.log
+*.pyc
+davidblog/davidblog.esproj
