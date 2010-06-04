@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}日志列表{% endblock %}
+{% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#topmenu').find('li:eq(4)').addClass('current');
+	});
+</script>
+<table>
+    <tr>
+		<th>#</th>
+        <th>名称</th>
+        <th>地址</th>
+        <th>操作</th>
+    </tr>
+    {% for one in links %}
+        <tr>
+			<td>{{ one.id }}</td>
+            <td>{{ one.name }}</td>
+            <td>{{ one.url }}</td>
+            <td class="actions">
+                <a href="/admin/link/edit/{{ one.id }}/">修改</a> | 
+                <a href="/admin/link/del/{{ one.id }}/">删除</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<p><a href="/admin/link/add/">添加新地址</a></p>
+{% endblock %}
