@@ -29,10 +29,11 @@ class back(object):
 class index(object):
     @login_required
     def GET(self):
-        d['entry_num'] = web.ctx.orm.query(Entry).count()
-        d['comment_num'] = web.ctx.orm.query(Comment).count()
-        d['tag_num'] = web.ctx.orm.query(Tag).count()
-        d['link_num'] = web.ctx.orm.query(Link).count()
+        d['entryNum'] = web.ctx.orm.query(Entry).count()
+        d['tagNum'] = web.ctx.orm.query(Tag).count()
+        d['linkNum'] = web.ctx.orm.query(Link).count()
+        d['pageNum'] = web.ctx.orm.query(Page).count()
+        d['commentNum'] = web.ctx.orm.query(Comment).count()
         return render.index(**d)
 
 class login(object):
@@ -175,72 +176,80 @@ class entry_del(object):
                     web.ctx.orm.delete(i)
         return web.seeother('/entry/list/')
 
-class links(object):
+class link_list(object):
     @login_required
     def GET(self):
         page = web.input(page=1)
-        page = int(page.page)
-        linkNum = list(db.query("SELECT COUNT(id) AS num FROM links"))
-        pages = float(linkNum[0]['num'] / 10)
-        if pages > int(pages):
-            pages = int(pages + 1)
-        elif pages == 0:
-            pages = 1
-        else:
-            pages = int(pages)
-        if page > pages:
-            page = pages
-        links = list(db.query('SELECT * FROM links ORDER BY name ASC '
-            'LIMIT $start, 10', vars={'start': (page - 1) * 10}))
-
-        para['page'] = page
-        para['pages'] = pages
-        para['links'] = links
-
-        return render.tag(**para)
+        try:
+            page = int(page.page)
+        except:
+            page = 1
+        linkCount = web.ctx.orm.query(Link).count()
+        p = Pagination(linkCount, pageCount, page)
+        links = web.ctx.orm.query(Link).order_by('links.name ASC')[int(p.start):int(p.start+p.limit)]
+        d['p'] = p
+        d['links'] = links
+        return render.link_list(**d)
 
 class link_add(object):
     @login_required
     def GET(self):
         f = linkForm()
-
-        para['f'] = f
-
-        return render.link_add(**para)
+        d['f'] = f
+        return render.link_add(**d)
 
     @login_required
     def POST(self):
         f = linkForm()
         if f.validates():
-            data = dict(**f.d)
-            db.insert('links', name = data['name'], url = data['url'])
-        return web.seeother('/links/')
+            link = Link()
+            link.name = f.name.value
+            link.description = f.description.value
+            link.url = f.url.value
+            web.ctx.orm.add(link)
+            try:
+                web.ctx.orm.commit()
+            except:
+                web.ctx.orm.rollback()
+            return web.seeother('/link/list/')
+        else:
+            d['f'] = f
+            return render.link_add(**d)
 
 class link_edit(object):
+    def getLink(self, id):
+        return web.ctx.orm.query(Link).filter_by(id=id).first()
+
     @login_required
     def GET(self, id):
         f = linkForm()
-        links = list(db.query("SELECT * FROM links WHERE id = $id", vars = {'id':id}))
-        f.get('name').value = links[0].name
-        f.get('url').value = links[0].slug
-
-        para['f'] = f
-
-        return render.link_edit(**para)
+        link = self.getLink(id)
+        f.name.value = link.name
+        f.url.value = link.url
+        f.description.value = link.description
+        d['f'] = f
+        d['link'] = link
+        return render.link_edit(**d)
 
     @login_required
     def POST(self, id):
         f = linkForm()
         if f.validates():
-            data = dict(**f.d)
-            db.update('links', where = "id = %s" % id, name = data['name'], url = data['url'])
-        return web.seeother('/links/')
+            link = self.getLink(id)
+            link.name = f.name.value
+            link.url = f.url.value
+            link.description = f.description.value
+            return web.seeother('/link/list/')
+        else:
+            d['f'] = f
+            return render.link_edit(**d)
 
 class link_del(object):
     @login_required
     def GET(self, id):
-        db.delete('links', where = 'id = %s' % id)
-        return web.seeother('/links/')
+        link = web.ctx.orm.query(Link).filter_by(id=id).first()
+        web.ctx.orm.delete(link)
+        return web.seeother('/link/list/')
 
 class page_list(object):
     @login_required
@@ -262,7 +271,10 @@ class page_add(object):
         if f.validates():
             page = Page(f.title.value, f.slug.value, f.content.value)
             web.ctx.orm.add(page)
-        return web.seeother('/page/list/')
+            return web.seeother('/page/list/')
+        else:
+            d['f'] = f
+            return render.page_add(**d)
 
 class page_edit(object):
     def getPage(self, id):
@@ -286,7 +298,10 @@ class page_edit(object):
             page.slug = f.slug.value
             page.content = f.content.value
             page.modifiedTime= datetime.now()
-        return web.seeother('/page/list/')
+            return web.seeother('/page/list/')
+        else:
+            d['f'] = f
+            return render.page_edit(**d)
 
 class page_del(object):
     @login_required

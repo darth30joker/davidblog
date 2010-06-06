@@ -97,7 +97,8 @@ class Link(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(45))
     url = Column(String(45))
-    created_time = Column(DateTime)
+    description = Column(String(255))
+    created_time = Column(DateTime, default=datetime.now())
 
 class Admin(Base):
     __tablename__ = 'admins'

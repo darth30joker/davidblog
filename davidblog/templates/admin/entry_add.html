@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}添加新日志{% endblock %}
 {% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#topmenu').find('li:eq(1)').addClass('current');
+	});
+</script>
 <script type="text/javascript" src="/static/markitup/jquery.markitup.pack.js"></script>
 <script src="/static/markitup/sets/markdown/set.js" type="text/javascript"></script>
 <link href="/static/markitup/sets/markdown/style.css" rel="stylesheet" type="text/css"/>

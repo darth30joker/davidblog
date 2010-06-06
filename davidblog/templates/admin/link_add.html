@@ -1,6 +1,28 @@
-<%inherit file="base.html" />
-<%def name="title()">标签管理</%def>
-
-<form action="/admin/tag/add/" method="POST">
-    ${ f.render() }
-</form>
+{% extends "base.html" %}
+{% block title %}添加新地址{% endblock %}
+{% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#topmenu').find('li:eq(4)').addClass('current');
+	});
+</script>
+<div id="edit_link">
+	<form action="/admin/link/add/" method="POST">
+    	<table>
+    		<tr>
+    			<th><label>名称</label></th>
+    			<td><input type="text" name="name" value="{{ f.name.value | notnull }}" /><span>{{ f.name.note | notnull }}</span></td>
+    		</tr>
+    		<tr>
+    			<th><label>地址</label></th>
+    			<td><input type="text" name="url" value="{{ f.url.value | notnull }}" /><span>{{ f.url.note | notnull }}</span></td>
+    		</tr>
+    		<tr>
+    			<th><label>描述</label></th>
+    			<td><input type="text" name="description" value="{{ f.description.value | notnull }}" /></td>
+    		</tr>
+    	</table>
+    	<p><input type="submit" value="添加" /></p>
+	</form>
+</div>
+{% endblock %}

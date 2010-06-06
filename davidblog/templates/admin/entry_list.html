@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block title %}日志列表{% endblock %}
 {% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#topmenu').find('li:eq(1)').addClass('current');
+	});
+</script>
 <table>
     <tr>
         <th>名称</th>
@@ -11,7 +16,7 @@
         <tr>
             <td>{{ one.title }}</td>
             <td>{{ one.created_time }}</td>
-            <td>
+            <td class="actions">
                 <a href="/admin/entry/edit/{{ one.id }}/">修改</a> | 
                 <a href="/admin/entry/del/{{ one.id }}/">删除</a>
             </td>

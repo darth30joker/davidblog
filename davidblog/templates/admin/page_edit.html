@@ -1,12 +1,17 @@
-{% extends "base.html" %}
-{% block title %}添加新页面{% endblock %}
+{% extends 'base.html' %}
+{% block title %}修改页面{% endblock %}
 {% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#topmenu').find('li:eq(3)').addClass('current');
+	});
+</script>
 <script type="text/javascript" src="/static/markitup/jquery.markitup.pack.js"></script>
 <script src="/static/markitup/sets/markdown/set.js" type="text/javascript"></script>
 <link href="/static/markitup/sets/markdown/style.css" rel="stylesheet" type="text/css"/>
 <link href="/static/markitup/skins/markitup/style.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript">
-$(document).ready(function()	{
+$(document).ready(function() {
 	// Add markItUp! to your textarea in one line
 	// $('textarea').markItUp( { Settings }, { OptionalExtraSettings } );
 	$('#markItUp').markItUp(mySettings);
@@ -37,13 +42,21 @@ $(document).ready(function()	{
 });
 </script>
 <div id="entry_edit">
-	<form action="/admin/page/edit/{{ page.id }}/" method="POST">
-		<p><input type="text" name="title" value="{{ page.title | notnull }}" />{{ f.title.note | notnull }}
-			<label>标题</label></p>
-		<p><input type="text" name="slug" value="{{ page.slug | notnull }}" />{{ f.slug.note | notnull }}
-			<label>Slug</label></p>
-		<p><textarea name="content" id="markItUp">{{ page.content | notnull }}</textarea>{{ f.content.note | notnull }}</p>
-		<p><input type="submit" value="更新日志" /></p>
+    <form action="/admin/page/edit/{{ page.id }}/" method="POST" id="entry_form">
+		<table>
+			<tr>
+				<th><label>标题</label></th>
+				<td><input type="text" name="title" value="{{ f.title.value | notnull }}" /><span>{{ f.title.note | notnull }}</span></td>
+			</tr>
+			<tr>
+				<th><label>Slug</label></th>
+				<td><input type="text" name="slug" value="{{ f.slug.value | notnull }}" /><span>{{ f.slug.note | notnull }}</span></td>
+			</tr>
+			<tr>
+				<td colspan="2"><textarea name="content" id="markItUp">{{ f.content.value | notnull }}</textarea><span>{{ f.content.note | notnull }}</span></td>
+			</tr>
+		</table>
+		<p><input type="submit" value="更新页面" /></p>
     </form>
 </div>
 {% endblock %}

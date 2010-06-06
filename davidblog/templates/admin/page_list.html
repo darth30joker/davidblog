@@ -1,22 +1,27 @@
-{% extends "base.html" %}
-{% block title %}页面管理{% endblock %}
+{% extends 'base.html' %}
+{% block title %}页面列表{% endblock %}
 {% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#topmenu').find('li:eq(3)').addClass('current');
+	});
+</script>
 <table>
     <tr>
-        <th>No.</th>
         <th>名称</th>
+        <th>发表时间</th>
         <th>操作</th>
     </tr>
-	{% for i in pages %}
+    {% for one in entries %}
         <tr>
-			<td>{{ loop.index }}</td>
-			<td>{{ i.title }}</td>
-            <td>
-				<a href="/admin/page/edit/{{ i.id }}/">修改</a> | 
-				<a href="/admin/page/del/{{ i.id }}/">删除</a>
+            <td>{{ one.title }}</td>
+            <td>{{ one.created_time }}</td>
+            <td class="actions">
+                <a href="/admin/page/edit/{{ one.id }}/">修改</a> | 
+                <a href="/admin/page/del/{{ one.id }}/">删除</a>
             </td>
         </tr>
-	{% endfor %}
+    {% endfor %}
 </table>
 <p><a href="/admin/page/add/">添加新页面</a></p>
 {% endblock %}

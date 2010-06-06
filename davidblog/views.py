@@ -51,13 +51,16 @@ class index(object):
         # 读取当前页的文章
         i = web.input(page=1)
         ids = [int(one.id) for one in web.ctx.orm.query(Entry.id).all()]
-        #randomEntries = [web.ctx.orm.query(Entry).filter_by(id=id).first() for id in random.sample(ids, 5)]
+        if len(ids) < 5:
+            randomEntries = web.ctx.orm.query(Entry).all()
+        else:
+            randomEntries = web.ctx.orm.query(Entry).filter(Entry.id.in_(random.sample(ids, 5)))
         entryCount = web.ctx.orm.query(Entry).count()
         p = Pagination(entryCount, 5, int(i.page))
         d['entries'] = web.ctx.orm.query(Entry).order_by('entries.created_time DESC')[p.start:p.start + p.limit]
         d['p'] = p
         d['usedTime'] = time.time() - d['startTime']
-        #d['randomEntries'] = randomEntries
+        d['randomEntries'] = randomEntries
         return render.index(**d)
 
 class entry(object):
@@ -96,7 +99,7 @@ class entry(object):
             for e in set(emails):
                 try:
                     web.sendmail('admin@davidx.me', e,
-                        u'您在"泥泞的沼泽"上回复的日志又有新的回复了!', message,
+                        '您在"泥泞的沼泽"上回复的日志又有新的回复了!'.encode('utf-8'), message,
                         headers={'Content-Type':'text/html;charset=utf-8'})
                 except:
                     pass

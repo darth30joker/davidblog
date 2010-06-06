@@ -25,7 +25,8 @@ commentForm = form.Form(
 
 linkForm = form.Form(
         form.Textbox('name', form.notnull),
-        form.Textbox('url', form.notnull, urlValidator)
+        form.Textbox('url', form.notnull, urlValidator),
+        form.Textbox('description', form.notnull)
     )
 
 entryForm = form.Form(

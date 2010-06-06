@@ -1,6 +1,28 @@
-<%inherit file="base.html" />
-<%def name="title()">修改分类 - 分类管理</%def>
-
-<form action="/admin/category/edit/${ id }/" method="POST">
-    ${ f.render() }
-</form>
+{% extends "base.html" %}
+{% block title %}修改地址{% endblock %}
+{% block content %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#topmenu').find('li:eq(4)').addClass('current');
+	});
+</script>
+<div id="edit_link">
+	<form action="/admin/link/edit/{{ link.id }}/" method="POST">
+    	<table>
+    		<tr>
+    			<th><label>名称</label></th>
+    			<td><input type="text" name="name" value="{{ f.name.value | notnull }}" /><span>{{ f.name.note | notnull }}</span></td>
+    		</tr>
+    		<tr>
+    			<th><label>地址</label></th>
+    			<td><input type="text" name="url" value="{{ f.url.value | notnull }}" /><span>{{ f.url.note | notnull }}</span></td>
+    		</tr>
+    		<tr>
+    			<th><label>描述</label></th>
+    			<td><input type="text" name="description" value="{{ f.description.value | notnull }}" /></td>
+    		</tr>
+    	</table>
+    	<p><input type="submit" value="修改" /></p>
+	</form>
+</div>
+{% endblock %}
