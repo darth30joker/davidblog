@@ -68,14 +68,14 @@ class entry(object):
         if slug:
             entry = web.ctx.orm.query(Entry).filter_by(slug=slug).first()
             i = web.input(page = 1)
-            commentCount = web.ctx.orm.query(Comment).filter_by(entryId=entry.id).count()
+            commentCount = web.ctx.orm.query(Comment).filter_by(entry_id=entry.id).count()
             p = Pagination(int(commentCount), 5, int(i.page))
-            entry.comments = web.ctx.orm.query(Comment).filter_by(entryId=entry.id)[p.start:p.limit]
+            entry.comments = web.ctx.orm.query(Comment).filter_by(entry_id=entry.id)[p.start:p.limit]
             return (entry, p)
 
     def GET(self, slug):
         entry, p = self.getEntry(slug)
-        entry.viewNum = entry.viewNum + 1
+        entry.view_num = entry.view_num + 1
         f = commentForm()
         d['p'] = p
         d['entry'] = entry
@@ -88,8 +88,8 @@ class entry(object):
         f = commentForm()
         if f.validates():
             comment = Comment(entry.id, f.username.value, f.email.value, f.url.value, f.comment.value)
-            entry.commentNum = entry.commentNum + 1
-            entry.viewNum = entry.viewNum - 1
+            entry.comment_num = entry.comment_num + 1
+            entry.view_num = entry.view_num - 1
             web.ctx.orm.add(comment)
             emails = ['mykingheaven@gmail.com']
             message = u'<p>您在&lt;泥泞的沼泽&gt;上回复的日志 "' + entry.title + u'" 又有新的回复了, 请您去看看.</p><p>' \
@@ -162,7 +162,7 @@ class rss(object):
         return rss
 
 def notfound():
-    return web.notfound("对不起, 您所访问的地址并不存在.")
+    return web.notfound(render.notfound())
 
 def internalerror():
-    return web.internalerror("对不起, 网站遇到一个不可遇见的错误.")
+    return web.internalerror(render.servererror())

@@ -194,3 +194,13 @@ body {
     width:500px;
     height:150px;
 }
+
+/** error and notfound page **/
+#error_message {
+	color:white;
+	height:350px;
+	text-align:center;
+}
+#error_message p {
+	margin-top:150px;
+}
