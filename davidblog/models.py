@@ -25,7 +25,7 @@ class Comment(Base):
     username = Column(String(50))
     url = Column(String(50))
     comment = Column(Text)
-    created_time = Column(DateTime)
+    created_time = Column(DateTime, default=datetime.now())
 
     def __init__(self, entry_id, username, email, url, comment):
         self.entry_id = entry_id

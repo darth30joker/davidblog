@@ -114,6 +114,9 @@ class entry_edit(object):
         if entry:
             f = entryForm()
             entry.tagList = ",".join([i.name for i in entry.tags])
+            f.title.value = entry.title
+            f.slug.value = entry.slug
+            f.content.value = entry.content
             d['entry'] = entry
             d['f'] = f
             return render.entry_edit(**d)
@@ -142,15 +145,15 @@ class entry_edit(object):
                     for tag in tagsDel:
                         t = web.ctx.orm.query(Tag).filter('LOWER(name)=:name').params(name=tag).first()
                         if t:
-                            if t.entryNum == 1:
+                            if t.entry_num == 1:
                                 web.ctx.orm.delete(t)
                             else:
-                                t.entryNum = t.entryNum - 1
+                                t.entry_num = t.entry_num - 1
                             entry.tags.remove(t)
             entry.title = f.title.value
             entry.slug = f.slug.value
             entry.content = f.content.value
-            entry.modifiedTime = datetime.now()
+            entry.modified_time = datetime.now()
             return web.seeother('/entry/list/')
         else:
             d['f'] = f
@@ -165,10 +168,10 @@ class entry_del(object):
             if len(entry.tags) > 0:
                 for tag in entry.tags:
                     tagsToDel = list()
-                    if tag.entryNum == 1:
+                    if tag.entry_num == 1:
                         tagsToDel.append(tag)
                     else:
-                        tag.entryNum = tag.entryNum - 1
+                        tag.entry_num = tag.entry_num - 1
                     entry.tags.remove(tag)
             web.ctx.orm.delete(entry)
             if len(tagsToDel) > 0:
