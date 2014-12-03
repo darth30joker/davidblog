@@ -1,0 +1,7 @@
+web.py
+pygments
+markdown
+jinja2
+sqlalchemy
+mysql-python
+wtforms
